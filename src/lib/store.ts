@@ -67,6 +67,8 @@ interface AppState {
   chapterExercises: ExerciseData[]
   studentTab: StudentTab
   teacherTab: TeacherTab
+  // Global lightbox — rendered at the very top of the app, outside all Dialogs
+  lightbox: { isOpen: boolean; imageUrl: string; label: string }
   login: (user: StudentUser | TeacherUser, view: CurrentView) => void
   logout: () => void
   setSelectedChapter: (chapter: ChapterData | null) => void
@@ -75,6 +77,8 @@ interface AppState {
   setChapterExercises: (exercises: ExerciseData[]) => void
   setStudentTab: (tab: StudentTab) => void
   setTeacherTab: (tab: TeacherTab) => void
+  openLightbox: (imageUrl: string, label: string) => void
+  closeLightbox: () => void
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -86,6 +90,7 @@ export const useAppStore = create<AppState>((set) => ({
   chapterExercises: [],
   studentTab: 'chapters',
   teacherTab: 'pending',
+  lightbox: { isOpen: false, imageUrl: '', label: '' },
   login: (user, view) => set({ user, currentView: view }),
   logout: () => set({
     currentView: 'auth',
@@ -96,6 +101,7 @@ export const useAppStore = create<AppState>((set) => ({
     chapterExercises: [],
     studentTab: 'chapters',
     teacherTab: 'pending',
+    lightbox: { isOpen: false, imageUrl: '', label: '' },
   }),
   setSelectedChapter: (chapter) => set({ selectedChapter: chapter }),
   setSelectedExercise: (exercise) => set({ selectedExercise: exercise }),
@@ -103,4 +109,6 @@ export const useAppStore = create<AppState>((set) => ({
   setChapterExercises: (exercises) => set({ chapterExercises: exercises }),
   setStudentTab: (tab) => set({ studentTab: tab }),
   setTeacherTab: (tab) => set({ teacherTab: tab }),
+  openLightbox: (imageUrl, label) => set({ lightbox: { isOpen: true, imageUrl, label } }),
+  closeLightbox: () => set({ lightbox: { isOpen: false, imageUrl: '', label: '' } }),
 }))

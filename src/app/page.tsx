@@ -155,22 +155,6 @@ function ImageLightbox({
     setIsDragging(false)
   }
 
-  // When lightbox is open, disable pointer events on ALL dialog overlays beneath it.
-  // This is the most reliable way to prevent Radix Dialog from dismissing.
-  useEffect(() => {
-    if (!isOpen) return
-    const selector = '[data-slot="dialog-overlay"]'
-    const apply = () => document.querySelectorAll(selector).forEach(el => { (el as HTMLElement).style.pointerEvents = 'none' })
-    const restore = () => document.querySelectorAll(selector).forEach(el => { (el as HTMLElement).style.pointerEvents = '' })
-    apply()
-    // Also observe for dynamically added overlays
-    const observer = new MutationObserver(() => apply())
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => {
-      observer.disconnect()
-      restore()
-    }
-  }, [isOpen])
 
   // Close lightbox when clicking the dark overlay area (not the image or controls)
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
@@ -259,7 +243,7 @@ function ExerciseDetailDialog({
   exercises: ExerciseData[]
   onClose: () => void
 }) {
-  const { user, setSelectedExercise } = useAppStore()
+  const { user, setSelectedExercise, openLightbox, lightbox } = useAppStore()
   const student = user as StudentUser
   const [status, setStatus] = useState(exercise.progress?.status || 'not_started')
   const [note, setNote] = useState(exercise.progress?.studentNote || '')
@@ -267,7 +251,6 @@ function ExerciseDetailDialog({
   const [comments, setComments] = useState<CommentData[]>([])
   const [newComment, setNewComment] = useState('')
   const [sendingComment, setSendingComment] = useState(false)
-  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
 
   const currentIndex = exercises.findIndex(e => e.id === exercise.id)
   const totalExercises = exercises.length
@@ -349,7 +332,6 @@ function ExerciseDetailDialog({
   }
 
   return (
-    <>
       <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
         <DialogContent 
           className="max-w-4xl max-h-[90vh] overflow-y-auto"
@@ -369,7 +351,7 @@ function ExerciseDetailDialog({
                 <div key={img.pageNum} className="space-y-1.5">
                   <div
                     className="relative rounded-lg overflow-hidden border bg-white cursor-pointer"
-                    onClick={() => setLightbox({ isOpen: true, imageUrl: img.url, label: `Page ${img.pageNum}` })}
+                    onClick={() => openLightbox(img.url, `Page ${img.pageNum}`)}
                   >
                     <img
                       src={img.url}
@@ -382,7 +364,7 @@ function ExerciseDetailDialog({
                     variant="outline"
                     size="sm"
                     className="w-full"
-                    onClick={() => setLightbox({ isOpen: true, imageUrl: img.url, label: `Page ${img.pageNum}` })}
+                    onClick={() => openLightbox(img.url, `Page ${img.pageNum}`)}
                   >
                     <Eye className="size-4 mr-1" /> Agrandir la page {img.pageNum}
                   </Button>
@@ -501,15 +483,6 @@ function ExerciseDetailDialog({
 
         </DialogContent>
       </Dialog>
-
-      <ImageLightbox
-        key={lightbox.imageUrl}
-        isOpen={lightbox.isOpen}
-        imageUrl={lightbox.imageUrl}
-        label={lightbox.label}
-        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
-      />
-    </>
   )
 }
 
@@ -762,14 +735,13 @@ function StudentDashboard() {
 
 // ===== Student Chapters View =====
 function StudentChaptersView() {
-  const { user, selectedExercise, setSelectedExercise } = useAppStore()
+  const { user, selectedExercise, setSelectedExercise, openLightbox } = useAppStore()
   const student = user as StudentUser
   const [chapters, setChapters] = useState<ChapterData[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null)
   const [chapterExercises, setChapterExercises] = useState<Record<string, ExerciseData[]>>({})
   const [loadingExercises, setLoadingExercises] = useState<string | null>(null)
-  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
 
   useEffect(() => {
     let cancelled = false
@@ -840,7 +812,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          setLightbox({ isOpen: true, imageUrl: pageImageUrl(ex.pageStart!), label: `Ex.${ex.number}` })
+                          openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)
                         }
                       }}
                     />
@@ -866,7 +838,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          setLightbox({ isOpen: true, imageUrl: pageImageUrl(ex.pageStart!), label: `Ex.${ex.number}` })
+                          openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)
                         }
                       }}
                     />
@@ -894,14 +866,6 @@ function StudentChaptersView() {
           onClose={() => setSelectedExercise(null)}
         />
       )}
-
-      <ImageLightbox
-        key={lightbox.imageUrl}
-        isOpen={lightbox.isOpen}
-        imageUrl={lightbox.imageUrl}
-        label={lightbox.label}
-        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
-      />
     </>
   )
 }
@@ -1354,9 +1318,9 @@ function TeacherStudentsView() {
 
 // ===== Progress Dialog =====
 function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: () => void }) {
+  const { openLightbox, lightbox } = useAppStore()
   const [progress, setProgress] = useState<{ chapter: ChapterData; exercises: ExerciseData[] }[]>([])
   const [loading, setLoading] = useState(true)
-  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
 
   useEffect(() => {
     let cancelled = false
@@ -1384,7 +1348,6 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
   const difficultyCount = allExercises.filter(e => e.progress?.status === 'difficulty').length
 
   return (
-    <>
       <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
         <DialogContent 
           className="max-w-3xl max-h-[90vh] overflow-y-auto"
@@ -1445,11 +1408,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
                               {ex.pageStart && (
                                 <ImageIcon
                                   className="size-4 text-gray-400 cursor-pointer"
-                                  onClick={() => setLightbox({
-                                    isOpen: true,
-                                    imageUrl: pageImageUrl(ex.pageStart!),
-                                    label: `Ex.${ex.number}`,
-                                  })}
+                                  onClick={() => openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)}
                                 />
                               )}
                             </div>
@@ -1464,15 +1423,6 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
           )}
         </DialogContent>
       </Dialog>
-
-      <ImageLightbox
-        key={lightbox.imageUrl}
-        isOpen={lightbox.isOpen}
-        imageUrl={lightbox.imageUrl}
-        label={lightbox.label}
-        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
-      />
-    </>
   )
 }
 
@@ -1749,7 +1699,7 @@ function AppFooter() {
 
 // ===== Main Home Component =====
 export default function Home() {
-  const { currentView } = useAppStore()
+  const { currentView, lightbox, closeLightbox } = useAppStore()
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -1765,6 +1715,13 @@ export default function Home() {
         {currentView === 'student' && <StudentDashboard />}
         {currentView === 'teacher' && <TeacherDashboard />}
       </main>
+      <ImageLightbox
+        key={lightbox.imageUrl}
+        isOpen={lightbox.isOpen}
+        imageUrl={lightbox.imageUrl}
+        label={lightbox.label}
+        onClose={closeLightbox}
+      />
       <AppFooter />
     </div>
   )

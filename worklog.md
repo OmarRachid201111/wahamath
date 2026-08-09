@@ -196,3 +196,50 @@ Work Log:
 Stage Summary:
 - Two-line fix in onOpenChange handlers is the definitive solution
 - No event trickery can beat just ignoring the close request at the source
+
+---
+
+## Refactor: Lightbox to Global Zustand Store
+
+**Date:** 2025-01-15
+**File:** `src/app/page.tsx`
+
+### Summary
+Migrated all local lightbox state (`useState`) across 3 components to the global Zustand store, eliminating duplicate lightbox state and rendering the `ImageLightbox` component once at the Home level (outside all Dialogs).
+
+### Changes Made
+
+#### 1. ImageLightbox component (line ~158)
+- **Removed** the `useEffect` that disabled pointer-events on dialog overlays (no longer needed since lightbox renders outside all Dialogs)
+- Kept all `stopPropagation` handlers as defense-in-depth
+
+#### 2. ExerciseDetailDialog
+- **Removed** `const [lightbox, setLightbox] = useState(...)` (local state)
+- **Added** `openLightbox, lightbox` to store destructuring: `const { user, setSelectedExercise, openLightbox, lightbox } = useAppStore()`
+- **Replaced** 2× `setLightbox({ isOpen: true, imageUrl: img.url, label: ... })` → `openLightbox(img.url, ...)`
+- **Removed** local `<ImageLightbox>` render
+- **Removed** `<>...</>` fragment wrapper (returns `<Dialog>` directly)
+- **Kept** `!lightbox.isOpen` guard in `onOpenChange` (now uses store's lightbox)
+
+#### 3. StudentChaptersView
+- **Removed** `const [lightbox, setLightbox] = useState(...)`
+- **Added** `openLightbox` to store destructuring
+- **Replaced** 2× `setLightbox({ isOpen: true, imageUrl: pageImageUrl(ex.pageStart!), label: ... })` → `openLightbox(pageImageUrl(ex.pageStart!), ...)`
+- **Removed** local `<ImageLightbox>` render
+
+#### 4. ProgressDialog
+- **Removed** `const [lightbox, setLightbox] = useState(...)`
+- **Added** `const { openLightbox, lightbox } = useAppStore()`
+- **Replaced** multi-line `setLightbox(...)` → `openLightbox(pageImageUrl(ex.pageStart!), ...)`
+- **Removed** local `<ImageLightbox>` render
+- **Removed** `<>...</>` fragment wrapper (returns `<Dialog>` directly)
+- **Kept** `!lightbox.isOpen` guard in `onOpenChange` (now uses store's lightbox)
+
+#### 5. Home component (export default)
+- **Added** `lightbox, closeLightbox` to store destructuring
+- **Added** single `<ImageLightbox>` render between `</main>` and `<AppFooter />`, outside all Dialogs
+
+### Verification
+- **Lint:** ✅ Clean (no errors)
+- **Compilation:** ✅ Compiled successfully (1430ms hot reload)
+- **No remaining `setLightbox` or `const [lightbox, ...]` references** in the file
