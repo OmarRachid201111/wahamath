@@ -54,10 +54,11 @@ function ImageLightbox({
   const [zoom, setZoom] = useState(1)
   const [position, setPosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [imageLoaded, setImageLoaded] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const lastTouchDist = useRef<number | null>(null)
+  const dragStartRef = useRef({ x: 0, y: 0 })
+  const posStartRef = useRef({ x: 0, y: 0 })
 
   const resetView = useCallback(() => {
     setZoom(1)
@@ -80,6 +81,26 @@ function ImageLightbox({
     return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [isOpen, onClose, resetView])
 
+  // Global mousemove/mouseup for smooth drag even when cursor leaves container
+  useEffect(() => {
+    if (!isDragging) return
+    const handleGlobalMove = (e: MouseEvent) => {
+      setPosition({
+        x: posStartRef.current.x + (e.clientX - dragStartRef.current.x),
+        y: posStartRef.current.y + (e.clientY - dragStartRef.current.y),
+      })
+    }
+    const handleGlobalUp = () => {
+      setIsDragging(false)
+    }
+    window.addEventListener('mousemove', handleGlobalMove)
+    window.addEventListener('mouseup', handleGlobalUp)
+    return () => {
+      window.removeEventListener('mousemove', handleGlobalMove)
+      window.removeEventListener('mouseup', handleGlobalUp)
+    }
+  }, [isDragging])
+
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
     setZoom(z => {
@@ -89,18 +110,13 @@ function ImageLightbox({
     })
   }, [])
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handlePointerDown = (e: React.PointerEvent) => {
     if (zoom <= 1) return
+    e.preventDefault()
     setIsDragging(true)
-    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
+    dragStartRef.current = { x: e.clientX, y: e.clientY }
+    posStartRef.current = { x: position.x, y: position.y }
   }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return
-    setPosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y })
-  }
-
-  const handleMouseUp = () => setIsDragging(false)
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
@@ -109,7 +125,8 @@ function ImageLightbox({
       lastTouchDist.current = Math.sqrt(dx * dx + dy * dy)
     } else if (e.touches.length === 1 && zoom > 1) {
       setIsDragging(true)
-      setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y })
+      dragStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+      posStartRef.current = { x: position.x, y: position.y }
     }
   }
 
@@ -126,7 +143,10 @@ function ImageLightbox({
       })
       lastTouchDist.current = dist
     } else if (e.touches.length === 1 && isDragging) {
-      setPosition({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y })
+      setPosition({
+        x: posStartRef.current.x + (e.touches[0].clientX - dragStartRef.current.x),
+        y: posStartRef.current.y + (e.touches[0].clientY - dragStartRef.current.y),
+      })
     }
   }
 
@@ -140,21 +160,16 @@ function ImageLightbox({
   return (
     <div
       className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center"
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
     >
       <div
         ref={containerRef}
         className="flex-1 w-full flex items-center justify-center overflow-hidden"
         onWheel={handleWheel}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onPointerDown={handlePointerDown}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        style={{ cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+        style={{ cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default', userSelect: 'none' }}
       >
         {!imageLoaded && (
           <Loader2 className="size-10 text-white animate-spin" />
@@ -162,7 +177,7 @@ function ImageLightbox({
         <img
           src={imageUrl}
           alt={label}
-          className="max-w-[90vw] max-h-[80vh] object-contain select-none"
+          className="max-w-[90vw] max-h-[80vh] object-contain select-none pointer-events-none"
           style={{
             transform: `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
             transition: isDragging ? 'none' : 'transform 0.15s ease',
@@ -172,15 +187,15 @@ function ImageLightbox({
           draggable={false}
         />
       </div>
-      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl" onClick={(e) => e.stopPropagation()}>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(z - 0.25, 0.5)) }}>
+      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl">
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.max(z - 0.25, 0.5))}>
           <ZoomOut className="size-5" />
         </Button>
         <span className="text-white text-sm font-mono min-w-[50px] text-center">{Math.round(zoom * 100)}%</span>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(z + 0.25, 5)) }}>
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.min(z + 0.25, 5))}>
           <ZoomIn className="size-5" />
         </Button>
-        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); resetView() }}>
+        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={resetView}>
           <RotateCcw className="size-4 mr-1" /> Réinitialiser
         </Button>
         <span className="text-white/70 text-sm ml-2">{label}</span>
@@ -293,7 +308,11 @@ function ExerciseDetailDialog({
   return (
     <>
       <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent 
+          className="max-w-4xl max-h-[90vh] overflow-y-auto"
+          onInteractOutside={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
+          onEscapeKeyDown={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
+        >
           <DialogHeader>
             <DialogTitle className="text-lg">
               Ch.{chapter.number} : {chapter.title} — Ex.{exercise.number} ({exercise.number}/{totalExercises})
@@ -1326,7 +1345,11 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
   return (
     <>
       <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent 
+          className="max-w-3xl max-h-[90vh] overflow-y-auto"
+          onInteractOutside={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
+          onEscapeKeyDown={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
+        >
           <DialogHeader>
             <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
             <DialogDescription>Classe : {student.className}</DialogDescription>
