@@ -77,3 +77,26 @@ Stage Summary:
 - Successfully analyzed all 150 pages
 - Extracted 0 total exercises across 10 chapters
 - Output data ready for database seeding
+---
+Task ID: 1
+Agent: Main
+Task: Fix exercise detail dialog to display actual PDF page images instead of "voir le cahier PDF" placeholder
+
+Work Log:
+- Analyzed the extracted PDF text (17035 lines, 150 pages) to map every exercise to its PDF page number
+- Identified chapter boundaries: Ch1(p2-13), Ch2(p14-25), Ch3(p26-38), Ch4(p39-49), Ch5(p50-60), Ch7(p61-81), Ch6(p82-111), Ch8(p112-122), Ch9(p123-143), Ch10(p144-150)
+- Extracted exercise-to-page mapping for all 381 exercises across 10 chapters
+- Updated prisma/seed.ts with all 381 exercises including pageStart/pageEnd for each
+- Replaced exerciseImageUrl() helper with pageImageUrl() that points to /exercises-pages/page-XXX.png
+- Updated ExerciseDetailDialog to build pageImages array from pageStart/pageEnd and render full-size page images
+- Removed the placeholder text content div that showed "voir le cahier PDF"
+- Updated all 3 remaining exerciseImageUrl references in the codebase
+- Pushed DB schema, re-seeded database (381 exercises across 10 chapters)
+- Verified with Agent Browser: Exercise 1 (Ch.1, page 2) and Exercise 24 (Ch.10, page 150) both display correctly
+- Lightbox (Agrandir) feature works properly with zoom controls
+
+Stage Summary:
+- All 381 exercises now display the actual PDF page image when clicked
+- Page images are served from /public/exercises-pages/page-XXX.png (already generated in prior session)
+- Dialog shows "Agrandir la page N" button for each page image
+- No errors in dev log, clean lint
