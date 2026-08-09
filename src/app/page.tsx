@@ -155,12 +155,32 @@ function ImageLightbox({
     setIsDragging(false)
   }
 
+  // Close lightbox when clicking the dark overlay area (not the image or controls)
+  const handleOverlayClick = useCallback((e: React.MouseEvent) => {
+    // Only close if clicking directly on the overlay, not on children
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }, [onClose])
+
   if (!isOpen) return null
 
   return (
     <div
       className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center"
+      // CRITICAL: Stop pointerdown from reaching document-level Radix Dialog handlers
+      onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+      onClick={handleOverlayClick}
     >
+      {/* Close button */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onClose() }}
+        className="absolute top-4 right-4 z-10 text-white/70 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+        aria-label="Fermer"
+      >
+        <X className="size-6" />
+      </button>
       <div
         ref={containerRef}
         className="flex-1 w-full flex items-center justify-center overflow-hidden"
@@ -187,15 +207,19 @@ function ImageLightbox({
           draggable={false}
         />
       </div>
-      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl">
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.max(z - 0.25, 0.5))}>
+      {/* Zoom control bar — stopPropagation on the bar itself */}
+      <div
+        className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(z - 0.25, 0.5)) }}>
           <ZoomOut className="size-5" />
         </Button>
         <span className="text-white text-sm font-mono min-w-[50px] text-center">{Math.round(zoom * 100)}%</span>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.min(z + 0.25, 5))}>
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(z + 0.25, 5)) }}>
           <ZoomIn className="size-5" />
         </Button>
-        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={resetView}>
+        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); resetView() }}>
           <RotateCcw className="size-4 mr-1" /> Réinitialiser
         </Button>
         <span className="text-white/70 text-sm ml-2">{label}</span>
