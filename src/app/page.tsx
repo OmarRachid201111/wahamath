@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { createPortal } from 'react-dom'
 import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -68,13 +67,17 @@ function ImageLightbox({
   useEffect(() => {
     if (!isOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        e.preventDefault()
+        onClose()
+      }
       else if (e.key === '+' || e.key === '=') setZoom(z => Math.min(z + 0.25, 5))
       else if (e.key === '-') setZoom(z => Math.max(z - 0.25, 0.5))
       else if (e.key === '0') resetView()
     }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', handleKeyDown, true)
+    return () => window.removeEventListener('keydown', handleKeyDown, true)
   }, [isOpen, onClose, resetView])
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
@@ -134,8 +137,12 @@ function ImageLightbox({
 
   if (!isOpen) return null
 
-  return createPortal(
-    <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center">
+  return (
+    <div
+      className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center"
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       <div
         ref={containerRef}
         className="flex-1 w-full flex items-center justify-center overflow-hidden"
@@ -178,8 +185,7 @@ function ImageLightbox({
         </Button>
         <span className="text-white/70 text-sm ml-2">{label}</span>
       </div>
-    </div>,
-    document.body
+    </div>
   )
 }
 
@@ -432,16 +438,16 @@ function ExerciseDetailDialog({
               Suivant <ChevronRight className="size-4 ml-1" />
             </Button>
           </DialogFooter>
+
+          <ImageLightbox
+            key={lightbox.imageUrl}
+            isOpen={lightbox.isOpen}
+            imageUrl={lightbox.imageUrl}
+            label={lightbox.label}
+            onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+          />
         </DialogContent>
       </Dialog>
-
-      <ImageLightbox
-        key={lightbox.imageUrl}
-        isOpen={lightbox.isOpen}
-        imageUrl={lightbox.imageUrl}
-        label={lightbox.label}
-        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
-      />
     </>
   )
 }

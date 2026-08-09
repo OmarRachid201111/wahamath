@@ -100,3 +100,23 @@ Stage Summary:
 - Page images are served from /public/exercises-pages/page-XXX.png (already generated in prior session)
 - Dialog shows "Agrandir la page N" button for each page image
 - No errors in dev log, clean lint
+---
+Task ID: 2
+Agent: Main
+Task: Fix +/- zoom icons closing the exercise dialog instead of zooming
+
+Work Log:
+- Identified root cause: ImageLightbox used createPortal to document.body, creating a separate DOM tree from Radix Dialog's portal, causing stacking context conflicts
+- Click events on zoom buttons (ZoomIn/ZoomOut) propagated to Dialog's overlay, closing it
+- Fix 1: Removed createPortal from ImageLightbox, now renders as regular div with fixed inset-0 z-[9999]
+- Fix 2: Moved ImageLightbox render inside DialogContent in ExerciseDetailDialog so they share the same portal/stacking context
+- Fix 3: Added onClick/onMouseDown stopPropagation on lightbox container
+- Fix 4: Changed Escape key handler to use capture phase (true) with stopPropagation/preventDefault so Escape only closes lightbox, not the dialog
+- Removed unused createPortal import
+
+Stage Summary:
+- Zoom in (+): works, zoom level increases (100% → 125% → ...)
+- Zoom out (-): works, zoom level decreases
+- Reset: works, returns to 100%
+- Escape: closes only the lightbox, dialog stays open
+- No regression: lint clean, no dev errors
