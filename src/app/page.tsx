@@ -172,15 +172,15 @@ function ImageLightbox({
           draggable={false}
         />
       </div>
-      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl">
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.max(z - 0.25, 0.5))}>
+      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl" onClick={(e) => e.stopPropagation()}>
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(z - 0.25, 0.5)) }}>
           <ZoomOut className="size-5" />
         </Button>
         <span className="text-white text-sm font-mono min-w-[50px] text-center">{Math.round(zoom * 100)}%</span>
-        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.min(z + 0.25, 5))}>
+        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(z + 0.25, 5)) }}>
           <ZoomIn className="size-5" />
         </Button>
-        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={resetView}>
+        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={(e) => { e.stopPropagation(); resetView() }}>
           <RotateCcw className="size-4 mr-1" /> Réinitialiser
         </Button>
         <span className="text-white/70 text-sm ml-2">{label}</span>
@@ -439,15 +439,16 @@ function ExerciseDetailDialog({
             </Button>
           </DialogFooter>
 
-          <ImageLightbox
-            key={lightbox.imageUrl}
-            isOpen={lightbox.isOpen}
-            imageUrl={lightbox.imageUrl}
-            label={lightbox.label}
-            onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
-          />
         </DialogContent>
       </Dialog>
+
+      <ImageLightbox
+        key={lightbox.imageUrl}
+        isOpen={lightbox.isOpen}
+        imageUrl={lightbox.imageUrl}
+        label={lightbox.label}
+        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+      />
     </>
   )
 }
@@ -1655,13 +1656,13 @@ function AppHeader() {
           <img src="/author-photo.jpg" alt="Br-Rachid" className="size-12 rounded-full border-2 border-white/40 object-cover" />
           <div>
             <p className="font-semibold text-sm">Br-Rachid</p>
-            <p className="text-xs text-emerald-100">Professeur de Mathématiques</p>
+            <p className="text-xs text-emerald-100">Enseignant et encadrant de mathématiques</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">
             <p className="font-bold text-sm">Plateforme wahamath</p>
-            <p className="text-xs text-emerald-100">Cahier d&apos;exercices et de suivi — Niveau 2SM</p>
+            <p className="text-xs text-emerald-100">Preparer votre avenir avec aisance</p>
           </div>
           <img src="/wahamath-logo.png" alt="wahamath" className="w-[120px] hidden sm:block" />
         </div>
