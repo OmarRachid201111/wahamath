@@ -810,6 +810,7 @@ function StudentChaptersView() {
 
       {selectedExercise && selectedChapter && (
         <ExerciseDetailDialog
+          key={selectedExercise.id}
           exercise={selectedExercise}
           chapter={selectedChapter}
           onClose={() => setSelectedExercise(null)}
@@ -1130,10 +1131,10 @@ function TeacherPendingView() {
 // ===== Teacher Students View =====
 function TeacherStudentsView() {
   const { setSelectedStudent } = useAppStore()
-  const [students, setStudents] = useState<StudentUser[]>([])
+  type StudentWithProgress = StudentUser & { progressCount: number; totalExercises: number }
+  const [students, setStudents] = useState<StudentWithProgress[]>([])
   const [loading, setLoading] = useState(true)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-  const [progressData, setProgressData] = useState<Record<string, { total: number; completed: number }>>({})
   const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
 
   const fetchStudents = async () => {
@@ -1206,7 +1207,7 @@ function TeacherStudentsView() {
                 <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
                 <TableCell>{s.className}</TableCell>
                 <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
-                <TableCell>{progressData[s.id] ? `${progressData[s.id].completed}/${progressData[s.id].total}` : '—'}</TableCell>
+                <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
                 <TableCell>
                   <Button
                     variant={confirmDeleteId === s.id ? 'destructive' : 'ghost'}

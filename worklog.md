@@ -1,43 +1,38 @@
-# Work Log — Cahier d'exercices et de suivi (2SM)
-
 ---
 Task ID: 1
-Agent: Main
-Task: Full application setup and development
+Agent: Main Agent
+Task: Build complete 2SM Exercise Notebook and Tracking web application
 
 Work Log:
-- Examined existing Next.js 16 project structure (shadcn/ui, Prisma, Zustand, Tailwind CSS 4 all pre-installed)
-- Configured Prisma schema with 6 models: Teacher, Student, Chapter, Exercise, StudentExerciseProgress, StudentComment, TeacherRemark
-- Pushed schema to SQLite, generated Prisma Client
-- Created seed script with 1 teacher + 6 chapters (3 per semester) + 42 exercises with real math content for 2SM level
-- Updated src/lib/db.ts (PrismaClient singleton, no query logging)
-- Created src/lib/store.ts (106 lines) with Zustand: 6 exported interfaces, full state + 8 actions
-- Updated layout.tsx: lang="fr", Geist fonts, Sonner Toaster (richColors, top-right), 2SM metadata
-- Updated next.config.ts: output "standalone", allowedDevOrigins, ignoreBuildErrors, reactStrictMode: false
-- Generated placeholder images: author-photo.jpg (teacher portrait) and wahamath-logo.png (platform logo)
-- Created 14 route files covering all 15 API endpoints (teacher/profile has GET+PUT)
-- Built complete src/app/page.tsx (1651 lines) as SPA with all components:
-  - AppHeader (emerald gradient, author photo, logo, responsive)
-  - AppFooter (sticky, copyright, mailto contact)
-  - AuthView (login/register toggle, teacher inline login, form validation)
-  - StudentDashboard (3 tabs: chapters, comments, profile)
-  - StudentChaptersView (semester accordions, chapter progress, exercise list)
-  - ExerciseDetailDialog (status radio, notes, save, prev/next navigation, comments)
-  - ImageLightbox (portal, zoom 0.5x-5x, pan, touch, keyboard shortcuts)
-  - StudentCommentsView, StudentProfileView (with double-confirm unsubscribe)
-  - TeacherDashboard (4 tabs: pending, students, comments, profile)
-  - TeacherPendingView (card grid, approve/reject), TeacherStudentsView (table, delete)
-  - ProgressDialog (4 stat cards, chapter accordions with exercise progress)
-  - TeacherCommentsView (all comments with reply form), TeacherProfileView (password change)
-- Fixed multiple API response mismatches between frontend and backend
-- Fixed semester filtering (French string matching)
-- Fixed missing fetchPending/fetchStudents/refetchComments functions
-- Fixed accordion structure (single Accordion with multiple items)
-- All 0 lint errors verified
+- Explored existing project structure - found most of the project already built from a previous session
+- Verified Prisma schema (6 models: Teacher, Student, Chapter, Exercise, StudentExerciseProgress, StudentComment, TeacherRemark)
+- Verified db.ts (PrismaClient singleton) and store.ts (Zustand with all interfaces and actions)
+- Verified all 15 API routes are in place and functional
+- Verified layout.tsx with Geist fonts, Sonner Toaster, and French metadata
+- Verified next.config.ts with standalone output, allowedDevOrigins, ignoreBuildErrors
+- Pushed Prisma schema and seeded database (1 teacher, 6 chapters, 42 exercises)
+- Generated placeholder author photo (professional headshot) using z-ai image generation
+- Generated placeholder wahamath logo using z-ai image generation
+- Fixed bug: TeacherStudentsView progressData state was never populated - replaced with direct use of API-returned progressCount/totalExercises
+- Fixed bug: ExerciseDetailDialog state didn't reset when navigating between exercises - added key={selectedExercise.id} to force remount
+- Ran ESLint - 0 errors
+- Browser verification tested all major flows:
+  - Auth view with login/register/teacher access
+  - Teacher login with password
+  - Teacher dashboard with 4 tabs (pending, students, comments, profile)
+  - Student progress dialog with chapter accordions and exercise status
+  - Student registration and approval flow
+  - Student login after approval
+  - Student chapters view with accordion semesters
+  - Chapter exercise list with status badges
+  - Exercise detail dialog with status radio, notes, save, navigation
+  - Navigation between exercises (Previous/Next) with proper state reset
+  - Student profile view with unsubscribe button
+  - Teacher profile with password change form
 
 Stage Summary:
-- Complete exercise tracking SPA for 2SM level
-- 15 API endpoints working (student auth, teacher auth, chapters, exercises, progress, comments, remarks, student management)
-- Full teacher-student workflow: register → approve → login → track progress → comment → teacher replies
-- Image pipeline infrastructure ready (exerciseImageUrl helper, lightbox component)
-- Demo data: 6 chapters, 42 exercises across 2 semesters
+- Application is fully functional with all requested features
+- 2 bugs fixed (progress column display, exercise navigation state reset)
+- Lint passes with 0 errors
+- All 3 views (auth, student, teacher) verified via browser testing
+- Demo data: 6 chapters, 42 exercises, 1 teacher, 2 students (1 approved, 1 pending)
