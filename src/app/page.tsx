@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -166,14 +167,9 @@ function ImageLightbox({
 
   if (!isOpen) return null
 
-  return (
+  const lightboxContent = (
     <div
-      className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center"
-      // Stop ALL event propagation so nothing reaches Radix Dialog handlers on document
-      onPointerDown={(e) => e.stopImmediatePropagation()}
-      onPointerUp={(e) => e.stopImmediatePropagation()}
-      onMouseDown={(e) => e.stopImmediatePropagation()}
-      onMouseUp={(e) => e.stopImmediatePropagation()}
+      className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center pointer-events-auto"
       onClick={handleOverlayClick}
     >
       {/* Close button */}
@@ -210,7 +206,7 @@ function ImageLightbox({
           draggable={false}
         />
       </div>
-      {/* Zoom control bar — stopPropagation on the bar itself */}
+      {/* Zoom control bar */}
       <div
         className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl"
         onClick={(e) => e.stopPropagation()}
@@ -229,6 +225,11 @@ function ImageLightbox({
       </div>
     </div>
   )
+
+  // Render via portal to document.body so it sits at the same DOM level as the
+  // Radix Dialog portal and is guaranteed to be on top (z-9999 > dialog z-50).
+  if (typeof document === 'undefined') return null
+  return createPortal(lightboxContent, document.body)
 }
 
 // ===== Exercise Detail Dialog =====
@@ -332,9 +333,10 @@ function ExerciseDetailDialog({
   }
 
   return (
-      <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
+      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
         <DialogContent 
           className="max-w-4xl max-h-[90vh] overflow-y-auto"
+          onInteractOutside={(e) => { if (lightbox.isOpen) e.preventDefault() }}
         >
           <DialogHeader>
             <DialogTitle className="text-lg">
@@ -1348,9 +1350,10 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
   const difficultyCount = allExercises.filter(e => e.progress?.status === 'difficulty').length
 
   return (
-      <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
+      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
         <DialogContent 
           className="max-w-3xl max-h-[90vh] overflow-y-auto"
+          onInteractOutside={(e) => { if (lightbox.isOpen) e.preventDefault() }}
         >
           <DialogHeader>
             <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
