@@ -1,0 +1,1043 @@
+{
+  "chapters": [
+    {
+      "number": 2,
+      "title": "Dérivabilité – Étude de fonction – TAF",
+      "semester": "Premier semestre",
+      "exercises": [
+        {
+          "number": 3,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 4,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 11,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 12,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 13,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 14,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 15,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 16,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 17,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 18,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 19,
+          "pageStart": 14,
+          "pageEnd": 15
+        },
+        {
+          "number": 20,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 21,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 22,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 23,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 24,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 25,
+          "pageStart": 15,
+          "pageEnd": 15
+        },
+        {
+          "number": 32,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 34,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 35,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 36,
+          "pageStart": 14,
+          "pageEnd": 15
+        },
+        {
+          "number": 37,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 38,
+          "pageStart": 14,
+          "pageEnd": 15
+        },
+        {
+          "number": 39,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 40,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 41,
+          "pageStart": 14,
+          "pageEnd": 15
+        },
+        {
+          "number": 42,
+          "pageStart": 14,
+          "pageEnd": 15
+        },
+        {
+          "number": 43,
+          "pageStart": 14,
+          "pageEnd": 14
+        },
+        {
+          "number": 44,
+          "pageStart": 15,
+          "pageEnd": 15
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Suites numériques",
+      "semester": "Premier semestre",
+      "exercises": [
+        {
+          "number": 1,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 2,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 3,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 4,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 5,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 6,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 7,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 8,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 9,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 10,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 11,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 12,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 13,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 14,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 15,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 16,
+          "pageStart": 12,
+          "pageEnd": 13
+        },
+        {
+          "number": 17,
+          "pageStart": 12,
+          "pageEnd": 13
+        },
+        {
+          "number": 18,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 19,
+          "pageStart": 13,
+          "pageEnd": 13
+        },
+        {
+          "number": 23,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 25,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 27,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 28,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 29,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 30,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 31,
+          "pageStart": 12,
+          "pageEnd": 13
+        },
+        {
+          "number": 32,
+          "pageStart": 11,
+          "pageEnd": 12
+        },
+        {
+          "number": 33,
+          "pageStart": 12,
+          "pageEnd": 13
+        },
+        {
+          "number": 34,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 35,
+          "pageStart": 11,
+          "pageEnd": 13
+        },
+        {
+          "number": 36,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 37,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 38,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 39,
+          "pageStart": 13,
+          "pageEnd": 13
+        },
+        {
+          "number": 40,
+          "pageStart": 13,
+          "pageEnd": 13
+        },
+        {
+          "number": 47,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 48,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 49,
+          "pageStart": 12,
+          "pageEnd": 12
+        },
+        {
+          "number": 50,
+          "pageStart": 13,
+          "pageEnd": 13
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Fonction Logarithme",
+      "semester": "Premier semestre",
+      "exercises": [
+        {
+          "number": 1,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 2,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 3,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 4,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 5,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 6,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 7,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 8,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 9,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 10,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 11,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 12,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 13,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 16,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 18,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 20,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 21,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 22,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 23,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 24,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 25,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 26,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 27,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 29,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 30,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 31,
+          "pageStart": 9,
+          "pageEnd": 10
+        },
+        {
+          "number": 32,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 33,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 37,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 38,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 39,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 40,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 41,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 42,
+          "pageStart": 10,
+          "pageEnd": 10
+        },
+        {
+          "number": 43,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 44,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 45,
+          "pageStart": 11,
+          "pageEnd": 11
+        },
+        {
+          "number": 46,
+          "pageStart": 11,
+          "pageEnd": 11
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "title": "Fonction exponentielle",
+      "semester": "Premier semestre",
+      "exercises": [
+        {
+          "number": 4,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 5,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 6,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 8,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 9,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 10,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 11,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 12,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 13,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 14,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 15,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 16,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 17,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 18,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 19,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 20,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 21,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 22,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 23,
+          "pageStart": 5,
+          "pageEnd": 7
+        },
+        {
+          "number": 24,
+          "pageStart": 5,
+          "pageEnd": 7
+        },
+        {
+          "number": 25,
+          "pageStart": 6,
+          "pageEnd": 7
+        },
+        {
+          "number": 26,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 27,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 28,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 29,
+          "pageStart": 6,
+          "pageEnd": 7
+        },
+        {
+          "number": 30,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 31,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 32,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 33,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 41,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 42,
+          "pageStart": 6,
+          "pageEnd": 6
+        },
+        {
+          "number": 50,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 51,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 52,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 53,
+          "pageStart": 5,
+          "pageEnd": 6
+        },
+        {
+          "number": 54,
+          "pageStart": 6,
+          "pageEnd": 6
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "title": "Calcul intégral",
+      "semester": "Premier semestre",
+      "exercises": [
+        {
+          "number": 26,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 27,
+          "pageStart": 7,
+          "pageEnd": 7
+        }
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Arithmétique dans Z",
+      "semester": "Deuxième semestre",
+      "exercises": [
+        {
+          "number": 3,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 4,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 7,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 8,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 10,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 15,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 16,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 17,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 18,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 19,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 25,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 26,
+          "pageStart": 9,
+          "pageEnd": 9
+        },
+        {
+          "number": 27,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 28,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 29,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 30,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 31,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 32,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 33,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 34,
+          "pageStart": 8,
+          "pageEnd": 9
+        },
+        {
+          "number": 35,
+          "pageStart": 8,
+          "pageEnd": 9
+        },
+        {
+          "number": 36,
+          "pageStart": 8,
+          "pageEnd": 9
+        },
+        {
+          "number": 55,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 56,
+          "pageStart": 7,
+          "pageEnd": 7
+        },
+        {
+          "number": 57,
+          "pageStart": 8,
+          "pageEnd": 8
+        },
+        {
+          "number": 58,
+          "pageStart": 8,
+          "pageEnd": 8
+        }
+      ]
+    },
+    {
+      "number": 9,
+      "title": "Structure Algébrique – Espace vectoriel",
+      "semester": "Deuxième semestre",
+      "exercises": [
+        {
+          "number": 5,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 6,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 7,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 10,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 11,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 12,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 13,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 14,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 15,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 16,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 17,
+          "pageStart": 4,
+          "pageEnd": 5
+        },
+        {
+          "number": 18,
+          "pageStart": 4,
+          "pageEnd": 5
+        },
+        {
+          "number": 19,
+          "pageStart": 4,
+          "pageEnd": 5
+        },
+        {
+          "number": 20,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 21,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 22,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 24,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 25,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 26,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 27,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 28,
+          "pageStart": 5,
+          "pageEnd": 5
+        },
+        {
+          "number": 39,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 40,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 46,
+          "pageStart": 3,
+          "pageEnd": 3
+        },
+        {
+          "number": 47,
+          "pageStart": 3,
+          "pageEnd": 3
+        },
+        {
+          "number": 48,
+          "pageStart": 3,
+          "pageEnd": 3
+        },
+        {
+          "number": 49,
+          "pageStart": 4,
+          "pageEnd": 4
+        },
+        {
+          "number": 52,
+          "pageStart": 4,
+          "pageEnd": 4
+        }
+      ]
+    }
+  ]
+}
