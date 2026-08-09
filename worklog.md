@@ -177,3 +177,22 @@ Stage Summary:
 - The real bug was a wrong CSS selector (`data-radix-dialog-overlay` vs `data-slot="dialog-overlay"`)
 - All three lightbox usage contexts now work (student chapters, exercise detail, teacher progress)
 - Lint clean, no dev errors
+---
+Task ID: 5
+Agent: Main Agent
+Task: Nuclear fix - guard Dialog onOpenChange to ignore close when lightbox open
+
+Work Log:
+- Previous event-blocking approaches (stopPropagation, pointer-events:none) were insufficient in the user's browser
+- Applied the simplest possible fix: modified both Dialog onOpenChange handlers to check `!lightbox.isOpen` before calling onClose()
+- Since Dialog is fully controlled (open={true}), Radix cannot close it unless onOpenChange triggers onClose
+- Removed now-unnecessary onInteractOutside and onEscapeKeyDown props from both dialogs
+- Kept existing event blocking as defense-in-depth
+- Verified both student view and teacher view with screenshots:
+  - Teacher: zoom 100%→150%→125%→100%, dialog stays open through all
+  - Student: zoom 100%→175%, dialog stays open, VLM confirmed 175% zoom visible
+  - Close X button: closes lightbox, dialog stays open
+
+Stage Summary:
+- Two-line fix in onOpenChange handlers is the definitive solution
+- No event trickery can beat just ignoring the close request at the source

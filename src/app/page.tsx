@@ -350,11 +350,9 @@ function ExerciseDetailDialog({
 
   return (
     <>
-      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+      <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
         <DialogContent 
           className="max-w-4xl max-h-[90vh] overflow-y-auto"
-          onInteractOutside={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
-          onEscapeKeyDown={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
         >
           <DialogHeader>
             <DialogTitle className="text-lg">
@@ -1387,11 +1385,9 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
 
   return (
     <>
-      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+      <Dialog open onOpenChange={(open) => { if (!open && !lightbox.isOpen) onClose() }}>
         <DialogContent 
           className="max-w-3xl max-h-[90vh] overflow-y-auto"
-          onInteractOutside={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
-          onEscapeKeyDown={lightbox.isOpen ? (e) => e.preventDefault() : undefined}
         >
           <DialogHeader>
             <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
