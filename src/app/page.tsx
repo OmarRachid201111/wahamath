@@ -187,13 +187,15 @@ function ImageLightbox({
 function ExerciseDetailDialog({
   exercise,
   chapter,
+  exercises,
   onClose,
 }: {
   exercise: ExerciseData
   chapter: ChapterData
+  exercises: ExerciseData[]
   onClose: () => void
 }) {
-  const { user, chapterExercises, setSelectedExercise, setChapterExercises } = useAppStore()
+  const { user, setSelectedExercise } = useAppStore()
   const student = user as StudentUser
   const [status, setStatus] = useState(exercise.progress?.status || 'not_started')
   const [note, setNote] = useState(exercise.progress?.studentNote || '')
@@ -203,8 +205,8 @@ function ExerciseDetailDialog({
   const [sendingComment, setSendingComment] = useState(false)
   const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
 
-  const currentIndex = chapterExercises.findIndex(e => e.id === exercise.id)
-  const totalExercises = chapterExercises.length
+  const currentIndex = exercises.findIndex(e => e.id === exercise.id)
+  const totalExercises = exercises.length
 
   const [commentsLoaded, setCommentsLoaded] = useState(false)
 
@@ -243,10 +245,6 @@ function ExerciseDetailDialog({
         body: JSON.stringify({ studentId: student.id, status, studentNote: note }),
       })
       toast.success('Progression sauvegardée !')
-      const updatedExercises = chapterExercises.map(e =>
-        e.id === exercise.id ? { ...e, progress: { id: e.progress?.id || '', status, studentNote: note } } : e
-      )
-      setChapterExercises(updatedExercises)
     } catch {
       toast.error('Erreur lors de la sauvegarde.')
     }
@@ -273,7 +271,7 @@ function ExerciseDetailDialog({
   const goToExercise = (direction: 'prev' | 'next') => {
     const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1
     if (newIndex < 0 || newIndex >= totalExercises) return
-    setSelectedExercise(chapterExercises[newIndex])
+    setSelectedExercise(exercises[newIndex])
   }
 
   const imageUrl = exercise.pageStart ? exerciseImageUrl(chapter.number, exercise.number) : ''
@@ -301,6 +299,10 @@ function ExerciseDetailDialog({
               </Button>
             </div>
           )}
+
+          <div className="rounded-lg border bg-gray-50 p-4">
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">{exercise.content}</p>
+          </div>
 
           <div className="space-y-2">
             <Label className="text-sm font-medium">Statut</Label>
@@ -672,10 +674,13 @@ function StudentDashboard() {
 
 // ===== Student Chapters View =====
 function StudentChaptersView() {
-  const { user, selectedChapter, selectedExercise, setSelectedChapter, setSelectedExercise, chapterExercises, setChapterExercises } = useAppStore()
+  const { user, selectedExercise, setSelectedExercise } = useAppStore()
   const student = user as StudentUser
   const [chapters, setChapters] = useState<ChapterData[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null)
+  const [chapterExercises, setChapterExercises] = useState<Record<string, ExerciseData[]>>({})
+  const [loadingExercises, setLoadingExercises] = useState<string | null>(null)
   const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
 
   useEffect(() => {
@@ -693,20 +698,26 @@ function StudentChaptersView() {
     load()
   }, [student.id])
 
-  const handleChapterClick = async (chapter: ChapterData) => {
-    setSelectedChapter(chapter)
+  const toggleChapter = async (chapter: ChapterData) => {
+    if (expandedChapterId === chapter.id) {
+      setExpandedChapterId(null)
+      return
+    }
+    setExpandedChapterId(chapter.id)
+    if (chapterExercises[chapter.id]) return
+    setLoadingExercises(chapter.id)
     try {
       const res = await fetch(`/api/chapters/${chapter.id}/exercises?studentId=${student.id}`)
       if (res.ok) {
         const data = await res.json()
-        setChapterExercises(data.exercises || [])
+        setChapterExercises(prev => ({ ...prev, [chapter.id]: data.exercises || [] }))
       }
     } catch { /* ignore */ }
+    setLoadingExercises(null)
   }
 
-  const semester1 = chapters.filter(c => c.semester.toLowerCase().includes('premier'))
-  const semester2 = chapters.filter(c => c.semester.toLowerCase().includes('deuxi'))
-  const otherChapters = chapters.filter(c => !semester1.includes(c) && !semester2.includes(c))
+  const analyse = chapters.filter(c => c.semester === 'Analyse')
+  const algebre = chapters.filter(c => c.semester === 'Algèbre')
 
   if (loading) {
     return (
@@ -718,43 +729,59 @@ function StudentChaptersView() {
     )
   }
 
+  const selectedChapter = expandedChapterId ? chapters.find(c => c.id === expandedChapterId) || null : null
+  const exercises = selectedChapter ? (chapterExercises[selectedChapter.id] || []) : []
+
   return (
     <>
       <div className="space-y-4">
         <Accordion type="multiple" className="space-y-2">
-          {semester1.length > 0 && (
-            <AccordionItem value="s1" className="border rounded-lg px-4">
-              <AccordionTrigger className="font-semibold">Premier semestre</AccordionTrigger>
+          {analyse.length > 0 && (
+            <AccordionItem value="analyse" className="border rounded-lg px-4">
+              <AccordionTrigger className="font-semibold">I. Analyse</AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  {semester1.map(ch => (
-                    <ChapterRow key={ch.id} chapter={ch} onClick={() => handleChapterClick(ch)} />
+                <div className="space-y-1">
+                  {analyse.map(ch => (
+                    <ChapterRowInline
+                      key={ch.id}
+                      chapter={ch}
+                      isExpanded={expandedChapterId === ch.id}
+                      isLoading={loadingExercises === ch.id}
+                      exercises={chapterExercises[ch.id] || []}
+                      onToggle={() => toggleChapter(ch)}
+                      onExerciseClick={(ex) => setSelectedExercise(ex)}
+                      onImageClick={(ex) => {
+                        if (ex.pageStart) {
+                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+                        }
+                      }}
+                    />
                   ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
           )}
 
-          {semester2.length > 0 && (
-            <AccordionItem value="s2" className="border rounded-lg px-4">
-              <AccordionTrigger className="font-semibold">Deuxième semestre</AccordionTrigger>
+          {algebre.length > 0 && (
+            <AccordionItem value="algebre" className="border rounded-lg px-4">
+              <AccordionTrigger className="font-semibold">II. Algèbre</AccordionTrigger>
               <AccordionContent>
-                <div className="space-y-2">
-                  {semester2.map(ch => (
-                    <ChapterRow key={ch.id} chapter={ch} onClick={() => handleChapterClick(ch)} />
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-
-          {otherChapters.length > 0 && (
-            <AccordionItem value="other" className="border rounded-lg px-4">
-              <AccordionTrigger className="font-semibold">Autres chapitres</AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-2">
-                  {otherChapters.map(ch => (
-                    <ChapterRow key={ch.id} chapter={ch} onClick={() => handleChapterClick(ch)} />
+                <div className="space-y-1">
+                  {algebre.map(ch => (
+                    <ChapterRowInline
+                      key={ch.id}
+                      chapter={ch}
+                      isExpanded={expandedChapterId === ch.id}
+                      isLoading={loadingExercises === ch.id}
+                      exercises={chapterExercises[ch.id] || []}
+                      onToggle={() => toggleChapter(ch)}
+                      onExerciseClick={(ex) => setSelectedExercise(ex)}
+                      onImageClick={(ex) => {
+                        if (ex.pageStart) {
+                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+                        }
+                      }}
+                    />
                   ))}
                 </div>
               </AccordionContent>
@@ -770,49 +797,12 @@ function StudentChaptersView() {
         )}
       </div>
 
-      {selectedChapter && chapterExercises.length > 0 && (
-        <div className="mt-6 max-w-xl mx-auto">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold">Ch.{selectedChapter.number} : {selectedChapter.title}</h3>
-            <Button variant="ghost" size="sm" onClick={() => { setSelectedChapter(null); setChapterExercises([]) }}>
-              <X className="size-4" />
-            </Button>
-          </div>
-          <div className="max-h-[70vh] overflow-y-auto custom-scrollbar space-y-2 pr-1">
-            {chapterExercises.map(ex => (
-              <button
-                key={ex.id}
-                onClick={() => setSelectedExercise(ex)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg border text-left hover:bg-gray-50 transition-colors ${
-                  selectedExercise?.id === ex.id ? 'border-emerald-300 bg-emerald-50' : ''
-                }`}
-              >
-                <span className="font-medium text-sm min-w-[48px]">Ex. {ex.number}</span>
-                <StatusBadge status={ex.progress?.status || 'not_started'} />
-                {ex.pageStart && (
-                  <ImageIcon
-                    className="size-4 text-gray-400 ml-auto cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setLightbox({
-                        isOpen: true,
-                        imageUrl: exerciseImageUrl(selectedChapter.number, ex.number),
-                        label: `Ex.${ex.number}`,
-                      })
-                    }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {selectedExercise && selectedChapter && (
         <ExerciseDetailDialog
           key={selectedExercise.id}
           exercise={selectedExercise}
           chapter={selectedChapter}
+          exercises={exercises}
           onClose={() => setSelectedExercise(null)}
         />
       )}
@@ -828,20 +818,59 @@ function StudentChaptersView() {
   )
 }
 
-function ChapterRow({ chapter, onClick }: { chapter: ChapterData; onClick: () => void }) {
+function ChapterRowInline({ chapter, isExpanded, isLoading, exercises, onToggle, onExerciseClick, onImageClick }: {
+  chapter: ChapterData
+  isExpanded: boolean
+  isLoading: boolean
+  exercises: ExerciseData[]
+  onToggle: () => void
+  onExerciseClick: (ex: ExerciseData) => void
+  onImageClick: (ex: ExerciseData) => void
+}) {
   const allDone = chapter.completedCount === chapter.exerciseCount
   return (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center gap-3 p-3 rounded-lg border text-left hover:bg-gray-50 transition-colors"
-    >
-      <span className="font-medium text-sm">Ch.{chapter.number}:</span>
-      <span className="flex-1 text-sm truncate">{chapter.title}</span>
-      <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
-        {chapter.completedCount}/{chapter.exerciseCount} complétés
-      </Badge>
-      <Progress value={(chapter.completedCount / chapter.exerciseCount) * 100} className="w-20 h-2" />
-    </button>
+    <div className="rounded-lg border border-l-4 border-l-emerald-400 overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+      >
+        <ChevronRight className={`size-4 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+        <span className="font-medium text-sm">Ch.{chapter.number}:</span>
+        <span className="flex-1 text-sm truncate">{chapter.title}</span>
+        <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+          {chapter.completedCount}/{chapter.exerciseCount}
+        </Badge>
+        <Progress value={(chapter.completedCount / chapter.exerciseCount) * 100} className="w-16 h-2 hidden sm:block" />
+      </button>
+      {isExpanded && (
+        <div className="border-t px-3 pb-3 pt-2">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="size-5 animate-spin text-emerald-600" />
+            </div>
+          ) : (
+            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar space-y-1.5">
+              {exercises.map(ex => (
+                <button
+                  key={ex.id}
+                  onClick={() => onExerciseClick(ex)}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-gray-50 transition-colors"
+                >
+                  <span className="font-medium text-sm text-muted-foreground min-w-[40px]">Ex. {ex.number}</span>
+                  <StatusBadge status={ex.progress?.status || 'not_started'} />
+                  {ex.pageStart && (
+                    <ImageIcon
+                      className="size-4 text-gray-400 ml-auto cursor-pointer"
+                      onClick={(e) => { e.stopPropagation(); onImageClick(ex) }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
