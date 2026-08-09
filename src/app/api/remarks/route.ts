@@ -1,0 +1,38 @@
+import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET() {
+  try {
+    const comments = await db.studentComment.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        student: { select: { id: true, firstName: true, lastName: true, className: true, schoolName: true } },
+        exercise: { select: { id: true, number: true, chapter: { select: { id: true, number: true, title: true } } } },
+        remarks: { orderBy: { createdAt: 'asc' } },
+      },
+    })
+
+    return NextResponse.json({ comments })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { studentId, commentId, content } = body
+
+    if (!studentId || !commentId || !content) {
+      return NextResponse.json({ error: 'Tous les champs sont requis.' }, { status: 400 })
+    }
+
+    const remark = await db.teacherRemark.create({
+      data: { content, studentId, commentId },
+    })
+
+    return NextResponse.json({ remark }, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
+  }
+}

@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id        String   @id @default(cuid())
+  firstName String   @default("Br-Rachid")
+  lastName  String   @default("")
+  email     String   @unique
+  password  String
+  status    String   @default("Professeur de Mathématiques")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id              String                   @id @default(cuid())
+  firstName       String
+  lastName        String
+  email           String                   @unique
+  phone           String?
+  className       String
+  schoolName      String?
+  password        String
+  role            String                   @default("student")
+  status          String                   @default("pending")
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  progress        StudentExerciseProgress[]
+  sentComments    StudentComment[]
+  receivedRemarks TeacherRemark[]
+}
+
+model Chapter {
+  id        String    @id @default(cuid())
+  number    Int       @unique
+  title     String
+  semester  String
+  createdAt DateTime  @default(now())
+  exercises Exercise[]
+}
+
+model Exercise {
+  id        String                    @id @default(cuid())
+  number    Int
+  content   String
+  chapterId String
+  pageStart Int?
+  pageEnd   Int?
+  chapter   Chapter                   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  createdAt DateTime                  @default(now())
+  progress  StudentExerciseProgress[]
+  comments  StudentComment[]
+  @@unique([chapterId, number])
+}
+
+model StudentExerciseProgress {
+  id          String   @id @default(cuid())
+  studentId   String
+  exerciseId  String
+  status      String   @default("not_started")
+  studentNote String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  exercise    Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  @@unique([studentId, exerciseId])
+}
+
+model StudentComment {
+  id         String           @id @default(cuid())
+  content    String
+  studentId  String
+  exerciseId String?
+  createdAt  DateTime         @default(now())
+  student    Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  exercise   Exercise?        @relation(fields: [exerciseId], references: [id], onDelete: SetNull)
+  remarks    TeacherRemark[]
+}
+
+model TeacherRemark {
+  id         String         @id @default(cuid())
+  content    String
+  studentId  String
+  commentId  String
+  createdAt  DateTime       @default(now())
+  student    Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  comment    StudentComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}

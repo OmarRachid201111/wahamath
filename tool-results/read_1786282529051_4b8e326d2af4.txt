@@ -1,0 +1,814 @@
+   808→      )}
+   809→
+   810→      <ImageLightbox
+   811→        key={lightbox.imageUrl}
+   812→        isOpen={lightbox.isOpen}
+   813→        imageUrl={lightbox.imageUrl}
+   814→        label={lightbox.label}
+   815→        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+   816→      />
+   817→    </>
+   818→  )
+   819→}
+   820→
+   821→function ChapterRow({ chapter, onClick }: { chapter: ChapterData; onClick: () => void }) {
+   822→  const allDone = chapter.completedCount === chapter.exerciseCount
+   823→  return (
+   824→    <button
+   825→      onClick={onClick}
+   826→      className="w-full flex items-center gap-3 p-3 rounded-lg border text-left hover:bg-gray-50 transition-colors"
+   827→    >
+   828→      <span className="font-medium text-sm">Ch.{chapter.number}:</span>
+   829→      <span className="flex-1 text-sm truncate">{chapter.title}</span>
+   830→      <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+   831→        {chapter.completedCount}/{chapter.exerciseCount} complétés
+   832→      </Badge>
+   833→      <Progress value={(chapter.completedCount / chapter.exerciseCount) * 100} className="w-20 h-2" />
+   834→    </button>
+   835→  )
+   836→}
+   837→
+   838→// ===== Student Comments View =====
+   839→function StudentCommentsView() {
+   840→  const { user } = useAppStore()
+   841→  const student = user as StudentUser
+   842→  const [comments, setComments] = useState<CommentData[]>([])
+   843→  const [loading, setLoading] = useState(true)
+   844→
+   845→  useEffect(() => {
+   846→    const fetchComments = async () => {
+   847→      setLoading(true)
+   848→      try {
+   849→        const res = await fetch('/api/comments')
+   850→        if (res.ok) {
+   851→          const data = await res.json()
+   852→          setComments(data.filter((c: CommentData) => c.student.id === student.id))
+   853→        }
+   854→      } catch { /* ignore */ }
+   855→      setLoading(false)
+   856→    }
+   857→    fetchComments()
+   858→  }, [student.id])
+   859→
+   860→  if (loading) {
+   861→    return <div className="space-y-3"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></div>
+   862→  }
+   863→
+   864→  if (comments.length === 0) {
+   865→    return (
+   866→      <div className="text-center text-muted-foreground py-8">
+   867→        <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+   868→        <p>Aucun commentaire.</p>
+   869→      </div>
+   870→    )
+   871→  }
+   872→
+   873→  return (
+   874→    <div className="space-y-4 max-w-xl">
+   875→      {comments.map((comment) => (
+   876→        <Card key={comment.id} className="p-4">
+   877→          <p className="text-sm mb-2">{comment.content}</p>
+   878→          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+   879→            <span>{new Date(comment.createdAt).toLocaleDateString('fr-FR')}</span>
+   880→            {comment.exercise && (
+   881→              <span>• Ch.{comment.exercise.chapter.number} — Ex.{comment.exercise.number}</span>
+   882→            )}
+   883→          </div>
+   884→          {comment.remarks.length > 0 && comment.remarks.map((remark) => (
+   885→            <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+   886→              <p className="text-sm text-emerald-800">{remark.content}</p>
+   887→            </div>
+   888→          ))}
+   889→        </Card>
+   890→      ))}
+   891→    </div>
+   892→  )
+   893→}
+   894→
+   895→// ===== Student Profile View =====
+   896→function StudentProfileView() {
+   897→  const { user, logout } = useAppStore()
+   898→  const student = user as StudentUser
+   899→  const [confirmUnsubscribe, setConfirmUnsubscribe] = useState(false)
+   900→  const [deleting, setDeleting] = useState(false)
+   901→
+   902→  const handleUnsubscribe = async () => {
+   903→    if (!confirmUnsubscribe) {
+   904→      setConfirmUnsubscribe(true)
+   905→      return
+   906→    }
+   907→    setDeleting(true)
+   908→    try {
+   909→      const res = await fetch(`/api/student/unsubscribe?id=${student.id}`, { method: 'DELETE' })
+   910→      if (res.ok) {
+   911→        toast.success('Compte supprimé.')
+   912→        logout()
+   913→      } else {
+   914→        toast.error('Erreur lors de la suppression.')
+   915→      }
+   916→    } catch {
+   917→      toast.error('Erreur lors de la suppression.')
+   918→    }
+   919→    setDeleting(false)
+   920→  }
+   921→
+   922→  return (
+   923→    <div className="max-w-md mx-auto">
+   924→      <Card>
+   925→        <CardHeader className="flex flex-col items-center text-center">
+   926→          <Avatar className="size-16">
+   927→            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+   928→              {student.firstName[0]}{student.lastName[0]}
+   929→            </AvatarFallback>
+   930→          </Avatar>
+   931→          <CardTitle>{student.firstName} {student.lastName}</CardTitle>
+   932→        </CardHeader>
+   933→        <CardContent className="space-y-3">
+   934→          <div className="flex items-center gap-2 text-sm">
+   935→            <Mail className="size-4 text-muted-foreground" />
+   936→            <span>{student.email}</span>
+   937→          </div>
+   938→          <div className="flex items-center gap-2 text-sm">
+   939→            <School className="size-4 text-muted-foreground" />
+   940→            <span>{student.className}</span>
+   941→          </div>
+   942→          {student.schoolName && (
+   943→            <div className="flex items-center gap-2 text-sm">
+   944→              <School className="size-4 text-muted-foreground" />
+   945→              <span>{student.schoolName}</span>
+   946→            </div>
+   947→          )}
+   948→          {student.phone && (
+   949→            <div className="flex items-center gap-2 text-sm">
+   950→              <Phone className="size-4 text-muted-foreground" />
+   951→              <span>{student.phone}</span>
+   952→            </div>
+   953→          )}
+   954→        </CardContent>
+   955→        <CardFooter className="flex-col gap-2">
+   956→          <Button
+   957→            variant="destructive"
+   958→            onClick={handleUnsubscribe}
+   959→            disabled={deleting}
+   960→            className="w-full"
+   961→          >
+   962→            {deleting && <Loader2 className="size-4 mr-2 animate-spin" />}
+   963→            {confirmUnsubscribe ? 'Confirmer la suppression ?' : 'Se désabonner'}
+   964→          </Button>
+   965→          {confirmUnsubscribe && (
+   966→            <p className="text-sm text-red-600 text-center">Cette action est irréversible. Toutes vos données seront supprimées.</p>
+   967→          )}
+   968→          <Button variant="outline" onClick={logout} className="w-full">
+   969→            <LogOut className="size-4 mr-2" /> Se déconnecter
+   970→          </Button>
+   971→        </CardFooter>
+   972→      </Card>
+   973→    </div>
+   974→  )
+   975→}
+   976→
+   977→// ===== Teacher Dashboard =====
+   978→function TeacherDashboard() {
+   979→  const { user, logout } = useAppStore()
+   980→  const teacher = user as TeacherUser
+   981→
+   982→  return (
+   983→    <div className="flex flex-col flex-1">
+   984→      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
+   985→        <div className="flex items-center gap-2">
+   986→          <GraduationCap className="size-5 text-emerald-600" />
+   987→          <span className="font-medium">{teacher.firstName}</span>
+   988→        </div>
+   989→        <Button variant="ghost" size="sm" onClick={logout}>
+   990→          <LogOut className="size-4 mr-1" /> Déconnexion
+   991→        </Button>
+   992→      </div>
+   993→      <div className="flex-1 p-4 overflow-y-auto">
+   994→        <Tabs defaultValue="pending" className="w-full">
+   995→          <TabsList className="w-full sm:w-auto">
+   996→            <TabsTrigger value="pending">En attente</TabsTrigger>
+   997→            <TabsTrigger value="students">Élèves</TabsTrigger>
+   998→            <TabsTrigger value="comments">Commentaires</TabsTrigger>
+   999→            <TabsTrigger value="profile">Mon profil</TabsTrigger>
+  1000→          </TabsList>
+  1001→          <TabsContent value="pending"><TeacherPendingView /></TabsContent>
+  1002→          <TabsContent value="students"><TeacherStudentsView /></TabsContent>
+  1003→          <TabsContent value="comments"><TeacherCommentsView /></TabsContent>
+  1004→          <TabsContent value="profile"><TeacherProfileView /></TabsContent>
+  1005→        </Tabs>
+  1006→      </div>
+  1007→    </div>
+  1008→  )
+  1009→}
+  1010→
+  1011→// ===== Teacher Pending View =====
+  1012→function TeacherPendingView() {
+  1013→  const [students, setStudents] = useState<StudentUser[]>([])
+  1014→  const [loading, setLoading] = useState(true)
+  1015→  const [actioning, setActioning] = useState<string | null>(null)
+  1016→
+  1017→  useEffect(() => {
+  1018→    let cancelled = false
+  1019→    const load = async () => {
+  1020→      try {
+  1021→        const res = await fetch('/api/teacher/students')
+  1022→        if (res.ok && !cancelled) {
+  1023→          const data = await res.json()
+  1024→          setStudents(data.filter((s: StudentUser) => s.status === 'pending'))
+  1025→        }
+  1026→      } catch { /* ignore */ }
+  1027→      if (!cancelled) setLoading(false)
+  1028→    }
+  1029→    load()
+  1030→  }, [])
+  1031→
+  1032→  const handleAction = async (studentId: string, action: 'approved' | 'rejected') => {
+  1033→    setActioning(studentId)
+  1034→    try {
+  1035→      const res = await fetch('/api/teacher/approve', {
+  1036→        method: 'POST',
+  1037→        headers: { 'Content-Type': 'application/json' },
+  1038→        body: JSON.stringify({ studentId, action }),
+  1039→      })
+  1040→      if (res.ok) {
+  1041→        toast.success(action === 'approved' ? 'Élève approuvé.' : 'Inscription refusée.')
+  1042→        fetchPending()
+  1043→      }
+  1044→    } catch {
+  1045→      toast.error('Erreur.')
+  1046→    }
+  1047→    setActioning(null)
+  1048→  }
+  1049→
+  1050→  if (loading) {
+  1051→    return (
+  1052→      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  1053→        <Skeleton className="h-48 w-full" />
+  1054→        <Skeleton className="h-48 w-full" />
+  1055→        <Skeleton className="h-48 w-full" />
+  1056→      </div>
+  1057→    )
+  1058→  }
+  1059→
+  1060→  if (students.length === 0) {
+  1061→    return (
+  1062→      <div className="text-center text-muted-foreground py-12">
+  1063→        <CheckCircle className="size-12 mx-auto mb-3 text-emerald-400" />
+  1064→        <p>Aucune inscription en attente.</p>
+  1065→      </div>
+  1066→    )
+  1067→  }
+  1068→
+  1069→  return (
+  1070→    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  1071→      {students.map(s => (
+  1072→        <Card key={s.id} className="p-4">
+  1073→          <div className="flex items-center gap-3 mb-3">
+  1074→            <Avatar className="size-10">
+  1075→              <AvatarFallback className="bg-amber-100 text-amber-700">
+  1076→                {s.firstName[0]}{s.lastName[0]}
+  1077→              </AvatarFallback>
+  1078→            </Avatar>
+  1079→            <div>
+  1080→              <p className="font-medium text-sm">{s.firstName} {s.lastName}</p>
+  1081→              <p className="text-xs text-muted-foreground">{s.className}</p>
+  1082→            </div>
+  1083→          </div>
+  1084→          <div className="space-y-1 text-xs text-muted-foreground mb-3">
+  1085→            {s.schoolName && <p>📍 {s.schoolName}</p>}
+  1086→            <p>📧 {s.email}</p>
+  1087→            {s.phone && <p>📱 {s.phone}</p>}
+  1088→            <p>📅 {new Date(s.createdAt).toLocaleDateString('fr-FR')}</p>
+  1089→          </div>
+  1090→          <div className="flex gap-2">
+  1091→            <Button
+  1092→              size="sm"
+  1093→              className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+  1094→              disabled={actioning === s.id}
+  1095→              onClick={() => handleAction(s.id, 'approved')}
+  1096→            >
+  1097→              {actioning === s.id ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4 mr-1" />}
+  1098→              Approuver
+  1099→            </Button>
+  1100→            <Button
+  1101→              size="sm"
+  1102→              variant="outline"
+  1103→              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+  1104→              disabled={actioning === s.id}
+  1105→              onClick={() => handleAction(s.id, 'rejected')}
+  1106→            >
+  1107→              <XCircle className="size-4 mr-1" />
+  1108→              Refuser
+  1109→            </Button>
+  1110→          </div>
+  1111→        </Card>
+  1112→      ))}
+  1113→    </div>
+  1114→  )
+  1115→}
+  1116→
+  1117→// ===== Teacher Students View =====
+  1118→function TeacherStudentsView() {
+  1119→  const { setSelectedStudent } = useAppStore()
+  1120→  const [students, setStudents] = useState<StudentUser[]>([])
+  1121→  const [loading, setLoading] = useState(true)
+  1122→  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  1123→  const [progressData, setProgressData] = useState<Record<string, { total: number; completed: number }>>({})
+  1124→  const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
+  1125→
+  1126→  useEffect(() => {
+  1127→    let cancelled = false
+  1128→    const load = async () => {
+  1129→      try {
+  1130→        const res = await fetch('/api/teacher/students')
+  1131→        if (res.ok && !cancelled) {
+  1132→          const data = await res.json()
+  1133→          setStudents(data.filter((s: StudentUser) => s.status === 'approved'))
+  1134→        }
+  1135→      } catch { /* ignore */ }
+  1136→      if (!cancelled) setLoading(false)
+  1137→    }
+  1138→    load()
+  1139→  }, [])
+  1140→
+  1141→  const handleDelete = async (studentId: string) => {
+  1142→    if (confirmDeleteId !== studentId) {
+  1143→      setConfirmDeleteId(studentId)
+  1144→      return
+  1145→    }
+  1146→    try {
+  1147→      const res = await fetch(`/api/teacher/students/${studentId}`, { method: 'DELETE' })
+  1148→      if (res.ok) {
+  1149→        toast.success('Élève supprimé.')
+  1150→        setConfirmDeleteId(null)
+  1151→        fetchStudents()
+  1152→      }
+  1153→    } catch {
+  1154→      toast.error('Erreur lors de la suppression.')
+  1155→    }
+  1156→  }
+  1157→
+  1158→  if (loading) {
+  1159→    return <div className="space-y-3"><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div>
+  1160→  }
+  1161→
+  1162→  return (
+  1163→    <>
+  1164→      {students.length === 0 ? (
+  1165→        <div className="text-center text-muted-foreground py-8">
+  1166→          <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+  1167→          <p>Aucun élève inscrit.</p>
+  1168→        </div>
+  1169→      ) : (
+  1170→        <Table>
+  1171→          <TableHeader>
+  1172→            <TableRow>
+  1173→              <TableHead>Nom</TableHead>
+  1174→              <TableHead className="hidden sm:table-cell">Email</TableHead>
+  1175→              <TableHead>Classe</TableHead>
+  1176→              <TableHead className="hidden md:table-cell">Établissement</TableHead>
+  1177→              <TableHead>Progression</TableHead>
+  1178→              <TableHead>Actions</TableHead>
+  1179→            </TableRow>
+  1180→          </TableHeader>
+  1181→          <TableBody>
+  1182→            {students.map(s => (
+  1183→              <TableRow
+  1184→                key={s.id}
+  1185→                className="cursor-pointer"
+  1186→                onClick={() => { setSelectedStudent(s); setProgressDialog(s) }}
+  1187→              >
+  1188→                <TableCell className="font-medium">{s.firstName} {s.lastName}</TableCell>
+  1189→                <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
+  1190→                <TableCell>{s.className}</TableCell>
+  1191→                <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
+  1192→                <TableCell>{progressData[s.id] ? `${progressData[s.id].completed}/${progressData[s.id].total}` : '—'}</TableCell>
+  1193→                <TableCell>
+  1194→                  <Button
+  1195→                    variant={confirmDeleteId === s.id ? 'destructive' : 'ghost'}
+  1196→                    size="icon"
+  1197→                    className="size-8"
+  1198→                    onClick={(e) => { e.stopPropagation(); handleDelete(s.id) }}
+  1199→                  >
+  1200→                    {confirmDeleteId === s.id ? (
+  1201→                      <span className="text-xs font-medium">Confirmer ?</span>
+  1202→                    ) : (
+  1203→                      <Trash2 className="size-4" />
+  1204→                    )}
+  1205→                  </Button>
+  1206→                </TableCell>
+  1207→              </TableRow>
+  1208→            ))}
+  1209→          </TableBody>
+  1210→        </Table>
+  1211→      )}
+  1212→
+  1213→      {progressDialog && (
+  1214→        <ProgressDialog student={progressDialog} onClose={() => { setProgressDialog(null); setSelectedStudent(null) }} />
+  1215→      )}
+  1216→    </>
+  1217→  )
+  1218→}
+  1219→
+  1220→// ===== Progress Dialog =====
+  1221→function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: () => void }) {
+  1222→  const [progress, setProgress] = useState<{ chapter: ChapterData; exercises: ExerciseData[] }[]>([])
+  1223→  const [loading, setLoading] = useState(true)
+  1224→  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
+  1225→
+  1226→  useEffect(() => {
+  1227→    const fetchProgress = async () => {
+  1228→      setLoading(true)
+  1229→      try {
+  1230→        const res = await fetch(`/api/teacher/students/${student.id}/progress`)
+  1231→        if (res.ok) {
+  1232→          const data = await res.json()
+  1233→          setProgress(data)
+  1234→        }
+  1235→      } catch { /* ignore */ }
+  1236→      setLoading(false)
+  1237→    }
+  1238→    fetchProgress()
+  1239→  }, [student.id])
+  1240→
+  1241→  const allExercises = progress.flatMap(p => p.exercises)
+  1242→  const totalExercises = allExercises.length
+  1243→  const completedCount = allExercises.filter(e => e.progress?.status === 'completed').length
+  1244→  const inProgressCount = allExercises.filter(e => e.progress?.status === 'in_progress').length
+  1245→  const difficultyCount = allExercises.filter(e => e.progress?.status === 'difficulty').length
+  1246→
+  1247→  return (
+  1248→    <>
+  1249→      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+  1250→        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+  1251→          <DialogHeader>
+  1252→            <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
+  1253→            <DialogDescription>Classe : {student.className}</DialogDescription>
+  1254→          </DialogHeader>
+  1255→
+  1256→          {loading ? (
+  1257→            <div className="grid grid-cols-2 gap-3">
+  1258→              <Skeleton className="h-20 w-full" />
+  1259→              <Skeleton className="h-20 w-full" />
+  1260→              <Skeleton className="h-20 w-full" />
+  1261→              <Skeleton className="h-20 w-full" />
+  1262→            </div>
+  1263→          ) : (
+  1264→            <>
+  1265→              <div className="grid grid-cols-2 gap-3">
+  1266→                <div className="rounded-lg border p-3 bg-gray-50">
+  1267→                  <p className="text-xs text-muted-foreground">Total</p>
+  1268→                  <p className="text-2xl font-bold text-gray-700">{totalExercises}</p>
+  1269→                </div>
+  1270→                <div className="rounded-lg border p-3 bg-emerald-50">
+  1271→                  <p className="text-xs text-muted-foreground">Terminés</p>
+  1272→                  <p className="text-2xl font-bold text-emerald-700">{completedCount}</p>
+  1273→                </div>
+  1274→                <div className="rounded-lg border p-3 bg-amber-50">
+  1275→                  <p className="text-xs text-muted-foreground">En cours</p>
+  1276→                  <p className="text-2xl font-bold text-amber-700">{inProgressCount}</p>
+  1277→                </div>
+  1278→                <div className="rounded-lg border p-3 bg-red-50">
+  1279→                  <p className="text-xs text-muted-foreground">Difficulté</p>
+  1280→                  <p className="text-2xl font-bold text-red-700">{difficultyCount}</p>
+  1281→                </div>
+  1282→              </div>
+  1283→
+  1284→              <Accordion type="multiple" className="mt-4 space-y-2">
+  1285→                {progress.map(({ chapter, exercises }) => {
+  1286→                  const chapterCompleted = exercises.filter(e => e.progress?.status === 'completed').length
+  1287→                  return (
+  1288→                    <AccordionItem key={chapter.id} value={chapter.id} className="border rounded-lg px-4">
+  1289→                      <AccordionTrigger className="text-sm">
+  1290→                        <div className="flex items-center gap-3 flex-1 pr-4">
+  1291→                          <span>Ch.{chapter.number}: {chapter.title}</span>
+  1292→                          <Badge variant="secondary" className={chapterCompleted === chapter.exerciseCount ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+  1293→                            {chapterCompleted}/{chapter.exerciseCount} complétés
+  1294→                          </Badge>
+  1295→                          <Progress value={(chapterCompleted / chapter.exerciseCount) * 100} className="w-16 h-2" />
+  1296→                        </div>
+  1297→                      </AccordionTrigger>
+  1298→                      <AccordionContent>
+  1299→                        <div className="space-y-1">
+  1300→                          {exercises.map(ex => (
+  1301→                            <div key={ex.id} className="flex items-center gap-3 py-1">
+  1302→                              <span className="text-sm min-w-[40px]">Ex.{ex.number}</span>
+  1303→                              <StatusBadge status={ex.progress?.status || 'not_started'} />
+  1304→                              {ex.pageStart && (
+  1305→                                <ImageIcon
+  1306→                                  className="size-4 text-gray-400 cursor-pointer"
+  1307→                                  onClick={() => setLightbox({
+  1308→                                    isOpen: true,
+  1309→                                    imageUrl: exerciseImageUrl(chapter.number, ex.number),
+  1310→                                    label: `Ex.${ex.number}`,
+  1311→                                  })}
+  1312→                                />
+  1313→                              )}
+  1314→                            </div>
+  1315→                          ))}
+  1316→                        </div>
+  1317→                      </AccordionContent>
+  1318→                    </AccordionItem>
+  1319→                  )
+  1320→                })}
+  1321→              </Accordion>
+  1322→            </>
+  1323→          )}
+  1324→        </DialogContent>
+  1325→      </Dialog>
+  1326→
+  1327→      <ImageLightbox
+  1328→        key={lightbox.imageUrl}
+  1329→        isOpen={lightbox.isOpen}
+  1330→        imageUrl={lightbox.imageUrl}
+  1331→        label={lightbox.label}
+  1332→        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+  1333→      />
+  1334→    </>
+  1335→  )
+  1336→}
+  1337→
+  1338→// ===== Teacher Comments View =====
+  1339→function TeacherCommentsView() {
+  1340→  const [comments, setComments] = useState<CommentData[]>([])
+  1341→  const [loading, setLoading] = useState(true)
+  1342→  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  1343→  const [replyContent, setReplyContent] = useState('')
+  1344→  const [sending, setSending] = useState(false)
+  1345→
+  1346→  useEffect(() => {
+  1347→    let cancelled = false
+  1348→    const load = async () => {
+  1349→      try {
+  1350→        const res = await fetch('/api/remarks')
+  1351→        if (res.ok && !cancelled) {
+  1352→          const data = await res.json()
+  1353→          setComments(data)
+  1354→        }
+  1355→      } catch { /* ignore */ }
+  1356→      if (!cancelled) setLoading(false)
+  1357→    }
+  1358→    load()
+  1359→  }, [])
+  1360→
+  1361→  const handleReply = async (commentId: string, studentId: string) => {
+  1362→    if (!replyContent.trim()) return
+  1363→    setSending(true)
+  1364→    try {
+  1365→      await fetch('/api/remarks', {
+  1366→        method: 'POST',
+  1367→        headers: { 'Content-Type': 'application/json' },
+  1368→        body: JSON.stringify({ studentId, commentId, content: replyContent }),
+  1369→      })
+  1370→      toast.success('Réponse envoyée.')
+  1371→      setReplyContent('')
+  1372→      setReplyingTo(null)
+  1373→      fetchComments()
+  1374→    } catch {
+  1375→      toast.error("Erreur lors de l'envoi.")
+  1376→    }
+  1377→    setSending(false)
+  1378→  }
+  1379→
+  1380→  if (loading) {
+  1381→    return <div className="space-y-3"><Skeleton className="h-24 w-full" /><Skeleton className="h-24 w-full" /></div>
+  1382→  }
+  1383→
+  1384→  if (comments.length === 0) {
+  1385→    return (
+  1386→      <div className="text-center text-muted-foreground py-8">
+  1387→        <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+  1388→        <p>Aucun commentaire.</p>
+  1389→      </div>
+  1390→    )
+  1391→  }
+  1392→
+  1393→  return (
+  1394→    <div className="space-y-4 max-w-2xl">
+  1395→      {comments.map((comment) => (
+  1396→        <Card key={comment.id} className="p-4">
+  1397→          <p className="text-sm mb-2">{comment.content}</p>
+  1398→          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
+  1399→            <span className="font-medium text-foreground">{comment.student.firstName} {comment.student.lastName}</span>
+  1400→            <span>• {comment.student.className}</span>
+  1401→            {comment.exercise && (
+  1402→              <span>• Ch.{comment.exercise.chapter.number} — Ex.{comment.exercise.number}</span>
+  1403→            )}
+  1404→            <span>• {new Date(comment.createdAt).toLocaleDateString('fr-FR')}</span>
+  1405→          </div>
+  1406→
+  1407→          {comment.remarks.length > 0 && (
+  1408→            <div className="space-y-2 mb-3">
+  1409→              {comment.remarks.map((remark) => (
+  1410→                <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+  1411→                  <p className="text-sm text-emerald-800">{remark.content}</p>
+  1412→                  <span className="text-xs text-emerald-600 mt-1 block">
+  1413→                    {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
+  1414→                  </span>
+  1415→                </div>
+  1416→              ))}
+  1417→            </div>
+  1418→          )}
+  1419→
+  1420→          {replyingTo === comment.id ? (
+  1421→            <div className="flex gap-2 mt-2">
+  1422→              <Textarea
+  1423→                value={replyContent}
+  1424→                onChange={(e) => setReplyContent(e.target.value)}
+  1425→                placeholder="Votre réponse..."
+  1426→                rows={2}
+  1427→              />
+  1428→              <div className="flex flex-col gap-1">
+  1429→                <Button size="sm" onClick={() => handleReply(comment.id, comment.student.id)} disabled={sending || !replyContent.trim()} className="bg-emerald-600 hover:bg-emerald-700">
+  1430→                  {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+  1431→                </Button>
+  1432→                <Button size="sm" variant="outline" onClick={() => { setReplyingTo(null); setReplyContent('') }}>
+  1433→                  <X className="size-4" />
+  1434→                </Button>
+  1435→              </div>
+  1436→            </div>
+  1437→          ) : (
+  1438→            <Button variant="outline" size="sm" className="mt-2" onClick={() => setReplyingTo(comment.id)}>
+  1439→              Répondre
+  1440→            </Button>
+  1441→          )}
+  1442→        </Card>
+  1443→      ))}
+  1444→    </div>
+  1445→  )
+  1446→}
+  1447→
+  1448→// ===== Teacher Profile View =====
+  1449→function TeacherProfileView() {
+  1450→  const { user, logout } = useAppStore()
+  1451→  const teacher = user as TeacherUser
+  1452→  const [profile, setProfile] = useState<TeacherUser | null>(null)
+  1453→  const [currentPassword, setCurrentPassword] = useState('')
+  1454→  const [newPassword, setNewPassword] = useState('')
+  1455→  const [confirmPassword, setConfirmPassword] = useState('')
+  1456→  const [saving, setSaving] = useState(false)
+  1457→  const [error, setError] = useState('')
+  1458→
+  1459→  useEffect(() => {
+  1460→    const fetchProfile = async () => {
+  1461→      try {
+  1462→        const res = await fetch('/api/teacher/profile')
+  1463→        if (res.ok) {
+  1464→          const data = await res.json()
+  1465→          setProfile(data)
+  1466→        }
+  1467→      } catch { /* ignore */ }
+  1468→    }
+  1469→    fetchProfile()
+  1470→  }, [])
+  1471→
+  1472→  const displayTeacher = profile || teacher
+  1473→
+  1474→  const handleChangePassword = async () => {
+  1475→    setError('')
+  1476→    if (!currentPassword || !newPassword || !confirmPassword) {
+  1477→      setError('Tous les champs sont requis.')
+  1478→      return
+  1479→    }
+  1480→    if (newPassword.length < 4) {
+  1481→      setError('Le nouveau mot de passe doit contenir au moins 4 caractères.')
+  1482→      return
+  1483→    }
+  1484→    if (newPassword !== confirmPassword) {
+  1485→      setError('Les mots de passe ne correspondent pas.')
+  1486→      return
+  1487→    }
+  1488→    setSaving(true)
+  1489→    try {
+  1490→      const res = await fetch('/api/teacher/profile', {
+  1491→        method: 'PUT',
+  1492→        headers: { 'Content-Type': 'application/json' },
+  1493→        body: JSON.stringify({ currentPassword, newPassword }),
+  1494→      })
+  1495→      if (res.ok) {
+  1496→        toast.success('Mot de passe modifié.')
+  1497→        setCurrentPassword('')
+  1498→        setNewPassword('')
+  1499→        setConfirmPassword('')
+  1500→      } else {
+  1501→        setError('Mot de passe actuel incorrect.')
+  1502→      }
+  1503→    } catch {
+  1504→      setError('Erreur lors de la modification.')
+  1505→    }
+  1506→    setSaving(false)
+  1507→  }
+  1508→
+  1509→  return (
+  1510→    <div className="max-w-md mx-auto space-y-6">
+  1511→      <Card>
+  1512→        <CardHeader className="flex flex-col items-center text-center">
+  1513→          <Avatar className="size-16">
+  1514→            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+  1515→              <GraduationCap className="size-8" />
+  1516→            </AvatarFallback>
+  1517→          </Avatar>
+  1518→          <CardTitle>{displayTeacher.firstName} {displayTeacher.lastName}</CardTitle>
+  1519→          <CardDescription>{displayTeacher.status}</CardDescription>
+  1520→        </CardHeader>
+  1521→        <CardContent>
+  1522→          <div className="flex items-center gap-2 text-sm justify-center">
+  1523→            <Mail className="size-4 text-muted-foreground" />
+  1524→            <span>{displayTeacher.email}</span>
+  1525→          </div>
+  1526→        </CardContent>
+  1527→      </Card>
+  1528→
+  1529→      <Card>
+  1530→        <CardHeader>
+  1531→          <CardTitle className="text-base">Modifier le mot de passe</CardTitle>
+  1532→        </CardHeader>
+  1533→        <CardContent className="space-y-3">
+  1534→          {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
+  1535→          <div className="space-y-1.5">
+  1536→            <Label htmlFor="current-pw">Mot de passe actuel</Label>
+  1537→            <Input id="current-pw" type="password" autoComplete="new-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+  1538→          </div>
+  1539→          <div className="space-y-1.5">
+  1540→            <Label htmlFor="new-pw">Nouveau mot de passe</Label>
+  1541→            <Input id="new-pw" type="password" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+  1542→          </div>
+  1543→          <div className="space-y-1.5">
+  1544→            <Label htmlFor="confirm-pw">Confirmer le mot de passe</Label>
+  1545→            <Input id="confirm-pw" type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+  1546→          </div>
+  1547→          <Button onClick={handleChangePassword} disabled={saving} className="w-full bg-emerald-600 hover:bg-emerald-700">
+  1548→            {saving && <Loader2 className="size-4 mr-2 animate-spin" />}
+  1549→            Modifier le mot de passe
+  1550→          </Button>
+  1551→        </CardContent>
+  1552→      </Card>
+  1553→
+  1554→      <Button variant="outline" onClick={logout} className="w-full">
+  1555→        <LogOut className="size-4 mr-2" /> Se déconnecter
+  1556→      </Button>
+  1557→    </div>
+  1558→  )
+  1559→}
+  1560→
+  1561→// ===== App Header =====
+  1562→function AppHeader() {
+  1563→  return (
+  1564→    <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-lg">
+  1565→      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+  1566→        <div className="flex items-center gap-3">
+  1567→          <img src="/author-photo.jpg" alt="Br-Rachid" className="size-12 rounded-full border-2 border-white/40 object-cover" />
+  1568→          <div>
+  1569→            <p className="font-semibold text-sm">Br-Rachid</p>
+  1570→            <p className="text-xs text-emerald-100">Professeur de Mathématiques</p>
+  1571→          </div>
+  1572→        </div>
+  1573→        <div className="flex items-center gap-3">
+  1574→          <div className="text-right">
+  1575→            <p className="font-bold text-sm">Plateforme wahamath</p>
+  1576→            <p className="text-xs text-emerald-100">Cahier d&apos;exercices et de suivi — Niveau 2SM</p>
+  1577→          </div>
+  1578→          <img src="/wahamath-logo.png" alt="wahamath" className="w-[120px] hidden sm:block" />
+  1579→        </div>
+  1580→      </div>
+  1581→    </header>
+  1582→  )
+  1583→}
+  1584→
+  1585→// ===== App Footer =====
+  1586→function AppFooter() {
+  1587→  return (
+  1588→    <footer className="mt-auto border-t bg-gray-50 px-4 py-3">
+  1589→      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
+  1590→        <span>© wahamath 2026</span>
+  1591→        <a href="mailto:wahamath@hotmail.com" className="text-emerald-600 hover:text-emerald-700 transition-colors">
+  1592→          Contact: wahamath@hotmail.com
+  1593→        </a>
+  1594→      </div>
+  1595→    </footer>
+  1596→  )
+  1597→}
+  1598→
+  1599→// ===== Main Home Component =====
+  1600→export default function Home() {
+  1601→  const { currentView } = useAppStore()
+  1602→
+  1603→  return (
+  1604→    <div className="min-h-screen flex flex-col bg-background">
+  1605→      <style>{`
+  1606→        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  1607→        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+  1608→        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  1609→        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+  1610→      `}</style>
+  1611→      <AppHeader />
+  1612→      <main className="flex-1">
+  1613→        {currentView === 'auth' && <AuthView />}
+  1614→        {currentView === 'student' && <StudentDashboard />}
+  1615→        {currentView === 'teacher' && <TeacherDashboard />}
+  1616→      </main>
+  1617→      <AppFooter />
+  1618→    </div>
+  1619→  )
+  1620→}
+  1621→
