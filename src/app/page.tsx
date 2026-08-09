@@ -155,6 +155,23 @@ function ImageLightbox({
     setIsDragging(false)
   }
 
+  // When lightbox is open, disable pointer events on ALL dialog overlays beneath it.
+  // This is the most reliable way to prevent Radix Dialog from dismissing.
+  useEffect(() => {
+    if (!isOpen) return
+    const selector = '[data-slot="dialog-overlay"]'
+    const apply = () => document.querySelectorAll(selector).forEach(el => { (el as HTMLElement).style.pointerEvents = 'none' })
+    const restore = () => document.querySelectorAll(selector).forEach(el => { (el as HTMLElement).style.pointerEvents = '' })
+    apply()
+    // Also observe for dynamically added overlays
+    const observer = new MutationObserver(() => apply())
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => {
+      observer.disconnect()
+      restore()
+    }
+  }, [isOpen])
+
   // Close lightbox when clicking the dark overlay area (not the image or controls)
   const handleOverlayClick = useCallback((e: React.MouseEvent) => {
     // Only close if clicking directly on the overlay, not on children
@@ -168,9 +185,11 @@ function ImageLightbox({
   return (
     <div
       className="fixed inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center"
-      // CRITICAL: Stop pointerdown from reaching document-level Radix Dialog handlers
-      onPointerDown={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
+      // Stop ALL event propagation so nothing reaches Radix Dialog handlers on document
+      onPointerDown={(e) => e.stopImmediatePropagation()}
+      onPointerUp={(e) => e.stopImmediatePropagation()}
+      onMouseDown={(e) => e.stopImmediatePropagation()}
+      onMouseUp={(e) => e.stopImmediatePropagation()}
       onClick={handleOverlayClick}
     >
       {/* Close button */}

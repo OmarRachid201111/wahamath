@@ -150,3 +150,30 @@ Stage Summary:
 - Lint passes with 0 errors
 - No regression: dialog stays open when interacting with lightbox zoom controls
 - Drag/pan with grab cursor was already working correctly
+---
+Task ID: 4
+Agent: Main Agent
+Task: Fix zoom buttons still not working - wrong overlay selector + stronger event blocking
+
+Work Log:
+- User reported the problem was still not resolved after previous fix attempt
+- Investigated via agent-browser and VLM screenshot analysis
+- Discovered ROOT CAUSE: the useEffect was querying `[data-radix-dialog-overlay]` but the actual Radix Dialog overlay uses `data-slot="dialog-overlay"` — so the overlay's pointer-events were NEVER being disabled
+- Applied three-layer fix:
+  1. Fixed selector from `[data-radix-dialog-overlay]` to `[data-slot="dialog-overlay"]`
+  2. Added MutationObserver to catch dynamically added overlays
+  3. Used `e.stopImmediatePropagation()` (stronger than `stopPropagation()`) on all pointer/mouse events on lightbox root
+  4. Removed incorrect capture-phase handlers that would have blocked button clicks
+- Verified with VLM screenshots and JS evaluation:
+  - Teacher view: overlay PE changes from 'auto' to 'none' when lightbox opens ✓
+  - Student view: same overlay PE behavior ✓
+  - Zoom +: 100% → 125% → 150%, dialog stays open ✓
+  - Zoom -: 150% → 125% → 100%, dialog stays open ✓
+  - Réinitialiser: resets to 100%, dialog stays open ✓
+  - Close X button: closes lightbox, dialog stays open ✓
+  - Cursor at 150% zoom: 'grab' ✓
+
+Stage Summary:
+- The real bug was a wrong CSS selector (`data-radix-dialog-overlay` vs `data-slot="dialog-overlay"`)
+- All three lightbox usage contexts now work (student chapters, exercise detail, teacher progress)
+- Lint clean, no dev errors
