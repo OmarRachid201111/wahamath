@@ -1,0 +1,1682 @@
+     1→'use client'
+     2→
+     3→import React, { useState, useEffect, useRef, useCallback } from 'react'
+     4→import { createPortal } from 'react-dom'
+     5→import { toast } from 'sonner'
+     6→import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card'
+     7→import { Button } from '@/components/ui/button'
+     8→import { Input } from '@/components/ui/input'
+     9→import { Label } from '@/components/ui/label'
+    10→import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+    11→import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
+    12→import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+    13→import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table'
+    14→import { Badge } from '@/components/ui/badge'
+    15→import { Progress } from '@/components/ui/progress'
+    16→import { Skeleton } from '@/components/ui/skeleton'
+    17→import { Separator } from '@/components/ui/separator'
+    18→import { Textarea } from '@/components/ui/textarea'
+    19→import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+    20→import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+    21→import {
+    22→  BookOpen, LogOut, GraduationCap, ChevronLeft, ChevronRight, CheckCircle,
+    23→  Clock, Circle, AlertTriangle, ImageIcon, X, Loader2, Send,
+    24→  Trash2, MessageSquare, Plus, Minus, RotateCcw, ZoomIn, ZoomOut,
+    25→  Eye, XCircle, User, Mail, Phone, School, Calendar
+    26→} from 'lucide-react'
+    27→import { useAppStore, StudentUser, TeacherUser, ChapterData, ExerciseData, CommentData } from '@/lib/store'
+    28→
+    29→// ===== Helper =====
+    30→function exerciseImageUrl(chapterNum: number, exNum: number): string {
+    31→  return `/exercise-images/exercise-${chapterNum}-${exNum}.png`
+    32→}
+    33→
+    34→// ===== Status Badge =====
+    35→function StatusBadge({ status }: { status: string }) {
+    36→  const config: Record<string, { label: string; className: string }> = {
+    37→    not_started: { label: 'Non commencé', className: 'bg-gray-100 text-gray-500' },
+    38→    in_progress: { label: 'En cours', className: 'bg-amber-100 text-amber-700' },
+    39→    completed: { label: 'Terminé', className: 'bg-emerald-100 text-emerald-700' },
+    40→    difficulty: { label: 'Difficulté', className: 'bg-red-100 text-red-700' },
+    41→  }
+    42→  const c = config[status] || config.not_started
+    43→  return <Badge variant="secondary" className={c.className}>{c.label}</Badge>
+    44→}
+    45→
+    46→// ===== Image Lightbox (Portal) =====
+    47→function ImageLightbox({
+    48→  isOpen, imageUrl, label, onClose
+    49→}: {
+    50→  isOpen: boolean
+    51→  imageUrl: string
+    52→  label: string
+    53→  onClose: () => void
+    54→}) {
+    55→  const [zoom, setZoom] = useState(1)
+    56→  const [position, setPosition] = useState({ x: 0, y: 0 })
+    57→  const [isDragging, setIsDragging] = useState(false)
+    58→  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+    59→  const [imageLoaded, setImageLoaded] = useState(false)
+    60→  const containerRef = useRef<HTMLDivElement>(null)
+    61→  const lastTouchDist = useRef<number | null>(null)
+    62→
+    63→  const resetView = useCallback(() => {
+    64→    setZoom(1)
+    65→    setPosition({ x: 0, y: 0 })
+    66→  }, [])
+    67→
+    68→  useEffect(() => {
+    69→    if (!isOpen) return
+    70→    const handleKeyDown = (e: KeyboardEvent) => {
+    71→      if (e.key === 'Escape') onClose()
+    72→      else if (e.key === '+' || e.key === '=') setZoom(z => Math.min(z + 0.25, 5))
+    73→      else if (e.key === '-') setZoom(z => Math.max(z - 0.25, 0.5))
+    74→      else if (e.key === '0') resetView()
+    75→    }
+    76→    window.addEventListener('keydown', handleKeyDown)
+    77→    return () => window.removeEventListener('keydown', handleKeyDown)
+    78→  }, [isOpen, onClose, resetView])
+    79→
+    80→  const handleWheel = useCallback((e: React.WheelEvent) => {
+    81→    e.preventDefault()
+    82→    setZoom(z => {
+    83→      const next = e.deltaY < 0 ? Math.min(z + 0.15, 5) : Math.max(z - 0.15, 0.5)
+    84→      if (next <= 1) setPosition({ x: 0, y: 0 })
+    85→      return next
+    86→    })
+    87→  }, [])
+    88→
+    89→  const handleMouseDown = (e: React.MouseEvent) => {
+    90→    if (zoom <= 1) return
+    91→    setIsDragging(true)
+    92→    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
+    93→  }
+    94→
+    95→  const handleMouseMove = (e: React.MouseEvent) => {
+    96→    if (!isDragging) return
+    97→    setPosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y })
+    98→  }
+    99→
+   100→  const handleMouseUp = () => setIsDragging(false)
+   101→
+   102→  const handleTouchStart = (e: React.TouchEvent) => {
+   103→    if (e.touches.length === 2) {
+   104→      const dx = e.touches[0].clientX - e.touches[1].clientX
+   105→      const dy = e.touches[0].clientY - e.touches[1].clientY
+   106→      lastTouchDist.current = Math.sqrt(dx * dx + dy * dy)
+   107→    } else if (e.touches.length === 1 && zoom > 1) {
+   108→      setIsDragging(true)
+   109→      setDragStart({ x: e.touches[0].clientX - position.x, y: e.touches[0].clientY - position.y })
+   110→    }
+   111→  }
+   112→
+   113→  const handleTouchMove = (e: React.TouchEvent) => {
+   114→    if (e.touches.length === 2 && lastTouchDist.current !== null) {
+   115→      const dx = e.touches[0].clientX - e.touches[1].clientX
+   116→      const dy = e.touches[0].clientY - e.touches[1].clientY
+   117→      const dist = Math.sqrt(dx * dx + dy * dy)
+   118→      const scale = dist / lastTouchDist.current
+   119→      setZoom(z => {
+   120→        const next = Math.min(Math.max(z * scale, 0.5), 5)
+   121→        if (next <= 1) setPosition({ x: 0, y: 0 })
+   122→        return next
+   123→      })
+   124→      lastTouchDist.current = dist
+   125→    } else if (e.touches.length === 1 && isDragging) {
+   126→      setPosition({ x: e.touches[0].clientX - dragStart.x, y: e.touches[0].clientY - dragStart.y })
+   127→    }
+   128→  }
+   129→
+   130→  const handleTouchEnd = () => {
+   131→    lastTouchDist.current = null
+   132→    setIsDragging(false)
+   133→  }
+   134→
+   135→  if (!isOpen) return null
+   136→
+   137→  return createPortal(
+   138→    <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center">
+   139→      <div
+   140→        ref={containerRef}
+   141→        className="flex-1 w-full flex items-center justify-center overflow-hidden"
+   142→        onWheel={handleWheel}
+   143→        onMouseDown={handleMouseDown}
+   144→        onMouseMove={handleMouseMove}
+   145→        onMouseUp={handleMouseUp}
+   146→        onMouseLeave={handleMouseUp}
+   147→        onTouchStart={handleTouchStart}
+   148→        onTouchMove={handleTouchMove}
+   149→        onTouchEnd={handleTouchEnd}
+   150→        style={{ cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+   151→      >
+   152→        {!imageLoaded && (
+   153→          <Loader2 className="size-10 text-white animate-spin" />
+   154→        )}
+   155→        <img
+   156→          src={imageUrl}
+   157→          alt={label}
+   158→          className="max-w-[90vw] max-h-[80vh] object-contain select-none"
+   159→          style={{
+   160→            transform: `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
+   161→            transition: isDragging ? 'none' : 'transform 0.15s ease',
+   162→            display: imageLoaded ? 'block' : 'none',
+   163→          }}
+   164→          onLoad={() => setImageLoaded(true)}
+   165→          draggable={false}
+   166→        />
+   167→      </div>
+   168→      <div className="flex items-center gap-4 py-4 px-6 bg-black/70 rounded-t-xl">
+   169→        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.max(z - 0.25, 0.5))}>
+   170→          <ZoomOut className="size-5" />
+   171→        </Button>
+   172→        <span className="text-white text-sm font-mono min-w-[50px] text-center">{Math.round(zoom * 100)}%</span>
+   173→        <Button variant="ghost" size="icon" className="text-white hover:bg-white/20" onClick={() => setZoom(z => Math.min(z + 0.25, 5))}>
+   174→          <ZoomIn className="size-5" />
+   175→        </Button>
+   176→        <Button variant="ghost" size="sm" className="text-white hover:bg-white/20" onClick={resetView}>
+   177→          <RotateCcw className="size-4 mr-1" /> Réinitialiser
+   178→        </Button>
+   179→        <span className="text-white/70 text-sm ml-2">{label}</span>
+   180→      </div>
+   181→    </div>,
+   182→    document.body
+   183→  )
+   184→}
+   185→
+   186→// ===== Exercise Detail Dialog =====
+   187→function ExerciseDetailDialog({
+   188→  exercise,
+   189→  chapter,
+   190→  exercises,
+   191→  onClose,
+   192→}: {
+   193→  exercise: ExerciseData
+   194→  chapter: ChapterData
+   195→  exercises: ExerciseData[]
+   196→  onClose: () => void
+   197→}) {
+   198→  const { user, setSelectedExercise } = useAppStore()
+   199→  const student = user as StudentUser
+   200→  const [status, setStatus] = useState(exercise.progress?.status || 'not_started')
+   201→  const [note, setNote] = useState(exercise.progress?.studentNote || '')
+   202→  const [saving, setSaving] = useState(false)
+   203→  const [comments, setComments] = useState<CommentData[]>([])
+   204→  const [newComment, setNewComment] = useState('')
+   205→  const [sendingComment, setSendingComment] = useState(false)
+   206→  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
+   207→
+   208→  const currentIndex = exercises.findIndex(e => e.id === exercise.id)
+   209→  const totalExercises = exercises.length
+   210→
+   211→  const [commentsLoaded, setCommentsLoaded] = useState(false)
+   212→
+   213→  useEffect(() => {
+   214→    let cancelled = false
+   215→    if (commentsLoaded) return
+   216→    const load = async () => {
+   217→      try {
+   218→        const res = await fetch('/api/comments')
+   219→        if (res.ok && !cancelled) {
+   220→          const data = await res.json()
+   221→          setComments((data.comments || []).filter((c: CommentData) => c.exercise?.id === exercise.id))
+   222→        }
+   223→      } catch { /* ignore */ }
+   224→      if (!cancelled) setCommentsLoaded(true)
+   225→    }
+   226→    load()
+   227→  }, [exercise.id, commentsLoaded])
+   228→
+   229→  const refetchComments = async () => {
+   230→    try {
+   231→      const res = await fetch('/api/comments')
+   232→      if (res.ok) {
+   233→        const data = await res.json()
+   234→        setComments((data.comments || []).filter((c: CommentData) => c.exercise?.id === exercise.id))
+   235→      }
+   236→    } catch { /* ignore */ }
+   237→  }
+   238→
+   239→  const handleSave = async () => {
+   240→    setSaving(true)
+   241→    try {
+   242→      await fetch(`/api/exercises/${exercise.id}/progress`, {
+   243→        method: 'PUT',
+   244→        headers: { 'Content-Type': 'application/json' },
+   245→        body: JSON.stringify({ studentId: student.id, status, studentNote: note }),
+   246→      })
+   247→      toast.success('Progression sauvegardée !')
+   248→    } catch {
+   249→      toast.error('Erreur lors de la sauvegarde.')
+   250→    }
+   251→    setSaving(false)
+   252→  }
+   253→
+   254→  const handleSendComment = async () => {
+   255→    if (!newComment.trim()) return
+   256→    setSendingComment(true)
+   257→    try {
+   258→      await fetch('/api/comments', {
+   259→        method: 'POST',
+   260→        headers: { 'Content-Type': 'application/json' },
+   261→        body: JSON.stringify({ studentId: student.id, exerciseId: exercise.id, content: newComment }),
+   262→      })
+   263→      setNewComment('')
+   264→      refetchComments()
+   265→    } catch {
+   266→      toast.error("Erreur lors de l'envoi.")
+   267→    }
+   268→    setSendingComment(false)
+   269→  }
+   270→
+   271→  const goToExercise = (direction: 'prev' | 'next') => {
+   272→    const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1
+   273→    if (newIndex < 0 || newIndex >= totalExercises) return
+   274→    setSelectedExercise(exercises[newIndex])
+   275→  }
+   276→
+   277→  const imageUrl = exercise.pageStart ? exerciseImageUrl(chapter.number, exercise.number) : ''
+   278→
+   279→  return (
+   280→    <>
+   281→      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+   282→        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+   283→          <DialogHeader>
+   284→            <DialogTitle className="text-lg">
+   285→              Ch.{chapter.number} : {chapter.title} — Ex.{exercise.number} ({exercise.number}/{totalExercises})
+   286→            </DialogTitle>
+   287→            <DialogDescription className="sr-only">
+   288→              Détail de l&apos;exercice {exercise.number} du chapitre {chapter.number}
+   289→            </DialogDescription>
+   290→          </DialogHeader>
+   291→
+   292→          {imageUrl && (
+   293→            <div className="space-y-2">
+   294→              <div className="relative rounded-lg overflow-hidden border bg-gray-50 max-h-64">
+   295→                <img src={imageUrl} alt={`Exercice ${exercise.number}`} className="w-full h-full object-contain max-h-64" />
+   296→              </div>
+   297→              <Button variant="outline" size="sm" onClick={() => setLightbox({ isOpen: true, imageUrl, label: `Ex.${exercise.number}` })}>
+   298→                <Eye className="size-4 mr-1" /> Agrandir
+   299→              </Button>
+   300→            </div>
+   301→          )}
+   302→
+   303→          <div className="rounded-lg border bg-gray-50 p-4">
+   304→            <p className="text-sm whitespace-pre-wrap leading-relaxed">{exercise.content}</p>
+   305→          </div>
+   306→
+   307→          <div className="space-y-2">
+   308→            <Label className="text-sm font-medium">Statut</Label>
+   309→            <RadioGroup value={status} onValueChange={setStatus} className="grid grid-cols-2 gap-2">
+   310→              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-gray-400">
+   311→                <RadioGroupItem value="not_started" />
+   312→                <Circle className="size-4 text-gray-500" />
+   313→                <span className="text-sm text-gray-500">Non commencé</span>
+   314→              </label>
+   315→              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-amber-400">
+   316→                <RadioGroupItem value="in_progress" />
+   317→                <Clock className="size-4 text-amber-600" />
+   318→                <span className="text-sm text-amber-700">En cours</span>
+   319→              </label>
+   320→              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-emerald-400">
+   321→                <RadioGroupItem value="completed" />
+   322→                <CheckCircle className="size-4 text-emerald-600" />
+   323→                <span className="text-sm text-emerald-700">Terminé</span>
+   324→              </label>
+   325→              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-red-400">
+   326→                <RadioGroupItem value="difficulty" />
+   327→                <AlertTriangle className="size-4 text-red-600" />
+   328→                <span className="text-sm text-red-700">Difficulté</span>
+   329→              </label>
+   330→            </RadioGroup>
+   331→          </div>
+   332→
+   333→          <div className="space-y-2">
+   334→            <Label htmlFor="notes" className="text-sm font-medium">Notes personnelles</Label>
+   335→            <Textarea
+   336→              id="notes"
+   337→              value={note}
+   338→              onChange={(e) => setNote(e.target.value)}
+   339→              placeholder="Ajoutez vos notes ici..."
+   340→              rows={3}
+   341→            />
+   342→          </div>
+   343→
+   344→          <div className="flex justify-end">
+   345→            <Button onClick={handleSave} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+   346→              {saving && <Loader2 className="size-4 mr-2 animate-spin" />}
+   347→              Sauvegarder
+   348→            </Button>
+   349→          </div>
+   350→
+   351→          <Separator />
+   352→
+   353→          <div className="space-y-3">
+   354→            <h4 className="font-medium text-sm">Commentaires</h4>
+   355→            {comments.map((comment) => (
+   356→              <div key={comment.id} className="space-y-2">
+   357→                <div className="flex items-start gap-2">
+   358→                  <Avatar className="size-8">
+   359→                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
+   360→                      {comment.student.firstName[0]}{comment.student.lastName[0]}
+   361→                    </AvatarFallback>
+   362→                  </Avatar>
+   363→                  <div className="flex-1">
+   364→                    <div className="flex items-center gap-2">
+   365→                      <span className="text-sm font-medium">
+   366→                        {comment.student.firstName} {comment.student.lastName}
+   367→                      </span>
+   368→                      <span className="text-xs text-muted-foreground">
+   369→                        {new Date(comment.createdAt).toLocaleDateString('fr-FR')}
+   370→                      </span>
+   371→                    </div>
+   372→                    <p className="text-sm mt-1">{comment.content}</p>
+   373→                  </div>
+   374→                </div>
+   375→                {comment.remarks.length > 0 && comment.remarks.map((remark) => (
+   376→                  <div key={remark.id} className="ml-10 bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+   377→                    <p className="text-sm text-emerald-800">{remark.content}</p>
+   378→                    <span className="text-xs text-emerald-600 mt-1 block">
+   379→                      {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
+   380→                    </span>
+   381→                  </div>
+   382→                ))}
+   383→              </div>
+   384→            ))}
+   385→            <div className="flex gap-2">
+   386→              <Textarea
+   387→                value={newComment}
+   388→                onChange={(e) => setNewComment(e.target.value)}
+   389→                placeholder="Ajouter un commentaire..."
+   390→                rows={2}
+   391→              />
+   392→              <Button onClick={handleSendComment} disabled={sendingComment || !newComment.trim()} className="bg-emerald-600 hover:bg-emerald-700 self-end">
+   393→                {sendingComment ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+   394→              </Button>
+   395→            </div>
+   396→          </div>
+   397→
+   398→          <DialogFooter className="flex-row justify-between">
+   399→            <Button
+   400→              variant="outline"
+   401→              onClick={() => goToExercise('prev')}
+   402→              disabled={currentIndex <= 0}
+   403→            >
+   404→              <ChevronLeft className="size-4 mr-1" /> Précédent
+   405→            </Button>
+   406→            <Button
+   407→              variant="outline"
+   408→              onClick={() => goToExercise('next')}
+   409→              disabled={currentIndex >= totalExercises - 1}
+   410→            >
+   411→              Suivant <ChevronRight className="size-4 ml-1" />
+   412→            </Button>
+   413→          </DialogFooter>
+   414→        </DialogContent>
+   415→      </Dialog>
+   416→
+   417→      <ImageLightbox
+   418→        key={lightbox.imageUrl}
+   419→        isOpen={lightbox.isOpen}
+   420→        imageUrl={lightbox.imageUrl}
+   421→        label={lightbox.label}
+   422→        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+   423→      />
+   424→    </>
+   425→  )
+   426→}
+   427→
+   428→// ===== Auth View =====
+   429→function AuthView() {
+   430→  const { login } = useAppStore()
+   431→  const [mode, setMode] = useState<'login' | 'register'>('login')
+   432→  const [showTeacherLogin, setShowTeacherLogin] = useState(false)
+   433→  const [loading, setLoading] = useState(false)
+   434→
+   435→  // Login form
+   436→  const [loginEmail, setLoginEmail] = useState('')
+   437→  const [loginPassword, setLoginPassword] = useState('')
+   438→
+   439→  // Register form
+   440→  const [regFirstName, setRegFirstName] = useState('')
+   441→  const [regLastName, setRegLastName] = useState('')
+   442→  const [regEmail, setRegEmail] = useState('')
+   443→  const [regClassName, setRegClassName] = useState('')
+   444→  const [regSchoolName, setRegSchoolName] = useState('')
+   445→  const [regPhone, setRegPhone] = useState('')
+   446→  const [regPassword, setRegPassword] = useState('')
+   447→
+   448→  // Teacher login
+   449→  const [teacherPassword, setTeacherPassword] = useState('')
+   450→
+   451→  // Form states are initialized to defaults to prevent autofill
+   452→
+   453→  const handleLogin = async () => {
+   454→    setLoading(true)
+   455→    try {
+   456→      const res = await fetch('/api/student/login', {
+   457→        method: 'POST',
+   458→        headers: { 'Content-Type': 'application/json' },
+   459→        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+   460→      })
+   461→      if (res.ok) {
+   462→        const student = await res.json()
+   463→        toast.success(`Bienvenue ${student.firstName} !`)
+   464→        login(student, 'student')
+   465→      } else {
+   466→        const data = await res.json().catch(() => ({}))
+   467→        toast.error(data.error || 'Identifiants incorrects.')
+   468→      }
+   469→    } catch {
+   470→      toast.error('Erreur de connexion.')
+   471→    }
+   472→    setLoading(false)
+   473→  }
+   474→
+   475→  const handleRegister = async () => {
+   476→    setLoading(true)
+   477→    try {
+   478→      const res = await fetch('/api/student/register', {
+   479→        method: 'POST',
+   480→        headers: { 'Content-Type': 'application/json' },
+   481→        body: JSON.stringify({
+   482→          firstName: regFirstName, lastName: regLastName, email: regEmail,
+   483→          className: regClassName, schoolName: regSchoolName, phone: regPhone, password: regPassword,
+   484→        }),
+   485→      })
+   486→      if (res.ok) {
+   487→        toast.success('Votre inscription a été envoyée. Elle sera validée par l\'enseignant.')
+   488→        setMode('login')
+   489→      } else {
+   490→        const data = await res.json().catch(() => ({}))
+   491→        toast.error(data.error || "Erreur lors de l'inscription.")
+   492→      }
+   493→    } catch {
+   494→      toast.error("Erreur lors de l'inscription.")
+   495→    }
+   496→    setLoading(false)
+   497→  }
+   498→
+   499→  const handleTeacherLogin = async () => {
+   500→    setLoading(true)
+   501→    try {
+   502→      const res = await fetch('/api/teacher/login', {
+   503→        method: 'POST',
+   504→        headers: { 'Content-Type': 'application/json' },
+   505→        body: JSON.stringify({ password: teacherPassword }),
+   506→      })
+   507→      if (res.ok) {
+   508→        const teacher = await res.json()
+   509→        toast.success(`Bienvenue ${teacher.firstName} !`)
+   510→        login(teacher, 'teacher')
+   511→      } else {
+   512→        toast.error('Identifiants incorrects.')
+   513→      }
+   514→    } catch {
+   515→      toast.error('Erreur de connexion.')
+   516→    }
+   517→    setLoading(false)
+   518→  }
+   519→
+   520→  return (
+   521→    <div className="flex-1 flex items-center justify-center p-4">
+   522→      <Card className="w-full max-w-md shadow-xl">
+   523→        <CardHeader className="flex flex-col items-center text-center gap-2">
+   524→          <div className="size-14 rounded-full bg-emerald-100 flex items-center justify-center">
+   525→            <BookOpen className="size-7 text-emerald-600" />
+   526→          </div>
+   527→          <CardTitle className="text-xl">Cahier d&apos;exercices et de suivi</CardTitle>
+   528→          <CardDescription>2SM — Cahier interactif</CardDescription>
+   529→        </CardHeader>
+   530→        <CardContent className="space-y-4">
+   531→          <div className="flex rounded-lg border p-1 bg-gray-100">
+   532→            <button
+   533→              onClick={() => { setMode('login'); setShowTeacherLogin(false) }}
+   534→              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+   535→                mode === 'login' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+   536→              }`}
+   537→            >
+   538→              Connexion
+   539→            </button>
+   540→            <button
+   541→              onClick={() => { setMode('register'); setShowTeacherLogin(false) }}
+   542→              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+   543→                mode === 'register' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+   544→              }`}
+   545→            >
+   546→              Inscription
+   547→            </button>
+   548→          </div>
+   549→
+   550→          {mode === 'login' && !showTeacherLogin && (
+   551→            <div className="space-y-3">
+   552→              <div className="space-y-1.5">
+   553→                <Label htmlFor="login-email">Email</Label>
+   554→                <Input id="login-email" type="email" autoComplete="off" placeholder="votre@email.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} />
+   555→              </div>
+   556→              <div className="space-y-1.5">
+   557→                <Label htmlFor="login-password">Mot de passe</Label>
+   558→                <Input id="login-password" type="password" autoComplete="new-password" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }} />
+   559→              </div>
+   560→              <Button onClick={handleLogin} disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700">
+   561→                {loading && <Loader2 className="size-4 mr-2 animate-spin" />}
+   562→                Se connecter
+   563→              </Button>
+   564→            </div>
+   565→          )}
+   566→
+   567→          {mode === 'register' && (
+   568→            <div className="space-y-3">
+   569→              <div className="grid grid-cols-2 gap-3">
+   570→                <div className="space-y-1.5">
+   571→                  <Label htmlFor="reg-firstName">Prénom *</Label>
+   572→                  <Input id="reg-firstName" value={regFirstName} onChange={(e) => setRegFirstName(e.target.value)} />
+   573→                </div>
+   574→                <div className="space-y-1.5">
+   575→                  <Label htmlFor="reg-lastName">Nom *</Label>
+   576→                  <Input id="reg-lastName" value={regLastName} onChange={(e) => setRegLastName(e.target.value)} />
+   577→                </div>
+   578→              </div>
+   579→              <div className="space-y-1.5">
+   580→                <Label htmlFor="reg-email">Email *</Label>
+   581→                <Input id="reg-email" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} />
+   582→              </div>
+   583→              <div className="grid grid-cols-2 gap-3">
+   584→                <div className="space-y-1.5">
+   585→                  <Label htmlFor="reg-className">Classe *</Label>
+   586→                  <Input id="reg-className" value={regClassName} onChange={(e) => setRegClassName(e.target.value)} />
+   587→                </div>
+   588→                <div className="space-y-1.5">
+   589→                  <Label htmlFor="reg-schoolName">Établissement</Label>
+   590→                  <Input id="reg-schoolName" value={regSchoolName} onChange={(e) => setRegSchoolName(e.target.value)} />
+   591→                </div>
+   592→              </div>
+   593→              <div className="space-y-1.5">
+   594→                <Label htmlFor="reg-phone">Téléphone</Label>
+   595→                <Input id="reg-phone" type="tel" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} />
+   596→              </div>
+   597→              <div className="space-y-1.5">
+   598→                <Label htmlFor="reg-password">Mot de passe *</Label>
+   599→                <Input id="reg-password" type="password" autoComplete="new-password" value={regPassword} onChange={(e) => setRegPassword(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleRegister() }} />
+   600→              </div>
+   601→              <Button onClick={handleRegister} disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700">
+   602→                {loading && <Loader2 className="size-4 mr-2 animate-spin" />}
+   603→                S&apos;inscrire
+   604→              </Button>
+   605→            </div>
+   606→          )}
+   607→
+   608→          {mode === 'login' && showTeacherLogin && (
+   609→            <div className="space-y-3">
+   610→              <div className="space-y-1.5">
+   611→                <Label htmlFor="teacher-password">Mot de passe enseignant</Label>
+   612→                <Input id="teacher-password" type="password" autoComplete="new-password" placeholder="••••••••" value={teacherPassword} onChange={(e) => setTeacherPassword(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleTeacherLogin() }} />
+   613→              </div>
+   614→              <Button onClick={handleTeacherLogin} disabled={loading} className="w-full bg-emerald-600 hover:bg-emerald-700">
+   615→                {loading && <Loader2 className="size-4 mr-2 animate-spin" />}
+   616→                Connexion
+   617→              </Button>
+   618→            </div>
+   619→          )}
+   620→
+   621→          <Separator />
+   622→
+   623→          {!showTeacherLogin ? (
+   624→            <button
+   625→              onClick={() => setShowTeacherLogin(true)}
+   626→              className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-emerald-600 transition-colors"
+   627→            >
+   628→              <GraduationCap className="size-4" />
+   629→              Accès enseignant
+   630→            </button>
+   631→          ) : (
+   632→            <button
+   633→              onClick={() => setShowTeacherLogin(false)}
+   634→              className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-red-600 transition-colors"
+   635→            >
+   636→              <X className="size-4" />
+   637→              Annuler
+   638→            </button>
+   639→          )}
+   640→        </CardContent>
+   641→      </Card>
+   642→    </div>
+   643→  )
+   644→}
+   645→
+   646→// ===== Student Dashboard =====
+   647→function StudentDashboard() {
+   648→  const { user, logout, studentTab } = useAppStore()
+   649→  const student = user as StudentUser
+   650→
+   651→  return (
+   652→    <div className="flex flex-col flex-1">
+   653→      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
+   654→        <span className="font-medium">{student.firstName} {student.lastName}</span>
+   655→        <Button variant="ghost" size="sm" onClick={logout}>
+   656→          <LogOut className="size-4 mr-1" /> Déconnexion
+   657→        </Button>
+   658→      </div>
+   659→      <div className="flex-1 p-4 overflow-y-auto">
+   660→        <Tabs defaultValue="chapters" className="w-full">
+   661→          <TabsList className="w-full sm:w-auto">
+   662→            <TabsTrigger value="chapters">Chapitres</TabsTrigger>
+   663→            <TabsTrigger value="comments">Mes commentaires</TabsTrigger>
+   664→            <TabsTrigger value="profile">Mon profil</TabsTrigger>
+   665→          </TabsList>
+   666→          <TabsContent value="chapters"><StudentChaptersView /></TabsContent>
+   667→          <TabsContent value="comments"><StudentCommentsView /></TabsContent>
+   668→          <TabsContent value="profile"><StudentProfileView /></TabsContent>
+   669→        </Tabs>
+   670→      </div>
+   671→    </div>
+   672→  )
+   673→}
+   674→
+   675→// ===== Student Chapters View =====
+   676→function StudentChaptersView() {
+   677→  const { user, selectedExercise, setSelectedExercise } = useAppStore()
+   678→  const student = user as StudentUser
+   679→  const [chapters, setChapters] = useState<ChapterData[]>([])
+   680→  const [loading, setLoading] = useState(true)
+   681→  const [expandedChapterId, setExpandedChapterId] = useState<string | null>(null)
+   682→  const [chapterExercises, setChapterExercises] = useState<Record<string, ExerciseData[]>>({})
+   683→  const [loadingExercises, setLoadingExercises] = useState<string | null>(null)
+   684→  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
+   685→
+   686→  useEffect(() => {
+   687→    let cancelled = false
+   688→    const load = async () => {
+   689→      try {
+   690→        const res = await fetch(`/api/chapters?studentId=${student.id}`)
+   691→        if (res.ok && !cancelled) {
+   692→          const data = await res.json()
+   693→          setChapters(data.chapters || [])
+   694→        }
+   695→      } catch { /* ignore */ }
+   696→      if (!cancelled) setLoading(false)
+   697→    }
+   698→    load()
+   699→  }, [student.id])
+   700→
+   701→  const toggleChapter = async (chapter: ChapterData) => {
+   702→    if (expandedChapterId === chapter.id) {
+   703→      setExpandedChapterId(null)
+   704→      return
+   705→    }
+   706→    setExpandedChapterId(chapter.id)
+   707→    if (chapterExercises[chapter.id]) return
+   708→    setLoadingExercises(chapter.id)
+   709→    try {
+   710→      const res = await fetch(`/api/chapters/${chapter.id}/exercises?studentId=${student.id}`)
+   711→      if (res.ok) {
+   712→        const data = await res.json()
+   713→        setChapterExercises(prev => ({ ...prev, [chapter.id]: data.exercises || [] }))
+   714→      }
+   715→    } catch { /* ignore */ }
+   716→    setLoadingExercises(null)
+   717→  }
+   718→
+   719→  const analyse = chapters.filter(c => c.semester === 'Analyse')
+   720→  const algebre = chapters.filter(c => c.semester === 'Algèbre')
+   721→
+   722→  if (loading) {
+   723→    return (
+   724→      <div className="space-y-3">
+   725→        <Skeleton className="h-12 w-full" />
+   726→        <Skeleton className="h-12 w-full" />
+   727→        <Skeleton className="h-12 w-full" />
+   728→      </div>
+   729→    )
+   730→  }
+   731→
+   732→  const selectedChapter = expandedChapterId ? chapters.find(c => c.id === expandedChapterId) || null : null
+   733→  const exercises = selectedChapter ? (chapterExercises[selectedChapter.id] || []) : []
+   734→
+   735→  return (
+   736→    <>
+   737→      <div className="space-y-4">
+   738→        <Accordion type="multiple" className="space-y-2">
+   739→          {analyse.length > 0 && (
+   740→            <AccordionItem value="analyse" className="border rounded-lg px-4">
+   741→              <AccordionTrigger className="font-semibold">I. Analyse</AccordionTrigger>
+   742→              <AccordionContent>
+   743→                <div className="space-y-1">
+   744→                  {analyse.map(ch => (
+   745→                    <ChapterRowInline
+   746→                      key={ch.id}
+   747→                      chapter={ch}
+   748→                      isExpanded={expandedChapterId === ch.id}
+   749→                      isLoading={loadingExercises === ch.id}
+   750→                      exercises={chapterExercises[ch.id] || []}
+   751→                      onToggle={() => toggleChapter(ch)}
+   752→                      onExerciseClick={(ex) => setSelectedExercise(ex)}
+   753→                      onImageClick={(ex) => {
+   754→                        if (ex.pageStart) {
+   755→                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+   756→                        }
+   757→                      }}
+   758→                    />
+   759→                  ))}
+   760→                </div>
+   761→              </AccordionContent>
+   762→            </AccordionItem>
+   763→          )}
+   764→
+   765→          {algebre.length > 0 && (
+   766→            <AccordionItem value="algebre" className="border rounded-lg px-4">
+   767→              <AccordionTrigger className="font-semibold">II. Algèbre</AccordionTrigger>
+   768→              <AccordionContent>
+   769→                <div className="space-y-1">
+   770→                  {algebre.map(ch => (
+   771→                    <ChapterRowInline
+   772→                      key={ch.id}
+   773→                      chapter={ch}
+   774→                      isExpanded={expandedChapterId === ch.id}
+   775→                      isLoading={loadingExercises === ch.id}
+   776→                      exercises={chapterExercises[ch.id] || []}
+   777→                      onToggle={() => toggleChapter(ch)}
+   778→                      onExerciseClick={(ex) => setSelectedExercise(ex)}
+   779→                      onImageClick={(ex) => {
+   780→                        if (ex.pageStart) {
+   781→                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+   782→                        }
+   783→                      }}
+   784→                    />
+   785→                  ))}
+   786→                </div>
+   787→              </AccordionContent>
+   788→            </AccordionItem>
+   789→          )}
+   790→        </Accordion>
+   791→
+   792→        {chapters.length === 0 && (
+   793→          <div className="text-center text-muted-foreground py-8">
+   794→            <BookOpen className="size-10 mx-auto mb-2 opacity-40" />
+   795→            <p>Aucun chapitre disponible.</p>
+   796→          </div>
+   797→        )}
+   798→      </div>
+   799→
+   800→      {selectedExercise && selectedChapter && (
+   801→        <ExerciseDetailDialog
+   802→          key={selectedExercise.id}
+   803→          exercise={selectedExercise}
+   804→          chapter={selectedChapter}
+   805→          exercises={exercises}
+   806→          onClose={() => setSelectedExercise(null)}
+   807→        />
+   808→      )}
+   809→
+   810→      <ImageLightbox
+   811→        key={lightbox.imageUrl}
+   812→        isOpen={lightbox.isOpen}
+   813→        imageUrl={lightbox.imageUrl}
+   814→        label={lightbox.label}
+   815→        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+   816→      />
+   817→    </>
+   818→  )
+   819→}
+   820→
+   821→function ChapterRowInline({ chapter, isExpanded, isLoading, exercises, onToggle, onExerciseClick, onImageClick }: {
+   822→  chapter: ChapterData
+   823→  isExpanded: boolean
+   824→  isLoading: boolean
+   825→  exercises: ExerciseData[]
+   826→  onToggle: () => void
+   827→  onExerciseClick: (ex: ExerciseData) => void
+   828→  onImageClick: (ex: ExerciseData) => void
+   829→}) {
+   830→  const allDone = chapter.completedCount === chapter.exerciseCount
+   831→  return (
+   832→    <div className="rounded-lg border border-l-4 border-l-emerald-400 overflow-hidden">
+   833→      <button
+   834→        onClick={onToggle}
+   835→        className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+   836→      >
+   837→        <ChevronRight className={`size-4 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+   838→        <span className="font-medium text-sm">Ch.{chapter.number}:</span>
+   839→        <span className="flex-1 text-sm truncate">{chapter.title}</span>
+   840→        <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+   841→          {chapter.completedCount}/{chapter.exerciseCount}
+   842→        </Badge>
+   843→        <Progress value={(chapter.completedCount / chapter.exerciseCount) * 100} className="w-16 h-2 hidden sm:block" />
+   844→      </button>
+   845→      {isExpanded && (
+   846→        <div className="border-t px-3 pb-3 pt-2">
+   847→          {isLoading ? (
+   848→            <div className="flex items-center justify-center py-4">
+   849→              <Loader2 className="size-5 animate-spin text-emerald-600" />
+   850→            </div>
+   851→          ) : (
+   852→            <div className="max-h-[60vh] overflow-y-auto custom-scrollbar space-y-1.5">
+   853→              {exercises.map(ex => (
+   854→                <button
+   855→                  key={ex.id}
+   856→                  onClick={() => onExerciseClick(ex)}
+   857→                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-gray-50 transition-colors"
+   858→                >
+   859→                  <span className="font-medium text-sm text-muted-foreground min-w-[40px]">Ex. {ex.number}</span>
+   860→                  <StatusBadge status={ex.progress?.status || 'not_started'} />
+   861→                  {ex.pageStart && (
+   862→                    <ImageIcon
+   863→                      className="size-4 text-gray-400 ml-auto cursor-pointer"
+   864→                      onClick={(e) => { e.stopPropagation(); onImageClick(ex) }}
+   865→                    />
+   866→                  )}
+   867→                </button>
+   868→              ))}
+   869→            </div>
+   870→          )}
+   871→        </div>
+   872→      )}
+   873→    </div>
+   874→  )
+   875→}
+   876→
+   877→// ===== Student Comments View =====
+   878→function StudentCommentsView() {
+   879→  const { user } = useAppStore()
+   880→  const student = user as StudentUser
+   881→  const [comments, setComments] = useState<CommentData[]>([])
+   882→  const [loading, setLoading] = useState(true)
+   883→
+   884→  useEffect(() => {
+   885→    let cancelled = false
+   886→    const load = async () => {
+   887→      try {
+   888→        const res = await fetch('/api/comments')
+   889→        if (res.ok && !cancelled) {
+   890→          const data = await res.json()
+   891→          setComments((data.comments || []).filter((c: CommentData) => c.student.id === student.id))
+   892→        }
+   893→      } catch { /* ignore */ }
+   894→      if (!cancelled) setLoading(false)
+   895→    }
+   896→    load()
+   897→  }, [student.id])
+   898→
+   899→  if (loading) {
+   900→    return <div className="space-y-3"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></div>
+   901→  }
+   902→
+   903→  if (comments.length === 0) {
+   904→    return (
+   905→      <div className="text-center text-muted-foreground py-8">
+   906→        <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+   907→        <p>Aucun commentaire.</p>
+   908→      </div>
+   909→    )
+   910→  }
+   911→
+   912→  return (
+   913→    <div className="space-y-4 max-w-xl">
+   914→      {comments.map((comment) => (
+   915→        <Card key={comment.id} className="p-4">
+   916→          <p className="text-sm mb-2">{comment.content}</p>
+   917→          <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+   918→            <span>{new Date(comment.createdAt).toLocaleDateString('fr-FR')}</span>
+   919→            {comment.exercise && (
+   920→              <span>• Ch.{comment.exercise.chapter.number} — Ex.{comment.exercise.number}</span>
+   921→            )}
+   922→          </div>
+   923→          {comment.remarks.length > 0 && comment.remarks.map((remark) => (
+   924→            <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+   925→              <p className="text-sm text-emerald-800">{remark.content}</p>
+   926→            </div>
+   927→          ))}
+   928→        </Card>
+   929→      ))}
+   930→    </div>
+   931→  )
+   932→}
+   933→
+   934→// ===== Student Profile View =====
+   935→function StudentProfileView() {
+   936→  const { user, logout } = useAppStore()
+   937→  const student = user as StudentUser
+   938→  const [confirmUnsubscribe, setConfirmUnsubscribe] = useState(false)
+   939→  const [deleting, setDeleting] = useState(false)
+   940→
+   941→  const handleUnsubscribe = async () => {
+   942→    if (!confirmUnsubscribe) {
+   943→      setConfirmUnsubscribe(true)
+   944→      return
+   945→    }
+   946→    setDeleting(true)
+   947→    try {
+   948→      const res = await fetch(`/api/student/unsubscribe?id=${student.id}`, { method: 'DELETE' })
+   949→      if (res.ok) {
+   950→        toast.success('Compte supprimé.')
+   951→        logout()
+   952→      } else {
+   953→        toast.error('Erreur lors de la suppression.')
+   954→      }
+   955→    } catch {
+   956→      toast.error('Erreur lors de la suppression.')
+   957→    }
+   958→    setDeleting(false)
+   959→  }
+   960→
+   961→  return (
+   962→    <div className="max-w-md mx-auto">
+   963→      <Card>
+   964→        <CardHeader className="flex flex-col items-center text-center">
+   965→          <Avatar className="size-16">
+   966→            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+   967→              {student.firstName[0]}{student.lastName[0]}
+   968→            </AvatarFallback>
+   969→          </Avatar>
+   970→          <CardTitle>{student.firstName} {student.lastName}</CardTitle>
+   971→        </CardHeader>
+   972→        <CardContent className="space-y-3">
+   973→          <div className="flex items-center gap-2 text-sm">
+   974→            <Mail className="size-4 text-muted-foreground" />
+   975→            <span>{student.email}</span>
+   976→          </div>
+   977→          <div className="flex items-center gap-2 text-sm">
+   978→            <School className="size-4 text-muted-foreground" />
+   979→            <span>{student.className}</span>
+   980→          </div>
+   981→          {student.schoolName && (
+   982→            <div className="flex items-center gap-2 text-sm">
+   983→              <School className="size-4 text-muted-foreground" />
+   984→              <span>{student.schoolName}</span>
+   985→            </div>
+   986→          )}
+   987→          {student.phone && (
+   988→            <div className="flex items-center gap-2 text-sm">
+   989→              <Phone className="size-4 text-muted-foreground" />
+   990→              <span>{student.phone}</span>
+   991→            </div>
+   992→          )}
+   993→        </CardContent>
+   994→        <CardFooter className="flex-col gap-2">
+   995→          <Button
+   996→            variant="destructive"
+   997→            onClick={handleUnsubscribe}
+   998→            disabled={deleting}
+   999→            className="w-full"
+  1000→          >
+  1001→            {deleting && <Loader2 className="size-4 mr-2 animate-spin" />}
+  1002→            {confirmUnsubscribe ? 'Confirmer la suppression ?' : 'Se désabonner'}
+  1003→          </Button>
+  1004→          {confirmUnsubscribe && (
+  1005→            <p className="text-sm text-red-600 text-center">Cette action est irréversible. Toutes vos données seront supprimées.</p>
+  1006→          )}
+  1007→          <Button variant="outline" onClick={logout} className="w-full">
+  1008→            <LogOut className="size-4 mr-2" /> Se déconnecter
+  1009→          </Button>
+  1010→        </CardFooter>
+  1011→      </Card>
+  1012→    </div>
+  1013→  )
+  1014→}
+  1015→
+  1016→// ===== Teacher Dashboard =====
+  1017→function TeacherDashboard() {
+  1018→  const { user, logout } = useAppStore()
+  1019→  const teacher = user as TeacherUser
+  1020→
+  1021→  return (
+  1022→    <div className="flex flex-col flex-1">
+  1023→      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
+  1024→        <div className="flex items-center gap-2">
+  1025→          <GraduationCap className="size-5 text-emerald-600" />
+  1026→          <span className="font-medium">{teacher.firstName}</span>
+  1027→        </div>
+  1028→        <Button variant="ghost" size="sm" onClick={logout}>
+  1029→          <LogOut className="size-4 mr-1" /> Déconnexion
+  1030→        </Button>
+  1031→      </div>
+  1032→      <div className="flex-1 p-4 overflow-y-auto">
+  1033→        <Tabs defaultValue="pending" className="w-full">
+  1034→          <TabsList className="w-full sm:w-auto">
+  1035→            <TabsTrigger value="pending">En attente</TabsTrigger>
+  1036→            <TabsTrigger value="students">Élèves</TabsTrigger>
+  1037→            <TabsTrigger value="comments">Commentaires</TabsTrigger>
+  1038→            <TabsTrigger value="profile">Mon profil</TabsTrigger>
+  1039→          </TabsList>
+  1040→          <TabsContent value="pending"><TeacherPendingView /></TabsContent>
+  1041→          <TabsContent value="students"><TeacherStudentsView /></TabsContent>
+  1042→          <TabsContent value="comments"><TeacherCommentsView /></TabsContent>
+  1043→          <TabsContent value="profile"><TeacherProfileView /></TabsContent>
+  1044→        </Tabs>
+  1045→      </div>
+  1046→    </div>
+  1047→  )
+  1048→}
+  1049→
+  1050→// ===== Teacher Pending View =====
+  1051→function TeacherPendingView() {
+  1052→  const [students, setStudents] = useState<StudentUser[]>([])
+  1053→  const [loading, setLoading] = useState(true)
+  1054→  const [actioning, setActioning] = useState<string | null>(null)
+  1055→
+  1056→  const fetchPending = async () => {
+  1057→    try {
+  1058→      const res = await fetch('/api/teacher/students')
+  1059→      if (res.ok) {
+  1060→        const data = await res.json()
+  1061→        setStudents(data.pendingStudents || [])
+  1062→      }
+  1063→    } catch { /* ignore */ }
+  1064→  }
+  1065→
+  1066→  useEffect(() => {
+  1067→    let cancelled = false
+  1068→    const load = async () => {
+  1069→      await fetchPending()
+  1070→      if (!cancelled) setLoading(false)
+  1071→    }
+  1072→    load()
+  1073→  }, [])
+  1074→
+  1075→  const handleAction = async (studentId: string, action: 'approved' | 'rejected') => {
+  1076→    setActioning(studentId)
+  1077→    try {
+  1078→      const res = await fetch('/api/teacher/approve', {
+  1079→        method: 'POST',
+  1080→        headers: { 'Content-Type': 'application/json' },
+  1081→        body: JSON.stringify({ studentId, action }),
+  1082→      })
+  1083→      if (res.ok) {
+  1084→        toast.success(action === 'approved' ? 'Élève approuvé.' : 'Inscription refusée.')
+  1085→        fetchPending()
+  1086→      }
+  1087→    } catch {
+  1088→      toast.error('Erreur.')
+  1089→    }
+  1090→    setActioning(null)
+  1091→  }
+  1092→
+  1093→  if (loading) {
+  1094→    return (
+  1095→      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  1096→        <Skeleton className="h-48 w-full" />
+  1097→        <Skeleton className="h-48 w-full" />
+  1098→        <Skeleton className="h-48 w-full" />
+  1099→      </div>
+  1100→    )
+  1101→  }
+  1102→
+  1103→  if (students.length === 0) {
+  1104→    return (
+  1105→      <div className="text-center text-muted-foreground py-12">
+  1106→        <CheckCircle className="size-12 mx-auto mb-3 text-emerald-400" />
+  1107→        <p>Aucune inscription en attente.</p>
+  1108→      </div>
+  1109→    )
+  1110→  }
+  1111→
+  1112→  return (
+  1113→    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  1114→      {students.map(s => (
+  1115→        <Card key={s.id} className="p-4">
+  1116→          <div className="flex items-center gap-3 mb-3">
+  1117→            <Avatar className="size-10">
+  1118→              <AvatarFallback className="bg-amber-100 text-amber-700">
+  1119→                {s.firstName[0]}{s.lastName[0]}
+  1120→              </AvatarFallback>
+  1121→            </Avatar>
+  1122→            <div>
+  1123→              <p className="font-medium text-sm">{s.firstName} {s.lastName}</p>
+  1124→              <p className="text-xs text-muted-foreground">{s.className}</p>
+  1125→            </div>
+  1126→          </div>
+  1127→          <div className="space-y-1 text-xs text-muted-foreground mb-3">
+  1128→            {s.schoolName && <p>📍 {s.schoolName}</p>}
+  1129→            <p>📧 {s.email}</p>
+  1130→            {s.phone && <p>📱 {s.phone}</p>}
+  1131→            <p>📅 {new Date(s.createdAt).toLocaleDateString('fr-FR')}</p>
+  1132→          </div>
+  1133→          <div className="flex gap-2">
+  1134→            <Button
+  1135→              size="sm"
+  1136→              className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+  1137→              disabled={actioning === s.id}
+  1138→              onClick={() => handleAction(s.id, 'approved')}
+  1139→            >
+  1140→              {actioning === s.id ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4 mr-1" />}
+  1141→              Approuver
+  1142→            </Button>
+  1143→            <Button
+  1144→              size="sm"
+  1145→              variant="outline"
+  1146→              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+  1147→              disabled={actioning === s.id}
+  1148→              onClick={() => handleAction(s.id, 'rejected')}
+  1149→            >
+  1150→              <XCircle className="size-4 mr-1" />
+  1151→              Refuser
+  1152→            </Button>
+  1153→          </div>
+  1154→        </Card>
+  1155→      ))}
+  1156→    </div>
+  1157→  )
+  1158→}
+  1159→
+  1160→// ===== Teacher Students View =====
+  1161→function TeacherStudentsView() {
+  1162→  const { setSelectedStudent } = useAppStore()
+  1163→  type StudentWithProgress = StudentUser & { progressCount: number; totalExercises: number }
+  1164→  const [students, setStudents] = useState<StudentWithProgress[]>([])
+  1165→  const [loading, setLoading] = useState(true)
+  1166→  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  1167→  const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
+  1168→
+  1169→  const fetchStudents = async () => {
+  1170→    try {
+  1171→      const res = await fetch('/api/teacher/students')
+  1172→      if (res.ok) {
+  1173→        const data = await res.json()
+  1174→        setStudents(data.students || [])
+  1175→      }
+  1176→    } catch { /* ignore */ }
+  1177→  }
+  1178→
+  1179→  useEffect(() => {
+  1180→    let cancelled = false
+  1181→    const load = async () => {
+  1182→      await fetchStudents()
+  1183→      if (!cancelled) setLoading(false)
+  1184→    }
+  1185→    load()
+  1186→  }, [])
+  1187→
+  1188→  const handleDelete = async (studentId: string) => {
+  1189→    if (confirmDeleteId !== studentId) {
+  1190→      setConfirmDeleteId(studentId)
+  1191→      return
+  1192→    }
+  1193→    try {
+  1194→      const res = await fetch(`/api/teacher/students/${studentId}`, { method: 'DELETE' })
+  1195→      if (res.ok) {
+  1196→        toast.success('Élève supprimé.')
+  1197→        setConfirmDeleteId(null)
+  1198→        fetchStudents()
+  1199→      }
+  1200→    } catch {
+  1201→      toast.error('Erreur lors de la suppression.')
+  1202→    }
+  1203→  }
+  1204→
+  1205→  if (loading) {
+  1206→    return <div className="space-y-3"><Skeleton className="h-12 w-full" /><Skeleton className="h-12 w-full" /></div>
+  1207→  }
+  1208→
+  1209→  return (
+  1210→    <>
+  1211→      {students.length === 0 ? (
+  1212→        <div className="text-center text-muted-foreground py-8">
+  1213→          <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+  1214→          <p>Aucun élève inscrit.</p>
+  1215→        </div>
+  1216→      ) : (
+  1217→        <Table>
+  1218→          <TableHeader>
+  1219→            <TableRow>
+  1220→              <TableHead>Nom</TableHead>
+  1221→              <TableHead className="hidden sm:table-cell">Email</TableHead>
+  1222→              <TableHead>Classe</TableHead>
+  1223→              <TableHead className="hidden md:table-cell">Établissement</TableHead>
+  1224→              <TableHead>Progression</TableHead>
+  1225→              <TableHead>Actions</TableHead>
+  1226→            </TableRow>
+  1227→          </TableHeader>
+  1228→          <TableBody>
+  1229→            {students.map(s => (
+  1230→              <TableRow
+  1231→                key={s.id}
+  1232→                className="cursor-pointer"
+  1233→                onClick={() => { setSelectedStudent(s); setProgressDialog(s) }}
+  1234→              >
+  1235→                <TableCell className="font-medium">{s.firstName} {s.lastName}</TableCell>
+  1236→                <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
+  1237→                <TableCell>{s.className}</TableCell>
+  1238→                <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
+  1239→                <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
+  1240→                <TableCell>
+  1241→                  <Button
+  1242→                    variant={confirmDeleteId === s.id ? 'destructive' : 'ghost'}
+  1243→                    size="icon"
+  1244→                    className="size-8"
+  1245→                    onClick={(e) => { e.stopPropagation(); handleDelete(s.id) }}
+  1246→                  >
+  1247→                    {confirmDeleteId === s.id ? (
+  1248→                      <span className="text-xs font-medium">Confirmer ?</span>
+  1249→                    ) : (
+  1250→                      <Trash2 className="size-4" />
+  1251→                    )}
+  1252→                  </Button>
+  1253→                </TableCell>
+  1254→              </TableRow>
+  1255→            ))}
+  1256→          </TableBody>
+  1257→        </Table>
+  1258→      )}
+  1259→
+  1260→      {progressDialog && (
+  1261→        <ProgressDialog student={progressDialog} onClose={() => { setProgressDialog(null); setSelectedStudent(null) }} />
+  1262→      )}
+  1263→    </>
+  1264→  )
+  1265→}
+  1266→
+  1267→// ===== Progress Dialog =====
+  1268→function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: () => void }) {
+  1269→  const [progress, setProgress] = useState<{ chapter: ChapterData; exercises: ExerciseData[] }[]>([])
+  1270→  const [loading, setLoading] = useState(true)
+  1271→  const [lightbox, setLightbox] = useState({ isOpen: false, imageUrl: '', label: '' })
+  1272→
+  1273→  useEffect(() => {
+  1274→    let cancelled = false
+  1275→    const load = async () => {
+  1276→      try {
+  1277→        const res = await fetch(`/api/teacher/students/${student.id}/progress`)
+  1278→        if (res.ok && !cancelled) {
+  1279→          const data = await res.json()
+  1280→          const mapped = (data.chapters || []).map((ch: { id: string; number: number; title: string; semester: string; exerciseCount: number; completedCount: number; exercises: ExerciseData[] }) => ({
+  1281→            chapter: { id: ch.id, number: ch.number, title: ch.title, semester: ch.semester, exerciseCount: ch.exerciseCount, completedCount: ch.completedCount } as ChapterData,
+  1282→            exercises: ch.exercises,
+  1283→          }))
+  1284→          setProgress(mapped)
+  1285→        }
+  1286→      } catch { /* ignore */ }
+  1287→      if (!cancelled) setLoading(false)
+  1288→    }
+  1289→    load()
+  1290→  }, [student.id])
+  1291→
+  1292→  const allExercises = progress.flatMap(p => p.exercises)
+  1293→  const totalExercises = allExercises.length
+  1294→  const completedCount = allExercises.filter(e => e.progress?.status === 'completed').length
+  1295→  const inProgressCount = allExercises.filter(e => e.progress?.status === 'in_progress').length
+  1296→  const difficultyCount = allExercises.filter(e => e.progress?.status === 'difficulty').length
+  1297→
+  1298→  return (
+  1299→    <>
+  1300→      <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+  1301→        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+  1302→          <DialogHeader>
+  1303→            <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
+  1304→            <DialogDescription>Classe : {student.className}</DialogDescription>
+  1305→          </DialogHeader>
+  1306→
+  1307→          {loading ? (
+  1308→            <div className="grid grid-cols-2 gap-3">
+  1309→              <Skeleton className="h-20 w-full" />
+  1310→              <Skeleton className="h-20 w-full" />
+  1311→              <Skeleton className="h-20 w-full" />
+  1312→              <Skeleton className="h-20 w-full" />
+  1313→            </div>
+  1314→          ) : (
+  1315→            <>
+  1316→              <div className="grid grid-cols-2 gap-3">
+  1317→                <div className="rounded-lg border p-3 bg-gray-50">
+  1318→                  <p className="text-xs text-muted-foreground">Total</p>
+  1319→                  <p className="text-2xl font-bold text-gray-700">{totalExercises}</p>
+  1320→                </div>
+  1321→                <div className="rounded-lg border p-3 bg-emerald-50">
+  1322→                  <p className="text-xs text-muted-foreground">Terminés</p>
+  1323→                  <p className="text-2xl font-bold text-emerald-700">{completedCount}</p>
+  1324→                </div>
+  1325→                <div className="rounded-lg border p-3 bg-amber-50">
+  1326→                  <p className="text-xs text-muted-foreground">En cours</p>
+  1327→                  <p className="text-2xl font-bold text-amber-700">{inProgressCount}</p>
+  1328→                </div>
+  1329→                <div className="rounded-lg border p-3 bg-red-50">
+  1330→                  <p className="text-xs text-muted-foreground">Difficulté</p>
+  1331→                  <p className="text-2xl font-bold text-red-700">{difficultyCount}</p>
+  1332→                </div>
+  1333→              </div>
+  1334→
+  1335→              <Accordion type="multiple" className="mt-4 space-y-2">
+  1336→                {progress.map(({ chapter, exercises }) => {
+  1337→                  const chapterCompleted = exercises.filter(e => e.progress?.status === 'completed').length
+  1338→                  return (
+  1339→                    <AccordionItem key={chapter.id} value={chapter.id} className="border rounded-lg px-4">
+  1340→                      <AccordionTrigger className="text-sm">
+  1341→                        <div className="flex items-center gap-3 flex-1 pr-4">
+  1342→                          <span>Ch.{chapter.number}: {chapter.title}</span>
+  1343→                          <Badge variant="secondary" className={chapterCompleted === chapter.exerciseCount ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+  1344→                            {chapterCompleted}/{chapter.exerciseCount} complétés
+  1345→                          </Badge>
+  1346→                          <Progress value={(chapterCompleted / chapter.exerciseCount) * 100} className="w-16 h-2" />
+  1347→                        </div>
+  1348→                      </AccordionTrigger>
+  1349→                      <AccordionContent>
+  1350→                        <div className="space-y-1">
+  1351→                          {exercises.map(ex => (
+  1352→                            <div key={ex.id} className="flex items-center gap-3 py-1">
+  1353→                              <span className="text-sm min-w-[40px]">Ex.{ex.number}</span>
+  1354→                              <StatusBadge status={ex.progress?.status || 'not_started'} />
+  1355→                              {ex.pageStart && (
+  1356→                                <ImageIcon
+  1357→                                  className="size-4 text-gray-400 cursor-pointer"
+  1358→                                  onClick={() => setLightbox({
+  1359→                                    isOpen: true,
+  1360→                                    imageUrl: exerciseImageUrl(chapter.number, ex.number),
+  1361→                                    label: `Ex.${ex.number}`,
+  1362→                                  })}
+  1363→                                />
+  1364→                              )}
+  1365→                            </div>
+  1366→                          ))}
+  1367→                        </div>
+  1368→                      </AccordionContent>
+  1369→                    </AccordionItem>
+  1370→                  )
+  1371→                })}
+  1372→              </Accordion>
+  1373→            </>
+  1374→          )}
+  1375→        </DialogContent>
+  1376→      </Dialog>
+  1377→
+  1378→      <ImageLightbox
+  1379→        key={lightbox.imageUrl}
+  1380→        isOpen={lightbox.isOpen}
+  1381→        imageUrl={lightbox.imageUrl}
+  1382→        label={lightbox.label}
+  1383→        onClose={() => setLightbox({ isOpen: false, imageUrl: '', label: '' })}
+  1384→      />
+  1385→    </>
+  1386→  )
+  1387→}
+  1388→
+  1389→// ===== Teacher Comments View =====
+  1390→function TeacherCommentsView() {
+  1391→  const [comments, setComments] = useState<CommentData[]>([])
+  1392→  const [loading, setLoading] = useState(true)
+  1393→  const [replyingTo, setReplyingTo] = useState<string | null>(null)
+  1394→  const [replyContent, setReplyContent] = useState('')
+  1395→  const [sending, setSending] = useState(false)
+  1396→
+  1397→  useEffect(() => {
+  1398→    let cancelled = false
+  1399→    const load = async () => {
+  1400→      try {
+  1401→        const res = await fetch('/api/remarks')
+  1402→        if (res.ok && !cancelled) {
+  1403→          const data = await res.json()
+  1404→          setComments(data.comments || [])
+  1405→        }
+  1406→      } catch { /* ignore */ }
+  1407→      if (!cancelled) setLoading(false)
+  1408→    }
+  1409→    load()
+  1410→  }, [])
+  1411→
+  1412→  const refetchComments = async () => {
+  1413→    try {
+  1414→      const res = await fetch('/api/remarks')
+  1415→      if (res.ok) {
+  1416→        const data = await res.json()
+  1417→        setComments(data.comments || [])
+  1418→      }
+  1419→    } catch { /* ignore */ }
+  1420→  }
+  1421→
+  1422→  const handleReply = async (commentId: string, studentId: string) => {
+  1423→    if (!replyContent.trim()) return
+  1424→    setSending(true)
+  1425→    try {
+  1426→      await fetch('/api/remarks', {
+  1427→        method: 'POST',
+  1428→        headers: { 'Content-Type': 'application/json' },
+  1429→        body: JSON.stringify({ studentId, commentId, content: replyContent }),
+  1430→      })
+  1431→      toast.success('Réponse envoyée.')
+  1432→      setReplyContent('')
+  1433→      setReplyingTo(null)
+  1434→      refetchComments()
+  1435→    } catch {
+  1436→      toast.error("Erreur lors de l'envoi.")
+  1437→    }
+  1438→    setSending(false)
+  1439→  }
+  1440→
+  1441→  if (loading) {
+  1442→    return <div className="space-y-3"><Skeleton className="h-24 w-full" /><Skeleton className="h-24 w-full" /></div>
+  1443→  }
+  1444→
+  1445→  if (comments.length === 0) {
+  1446→    return (
+  1447→      <div className="text-center text-muted-foreground py-8">
+  1448→        <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
+  1449→        <p>Aucun commentaire.</p>
+  1450→      </div>
+  1451→    )
+  1452→  }
+  1453→
+  1454→  return (
+  1455→    <div className="space-y-4 max-w-2xl">
+  1456→      {comments.map((comment) => (
+  1457→        <Card key={comment.id} className="p-4">
+  1458→          <p className="text-sm mb-2">{comment.content}</p>
+  1459→          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
+  1460→            <span className="font-medium text-foreground">{comment.student.firstName} {comment.student.lastName}</span>
+  1461→            <span>• {comment.student.className}</span>
+  1462→            {comment.exercise && (
+  1463→              <span>• Ch.{comment.exercise.chapter.number} — Ex.{comment.exercise.number}</span>
+  1464→            )}
+  1465→            <span>• {new Date(comment.createdAt).toLocaleDateString('fr-FR')}</span>
+  1466→          </div>
+  1467→
+  1468→          {comment.remarks.length > 0 && (
+  1469→            <div className="space-y-2 mb-3">
+  1470→              {comment.remarks.map((remark) => (
+  1471→                <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+  1472→                  <p className="text-sm text-emerald-800">{remark.content}</p>
+  1473→                  <span className="text-xs text-emerald-600 mt-1 block">
+  1474→                    {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
+  1475→                  </span>
+  1476→                </div>
+  1477→              ))}
+  1478→            </div>
+  1479→          )}
+  1480→
+  1481→          {replyingTo === comment.id ? (
+  1482→            <div className="flex gap-2 mt-2">
+  1483→              <Textarea
+  1484→                value={replyContent}
+  1485→                onChange={(e) => setReplyContent(e.target.value)}
+  1486→                placeholder="Votre réponse..."
+  1487→                rows={2}
+  1488→              />
+  1489→              <div className="flex flex-col gap-1">
+  1490→                <Button size="sm" onClick={() => handleReply(comment.id, comment.student.id)} disabled={sending || !replyContent.trim()} className="bg-emerald-600 hover:bg-emerald-700">
+  1491→                  {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+  1492→                </Button>
+  1493→                <Button size="sm" variant="outline" onClick={() => { setReplyingTo(null); setReplyContent('') }}>
+  1494→                  <X className="size-4" />
+  1495→                </Button>
+  1496→              </div>
+  1497→            </div>
+  1498→          ) : (
+  1499→            <Button variant="outline" size="sm" className="mt-2" onClick={() => setReplyingTo(comment.id)}>
+  1500→              Répondre
+  1501→            </Button>
+  1502→          )}
+  1503→        </Card>
+  1504→      ))}
+  1505→    </div>
+  1506→  )
+  1507→}
+  1508→
+  1509→// ===== Teacher Profile View =====
+  1510→function TeacherProfileView() {
+  1511→  const { user, logout } = useAppStore()
+  1512→  const teacher = user as TeacherUser
+  1513→  const [profile, setProfile] = useState<TeacherUser | null>(null)
+  1514→  const [currentPassword, setCurrentPassword] = useState('')
+  1515→  const [newPassword, setNewPassword] = useState('')
+  1516→  const [confirmPassword, setConfirmPassword] = useState('')
+  1517→  const [saving, setSaving] = useState(false)
+  1518→  const [error, setError] = useState('')
+  1519→
+  1520→  useEffect(() => {
+  1521→    const fetchProfile = async () => {
+  1522→      try {
+  1523→        const res = await fetch('/api/teacher/profile')
+  1524→        if (res.ok) {
+  1525→          const data = await res.json()
+  1526→          setProfile(data)
+  1527→        }
+  1528→      } catch { /* ignore */ }
+  1529→    }
+  1530→    fetchProfile()
+  1531→  }, [])
+  1532→
+  1533→  const displayTeacher = profile || teacher
+  1534→
+  1535→  const handleChangePassword = async () => {
+  1536→    setError('')
+  1537→    if (!currentPassword || !newPassword || !confirmPassword) {
+  1538→      setError('Tous les champs sont requis.')
+  1539→      return
+  1540→    }
+  1541→    if (newPassword.length < 4) {
+  1542→      setError('Le nouveau mot de passe doit contenir au moins 4 caractères.')
+  1543→      return
+  1544→    }
+  1545→    if (newPassword !== confirmPassword) {
+  1546→      setError('Les mots de passe ne correspondent pas.')
+  1547→      return
+  1548→    }
+  1549→    setSaving(true)
+  1550→    try {
+  1551→      const res = await fetch('/api/teacher/profile', {
+  1552→        method: 'PUT',
+  1553→        headers: { 'Content-Type': 'application/json' },
+  1554→        body: JSON.stringify({ currentPassword, newPassword }),
+  1555→      })
+  1556→      if (res.ok) {
+  1557→        toast.success('Mot de passe modifié.')
+  1558→        setCurrentPassword('')
+  1559→        setNewPassword('')
+  1560→        setConfirmPassword('')
+  1561→      } else {
+  1562→        setError('Mot de passe actuel incorrect.')
+  1563→      }
+  1564→    } catch {
+  1565→      setError('Erreur lors de la modification.')
+  1566→    }
+  1567→    setSaving(false)
+  1568→  }
+  1569→
+  1570→  return (
+  1571→    <div className="max-w-md mx-auto space-y-6">
+  1572→      <Card>
+  1573→        <CardHeader className="flex flex-col items-center text-center">
+  1574→          <Avatar className="size-16">
+  1575→            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+  1576→              <GraduationCap className="size-8" />
+  1577→            </AvatarFallback>
+  1578→          </Avatar>
+  1579→          <CardTitle>{displayTeacher.firstName} {displayTeacher.lastName}</CardTitle>
+  1580→          <CardDescription>{displayTeacher.status}</CardDescription>
+  1581→        </CardHeader>
+  1582→        <CardContent>
+  1583→          <div className="flex items-center gap-2 text-sm justify-center">
+  1584→            <Mail className="size-4 text-muted-foreground" />
+  1585→            <span>{displayTeacher.email}</span>
+  1586→          </div>
+  1587→        </CardContent>
+  1588→      </Card>
+  1589→
+  1590→      <Card>
+  1591→        <CardHeader>
+  1592→          <CardTitle className="text-base">Modifier le mot de passe</CardTitle>
+  1593→        </CardHeader>
+  1594→        <CardContent className="space-y-3">
+  1595→          {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
+  1596→          <div className="space-y-1.5">
+  1597→            <Label htmlFor="current-pw">Mot de passe actuel</Label>
+  1598→            <Input id="current-pw" type="password" autoComplete="new-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+  1599→          </div>
+  1600→          <div className="space-y-1.5">
+  1601→            <Label htmlFor="new-pw">Nouveau mot de passe</Label>
+  1602→            <Input id="new-pw" type="password" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+  1603→          </div>
+  1604→          <div className="space-y-1.5">
+  1605→            <Label htmlFor="confirm-pw">Confirmer le mot de passe</Label>
+  1606→            <Input id="confirm-pw" type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+  1607→          </div>
+  1608→          <Button onClick={handleChangePassword} disabled={saving} className="w-full bg-emerald-600 hover:bg-emerald-700">
+  1609→            {saving && <Loader2 className="size-4 mr-2 animate-spin" />}
+  1610→            Modifier le mot de passe
+  1611→          </Button>
+  1612→        </CardContent>
+  1613→      </Card>
+  1614→
+  1615→      <Button variant="outline" onClick={logout} className="w-full">
+  1616→        <LogOut className="size-4 mr-2" /> Se déconnecter
+  1617→      </Button>
+  1618→    </div>
+  1619→  )
+  1620→}
+  1621→
+  1622→// ===== App Header =====
+  1623→function AppHeader() {
+  1624→  return (
+  1625→    <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-lg">
+  1626→      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+  1627→        <div className="flex items-center gap-3">
+  1628→          <img src="/author-photo.jpg" alt="Br-Rachid" className="size-12 rounded-full border-2 border-white/40 object-cover" />
+  1629→          <div>
+  1630→            <p className="font-semibold text-sm">Br-Rachid</p>
+  1631→            <p className="text-xs text-emerald-100">Professeur de Mathématiques</p>
+  1632→          </div>
+  1633→        </div>
+  1634→        <div className="flex items-center gap-3">
+  1635→          <div className="text-right">
+  1636→            <p className="font-bold text-sm">Plateforme wahamath</p>
+  1637→            <p className="text-xs text-emerald-100">Cahier d&apos;exercices et de suivi — Niveau 2SM</p>
+  1638→          </div>
+  1639→          <img src="/wahamath-logo.png" alt="wahamath" className="w-[120px] hidden sm:block" />
+  1640→        </div>
+  1641→      </div>
+  1642→    </header>
+  1643→  )
+  1644→}
+  1645→
+  1646→// ===== App Footer =====
+  1647→function AppFooter() {
+  1648→  return (
+  1649→    <footer className="mt-auto border-t bg-gray-50 px-4 py-3">
+  1650→      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
+  1651→        <span>© wahamath 2026</span>
+  1652→        <a href="mailto:wahamath@hotmail.com" className="text-emerald-600 hover:text-emerald-700 transition-colors">
+  1653→          Contact: wahamath@hotmail.com
+  1654→        </a>
+  1655→      </div>
+  1656→    </footer>
+  1657→  )
+  1658→}
+  1659→
+  1660→// ===== Main Home Component =====
+  1661→export default function Home() {
+  1662→  const { currentView } = useAppStore()
+  1663→
+  1664→  return (
+  1665→    <div className="min-h-screen flex flex-col bg-background">
+  1666→      <style>{`
+  1667→        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  1668→        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+  1669→        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+  1670→        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+  1671→      `}</style>
+  1672→      <AppHeader />
+  1673→      <main className="flex-1">
+  1674→        {currentView === 'auth' && <AuthView />}
+  1675→        {currentView === 'student' && <StudentDashboard />}
+  1676→        {currentView === 'teacher' && <TeacherDashboard />}
+  1677→      </main>
+  1678→      <AppFooter />
+  1679→    </div>
+  1680→  )
+  1681→}
+  1682→

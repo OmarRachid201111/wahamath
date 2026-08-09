@@ -27,8 +27,8 @@ import {
 import { useAppStore, StudentUser, TeacherUser, ChapterData, ExerciseData, CommentData } from '@/lib/store'
 
 // ===== Helper =====
-function exerciseImageUrl(chapterNum: number, exNum: number): string {
-  return `/exercise-images/exercise-${chapterNum}-${exNum}.png`
+function pageImageUrl(pageNum: number): string {
+  return `/exercises-pages/page-${String(pageNum).padStart(3, '0')}.png`
 }
 
 // ===== Status Badge =====
@@ -274,12 +274,20 @@ function ExerciseDetailDialog({
     setSelectedExercise(exercises[newIndex])
   }
 
-  const imageUrl = exercise.pageStart ? exerciseImageUrl(chapter.number, exercise.number) : ''
+  // Build list of page images for this exercise
+  const pageImages: { url: string; pageNum: number }[] = []
+  if (exercise.pageStart) {
+    const start = exercise.pageStart
+    const end = exercise.pageEnd || start
+    for (let p = start; p <= end; p++) {
+      pageImages.push({ url: pageImageUrl(p), pageNum: p })
+    }
+  }
 
   return (
     <>
       <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg">
               Ch.{chapter.number} : {chapter.title} — Ex.{exercise.number} ({exercise.number}/{totalExercises})
@@ -289,20 +297,33 @@ function ExerciseDetailDialog({
             </DialogDescription>
           </DialogHeader>
 
-          {imageUrl && (
-            <div className="space-y-2">
-              <div className="relative rounded-lg overflow-hidden border bg-gray-50 max-h-64">
-                <img src={imageUrl} alt={`Exercice ${exercise.number}`} className="w-full h-full object-contain max-h-64" />
-              </div>
-              <Button variant="outline" size="sm" onClick={() => setLightbox({ isOpen: true, imageUrl, label: `Ex.${exercise.number}` })}>
-                <Eye className="size-4 mr-1" /> Agrandir
-              </Button>
+          {pageImages.length > 0 && (
+            <div className="space-y-3">
+              {pageImages.map((img) => (
+                <div key={img.pageNum} className="space-y-1.5">
+                  <div
+                    className="relative rounded-lg overflow-hidden border bg-white cursor-pointer"
+                    onClick={() => setLightbox({ isOpen: true, imageUrl: img.url, label: `Page ${img.pageNum}` })}
+                  >
+                    <img
+                      src={img.url}
+                      alt={`Page ${img.pageNum} — Exercice ${exercise.number}`}
+                      className="w-full h-auto object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setLightbox({ isOpen: true, imageUrl: img.url, label: `Page ${img.pageNum}` })}
+                  >
+                    <Eye className="size-4 mr-1" /> Agrandir la page {img.pageNum}
+                  </Button>
+                </div>
+              ))}
             </div>
           )}
-
-          <div className="rounded-lg border bg-gray-50 p-4">
-            <p className="text-sm whitespace-pre-wrap leading-relaxed">{exercise.content}</p>
-          </div>
 
           <div className="space-y-2">
             <Label className="text-sm font-medium">Statut</Label>
@@ -752,7 +773,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+                          setLightbox({ isOpen: true, imageUrl: pageImageUrl(ex.pageStart!), label: `Ex.${ex.number}` })
                         }
                       }}
                     />
@@ -778,7 +799,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          setLightbox({ isOpen: true, imageUrl: exerciseImageUrl(ch.number, ex.number), label: `Ex.${ex.number}` })
+                          setLightbox({ isOpen: true, imageUrl: pageImageUrl(ex.pageStart!), label: `Ex.${ex.number}` })
                         }
                       }}
                     />
@@ -1357,7 +1378,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
                                   className="size-4 text-gray-400 cursor-pointer"
                                   onClick={() => setLightbox({
                                     isOpen: true,
-                                    imageUrl: exerciseImageUrl(chapter.number, ex.number),
+                                    imageUrl: pageImageUrl(ex.pageStart!),
                                     label: `Ex.${ex.number}`,
                                   })}
                                 />
