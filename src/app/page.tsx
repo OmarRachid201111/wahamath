@@ -1706,8 +1706,8 @@ function AppHeader() {
             <p className="font-bold text-sm">Plateforme wahamath</p>
             <p className="text-xs text-emerald-100">Preparer votre avenir avec aisance</p>
           </div>
-          <ThemeToggle />
           <img src="/wahamath-logo.png" alt="wahamath" className="w-[120px] hidden sm:block" />
+          <ThemeToggle />
         </div>
       </div>
     </header>
