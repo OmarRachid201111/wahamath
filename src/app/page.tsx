@@ -18,11 +18,12 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { useTheme } from 'next-themes'
 import {
   BookOpen, LogOut, GraduationCap, ChevronLeft, ChevronRight, CheckCircle,
   Clock, Circle, AlertTriangle, ImageIcon, X, Loader2, Send,
   Trash2, MessageSquare, Plus, Minus, RotateCcw, ZoomIn, ZoomOut,
-  Eye, XCircle, User, Mail, Phone, School, Calendar
+  Eye, XCircle, User, Mail, Phone, School, Calendar, Sun, Moon
 } from 'lucide-react'
 import { useAppStore, StudentUser, TeacherUser, ChapterData, ExerciseData, CommentData } from '@/lib/store'
 
@@ -34,10 +35,10 @@ function pageImageUrl(pageNum: number): string {
 // ===== Status Badge =====
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; className: string }> = {
-    not_started: { label: 'Non commencé', className: 'bg-gray-100 text-gray-500' },
-    in_progress: { label: 'En cours', className: 'bg-amber-100 text-amber-700' },
-    completed: { label: 'Terminé', className: 'bg-emerald-100 text-emerald-700' },
-    difficulty: { label: 'Difficulté', className: 'bg-red-100 text-red-700' },
+    not_started: { label: 'Non commencé', className: 'bg-muted text-muted-foreground' },
+    in_progress: { label: 'En cours', className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400' },
+    completed: { label: 'Terminé', className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' },
+    difficulty: { label: 'Difficulté', className: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400' },
   }
   const c = config[status] || config.not_started
   return <Badge variant="secondary" className={c.className}>{c.label}</Badge>
@@ -352,7 +353,7 @@ function ExerciseDetailDialog({
               {pageImages.map((img) => (
                 <div key={img.pageNum} className="space-y-1.5">
                   <div
-                    className="relative rounded-lg overflow-hidden border bg-white cursor-pointer"
+                    className="relative rounded-lg overflow-hidden border bg-background cursor-pointer"
                     onClick={() => openLightbox(img.url, `Page ${img.pageNum}`)}
                   >
                     <img
@@ -378,25 +379,25 @@ function ExerciseDetailDialog({
           <div className="space-y-2">
             <Label className="text-sm font-medium">Statut</Label>
             <RadioGroup value={status} onValueChange={setStatus} className="grid grid-cols-2 gap-2">
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-gray-400">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-muted transition-colors has-[button[data-state=checked]]:border-muted-foreground">
                 <RadioGroupItem value="not_started" />
-                <Circle className="size-4 text-gray-500" />
-                <span className="text-sm text-gray-500">Non commencé</span>
+                <Circle className="size-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Non commencé</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-amber-400">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-muted transition-colors has-[button[data-state=checked]]:border-amber-500 dark:has-[button[data-state=checked]]:border-amber-400">
                 <RadioGroupItem value="in_progress" />
-                <Clock className="size-4 text-amber-600" />
-                <span className="text-sm text-amber-700">En cours</span>
+                <Clock className="size-4 text-amber-600 dark:text-amber-400" />
+                <span className="text-sm text-amber-700 dark:text-amber-400">En cours</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-emerald-400">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-muted transition-colors has-[button[data-state=checked]]:border-emerald-500 dark:has-[button[data-state=checked]]:border-emerald-400">
                 <RadioGroupItem value="completed" />
-                <CheckCircle className="size-4 text-emerald-600" />
-                <span className="text-sm text-emerald-700">Terminé</span>
+                <CheckCircle className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-sm text-emerald-700 dark:text-emerald-400">Terminé</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-gray-50 transition-colors has-[button[data-state=checked]]:border-red-400">
+              <label className="flex items-center gap-2 cursor-pointer rounded-lg border p-2 hover:bg-muted transition-colors has-[button[data-state=checked]]:border-red-500 dark:has-[button[data-state=checked]]:border-red-400">
                 <RadioGroupItem value="difficulty" />
-                <AlertTriangle className="size-4 text-red-600" />
-                <span className="text-sm text-red-700">Difficulté</span>
+                <AlertTriangle className="size-4 text-red-600 dark:text-red-400" />
+                <span className="text-sm text-red-700 dark:text-red-400">Difficulté</span>
               </label>
             </RadioGroup>
           </div>
@@ -427,7 +428,7 @@ function ExerciseDetailDialog({
               <div key={comment.id} className="space-y-2">
                 <div className="flex items-start gap-2">
                   <Avatar className="size-8">
-                    <AvatarFallback className="bg-emerald-100 text-emerald-700 text-xs">
+                    <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 text-xs">
                       {comment.student.firstName[0]}{comment.student.lastName[0]}
                     </AvatarFallback>
                   </Avatar>
@@ -444,9 +445,9 @@ function ExerciseDetailDialog({
                   </div>
                 </div>
                 {comment.remarks.length > 0 && comment.remarks.map((remark) => (
-                  <div key={remark.id} className="ml-10 bg-emerald-50 rounded-lg p-3 border border-emerald-100">
-                    <p className="text-sm text-emerald-800">{remark.content}</p>
-                    <span className="text-xs text-emerald-600 mt-1 block">
+                  <div key={remark.id} className="ml-10 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3 border border-emerald-100 dark:border-emerald-800/50">
+                    <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
+                    <span className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 block">
                       {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
                     </span>
                   </div>
@@ -584,18 +585,18 @@ function AuthView() {
     <div className="flex-1 flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="flex flex-col items-center text-center gap-2">
-          <div className="size-14 rounded-full bg-emerald-100 flex items-center justify-center">
-            <BookOpen className="size-7 text-emerald-600" />
+          <div className="size-14 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+            <BookOpen className="size-7 text-emerald-600 dark:text-emerald-400" />
           </div>
           <CardTitle className="text-xl">Cahier d&apos;exercices et de suivi</CardTitle>
           <CardDescription>2SM — Cahier interactif</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex rounded-lg border p-1 bg-gray-100">
+          <div className="flex rounded-lg border p-1 bg-muted">
             <button
               onClick={() => { setMode('login'); setShowTeacherLogin(false) }}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-                mode === 'login' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+                mode === 'login' ? 'bg-emerald-600 text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Connexion
@@ -603,7 +604,7 @@ function AuthView() {
             <button
               onClick={() => { setMode('register'); setShowTeacherLogin(false) }}
               className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
-                mode === 'register' ? 'bg-emerald-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-800'
+                mode === 'register' ? 'bg-emerald-600 text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               Inscription
@@ -713,11 +714,14 @@ function StudentDashboard() {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b bg-background">
         <span className="font-medium">{student.firstName} {student.lastName}</span>
-        <Button variant="ghost" size="sm" onClick={logout}>
-          <LogOut className="size-4 mr-1" /> Déconnexion
-        </Button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" onClick={logout}>
+            <LogOut className="size-4 mr-1" /> Déconnexion
+          </Button>
+        </div>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <Tabs defaultValue="chapters" className="w-full">
@@ -886,12 +890,12 @@ function ChapterRowInline({ chapter, isExpanded, isLoading, exercises, onToggle,
     <div className="rounded-lg border border-l-4 border-l-emerald-400 overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors text-left"
+        className="w-full flex items-center gap-3 p-3 hover:bg-muted transition-colors text-left"
       >
         <ChevronRight className={`size-4 text-muted-foreground transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
         <span className="font-medium text-sm">Ch.{chapter.number}:</span>
         <span className="flex-1 text-sm truncate">{chapter.title}</span>
-        <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+        <Badge variant="secondary" className={allDone ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'}>
           {chapter.completedCount}/{chapter.exerciseCount}
         </Badge>
         <Progress value={(chapter.completedCount / chapter.exerciseCount) * 100} className="w-16 h-2 hidden sm:block" />
@@ -900,7 +904,7 @@ function ChapterRowInline({ chapter, isExpanded, isLoading, exercises, onToggle,
         <div className="border-t px-3 pb-3 pt-2">
           {isLoading ? (
             <div className="flex items-center justify-center py-4">
-              <Loader2 className="size-5 animate-spin text-emerald-600" />
+              <Loader2 className="size-5 animate-spin text-emerald-600 dark:text-emerald-400" />
             </div>
           ) : (
             <div className="max-h-[60vh] overflow-y-auto custom-scrollbar space-y-1.5">
@@ -908,13 +912,13 @@ function ChapterRowInline({ chapter, isExpanded, isLoading, exercises, onToggle,
                 <button
                   key={ex.id}
                   onClick={() => onExerciseClick(ex)}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left hover:bg-muted transition-colors"
                 >
                   <span className="font-medium text-sm text-muted-foreground min-w-[40px]">Ex. {ex.number}</span>
                   <StatusBadge status={ex.progress?.status || 'not_started'} />
                   {ex.pageStart && (
                     <ImageIcon
-                      className="size-4 text-gray-400 ml-auto cursor-pointer"
+                      className="size-4 text-muted-foreground ml-auto cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); onImageClick(ex) }}
                     />
                   )}
@@ -975,8 +979,8 @@ function StudentCommentsView() {
             )}
           </div>
           {comment.remarks.length > 0 && comment.remarks.map((remark) => (
-            <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
-              <p className="text-sm text-emerald-800">{remark.content}</p>
+            <div key={remark.id} className="bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3 border border-emerald-100 dark:border-emerald-800/50">
+              <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
             </div>
           ))}
         </Card>
@@ -1017,7 +1021,7 @@ function StudentProfileView() {
       <Card>
         <CardHeader className="flex flex-col items-center text-center">
           <Avatar className="size-16">
-            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+            <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 text-lg">
               {student.firstName[0]}{student.lastName[0]}
             </AvatarFallback>
           </Avatar>
@@ -1056,7 +1060,7 @@ function StudentProfileView() {
             {confirmUnsubscribe ? 'Confirmer la suppression ?' : 'Se désabonner'}
           </Button>
           {confirmUnsubscribe && (
-            <p className="text-sm text-red-600 text-center">Cette action est irréversible. Toutes vos données seront supprimées.</p>
+            <p className="text-sm text-red-600 dark:text-red-400 text-center">Cette action est irréversible. Toutes vos données seront supprimées.</p>
           )}
           <Button variant="outline" onClick={logout} className="w-full">
             <LogOut className="size-4 mr-2" /> Se déconnecter
@@ -1074,14 +1078,17 @@ function TeacherDashboard() {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b bg-background">
         <div className="flex items-center gap-2">
-          <GraduationCap className="size-5 text-emerald-600" />
+          <GraduationCap className="size-5 text-emerald-600 dark:text-emerald-400" />
           <span className="font-medium">{teacher.firstName}</span>
         </div>
-        <Button variant="ghost" size="sm" onClick={logout}>
-          <LogOut className="size-4 mr-1" /> Déconnexion
-        </Button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Button variant="ghost" size="sm" onClick={logout}>
+            <LogOut className="size-4 mr-1" /> Déconnexion
+          </Button>
+        </div>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <Tabs defaultValue="pending" className="w-full">
@@ -1157,7 +1164,7 @@ function TeacherPendingView() {
   if (students.length === 0) {
     return (
       <div className="text-center text-muted-foreground py-12">
-        <CheckCircle className="size-12 mx-auto mb-3 text-emerald-400" />
+        <CheckCircle className="size-12 mx-auto mb-3 text-emerald-500 dark:text-emerald-600" />
         <p>Aucune inscription en attente.</p>
       </div>
     )
@@ -1169,7 +1176,7 @@ function TeacherPendingView() {
         <Card key={s.id} className="p-4">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="size-10">
-              <AvatarFallback className="bg-amber-100 text-amber-700">
+              <AvatarFallback className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
                 {s.firstName[0]}{s.lastName[0]}
               </AvatarFallback>
             </Avatar>
@@ -1197,7 +1204,7 @@ function TeacherPendingView() {
             <Button
               size="sm"
               variant="outline"
-              className="flex-1 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+              className="flex-1 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-300"
               disabled={actioning === s.id}
               onClick={() => handleAction(s.id, 'rejected')}
             >
@@ -1370,21 +1377,21 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-lg border p-3 bg-gray-50">
+                <div className="rounded-lg border p-3 bg-muted">
                   <p className="text-xs text-muted-foreground">Total</p>
-                  <p className="text-2xl font-bold text-gray-700">{totalExercises}</p>
+                  <p className="text-2xl font-bold">{totalExercises}</p>
                 </div>
-                <div className="rounded-lg border p-3 bg-emerald-50">
+                <div className="rounded-lg border p-3 bg-emerald-50 dark:bg-emerald-900/30">
                   <p className="text-xs text-muted-foreground">Terminés</p>
-                  <p className="text-2xl font-bold text-emerald-700">{completedCount}</p>
+                  <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{completedCount}</p>
                 </div>
-                <div className="rounded-lg border p-3 bg-amber-50">
+                <div className="rounded-lg border p-3 bg-amber-50 dark:bg-amber-900/30">
                   <p className="text-xs text-muted-foreground">En cours</p>
-                  <p className="text-2xl font-bold text-amber-700">{inProgressCount}</p>
+                  <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">{inProgressCount}</p>
                 </div>
-                <div className="rounded-lg border p-3 bg-red-50">
+                <div className="rounded-lg border p-3 bg-red-50 dark:bg-red-900/30">
                   <p className="text-xs text-muted-foreground">Difficulté</p>
-                  <p className="text-2xl font-bold text-red-700">{difficultyCount}</p>
+                  <p className="text-2xl font-bold text-red-700 dark:text-red-400">{difficultyCount}</p>
                 </div>
               </div>
 
@@ -1396,7 +1403,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
                       <AccordionTrigger className="text-sm">
                         <div className="flex items-center gap-3 flex-1 pr-4">
                           <span>Ch.{chapter.number}: {chapter.title}</span>
-                          <Badge variant="secondary" className={chapterCompleted === chapter.exerciseCount ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+                          <Badge variant="secondary" className={chapterCompleted === chapter.exerciseCount ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'}>
                             {chapterCompleted}/{chapter.exerciseCount} complétés
                           </Badge>
                           <Progress value={(chapterCompleted / chapter.exerciseCount) * 100} className="w-16 h-2" />
@@ -1410,7 +1417,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
                               <StatusBadge status={ex.progress?.status || 'not_started'} />
                               {ex.pageStart && (
                                 <ImageIcon
-                                  className="size-4 text-gray-400 cursor-pointer"
+                                  className="size-4 text-muted-foreground cursor-pointer"
                                   onClick={() => openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)}
                                 />
                               )}
@@ -1511,9 +1518,9 @@ function TeacherCommentsView() {
           {comment.remarks.length > 0 && (
             <div className="space-y-2 mb-3">
               {comment.remarks.map((remark) => (
-                <div key={remark.id} className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
-                  <p className="text-sm text-emerald-800">{remark.content}</p>
-                  <span className="text-xs text-emerald-600 mt-1 block">
+                <div key={remark.id} className="bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3 border border-emerald-100 dark:border-emerald-800/50">
+                  <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 block">
                     {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
@@ -1615,7 +1622,7 @@ function TeacherProfileView() {
       <Card>
         <CardHeader className="flex flex-col items-center text-center">
           <Avatar className="size-16">
-            <AvatarFallback className="bg-emerald-100 text-emerald-700 text-lg">
+            <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400 text-lg">
               <GraduationCap className="size-8" />
             </AvatarFallback>
           </Avatar>
@@ -1635,7 +1642,7 @@ function TeacherProfileView() {
           <CardTitle className="text-base">Modifier le mot de passe</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {error && <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{error}</p>}
+          {error && <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</p>}
           <div className="space-y-1.5">
             <Label htmlFor="current-pw">Mot de passe actuel</Label>
             <Input id="current-pw" type="password" autoComplete="new-password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
@@ -1662,6 +1669,26 @@ function TeacherProfileView() {
   )
 }
 
+// ===== Theme Toggle =====
+function ThemeToggle() {
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const hasMounted = useRef<boolean | null>(null)
+  if (hasMounted.current == null) { hasMounted.current = typeof window !== 'undefined' }
+  const isDark = resolvedTheme === 'dark'
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="size-9 text-white hover:bg-white/20 hover:text-white"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      aria-label="Basculer le thème"
+    >
+      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+    </Button>
+  )
+}
+
 // ===== App Header =====
 function AppHeader() {
   return (
@@ -1679,6 +1706,7 @@ function AppHeader() {
             <p className="font-bold text-sm">Plateforme wahamath</p>
             <p className="text-xs text-emerald-100">Preparer votre avenir avec aisance</p>
           </div>
+          <ThemeToggle />
           <img src="/wahamath-logo.png" alt="wahamath" className="w-[120px] hidden sm:block" />
         </div>
       </div>
@@ -1689,10 +1717,10 @@ function AppHeader() {
 // ===== App Footer =====
 function AppFooter() {
   return (
-    <footer className="mt-auto border-t bg-gray-50 px-4 py-3">
+    <footer className="mt-auto border-t bg-muted px-4 py-3">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-muted-foreground">
         <span>© wahamath 2026</span>
-        <a href="mailto:wahamath@hotmail.com" className="text-emerald-600 hover:text-emerald-700 transition-colors">
+        <a href="mailto:wahamath@hotmail.com" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors">
           Contact: wahamath@hotmail.com
         </a>
       </div>
@@ -1708,9 +1736,9 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background">
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--muted); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--muted-foreground); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--foreground); }
       `}</style>
       <AppHeader />
       <main className="flex-1">
