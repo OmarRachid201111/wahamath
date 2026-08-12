@@ -1693,7 +1693,7 @@ function ThemeToggle() {
 function AppHeader() {
   return (
     <header className="sticky top-0 z-40 bg-gradient-to-r from-emerald-700 to-teal-600 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 py-3 grid grid-cols-3 items-center">
         <div className="flex items-center gap-3">
           <img src="/author-photo.jpg" alt="Br-Rachid" className="size-12 rounded-full border-2 border-white/40 object-cover" />
           <div className="hidden sm:block">
@@ -1701,11 +1701,11 @@ function AppHeader() {
             <p className="text-xs text-emerald-100">Enseignant et encadrant de mathématiques</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex justify-center">
+          <ThemeToggle />
+        </div>
+        <div className="flex justify-end">
           <img src="/wahamath-logo.png" alt="wahamath" className="h-10 hidden sm:block" />
-          <div className="flex items-center justify-center">
-            <ThemeToggle />
-          </div>
         </div>
       </div>
     </header>
