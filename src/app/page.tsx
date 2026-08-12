@@ -1696,18 +1696,16 @@ function AppHeader() {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/author-photo.jpg" alt="Br-Rachid" className="size-12 rounded-full border-2 border-white/40 object-cover" />
-          <div>
+          <div className="hidden sm:block">
             <p className="font-semibold text-sm">Br-Rachid</p>
             <p className="text-xs text-emerald-100">Enseignant et encadrant de mathématiques</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="hidden sm:block text-right">
-            <p className="font-bold text-sm">Plateforme wahamath</p>
-            <p className="text-xs text-emerald-100">Preparer votre avenir avec aisance</p>
-          </div>
           <img src="/wahamath-logo.png" alt="wahamath" className="h-10 hidden sm:block" />
-          <ThemeToggle />
+          <div className="flex items-center justify-center">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>
