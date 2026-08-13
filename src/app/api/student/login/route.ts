@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
 
     const { password: _, ...studentWithoutPassword } = student
     return NextResponse.json(studentWithoutPassword)
-  } catch {
+  } catch (error) {
+    console.error('Student login failed:', error)
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }

@@ -13,6 +13,6 @@
    `db:seed` resets chapters and exercises; do not run it after students have started using the app.
 5. In Vercel, import this repository. Keep **Next.js** and root directory `./` selected.
 6. Under **Environment Variables**, add both `DATABASE_URL` (pooled) and `DIRECT_URL` (direct/non-pooled) for **Production**, **Preview**, and **Development**. Do not add either with a `NEXT_PUBLIC_` prefix.
-7. Deploy. The build applies pending Prisma migrations before `next build`.
+7. Deploy. The build generates Prisma Client and builds Next.js. Apply pending migrations separately with `bun run db:deploy` using the direct connection URL before deploying.
 
 The original SQLite file at `db/custom.db` is left untouched. The seed command creates the teacher, chapters, and exercises in the new PostgreSQL database. Existing student accounts, comments, and progress require a separate data migration if they need to be retained.
