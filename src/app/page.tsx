@@ -829,7 +829,7 @@ function StudentChaptersView() {
         <Accordion type="multiple" className="space-y-2">
           {analyse.length > 0 && (
             <AccordionItem value="analyse" className="border rounded-lg px-4">
-              <AccordionTrigger className="font-semibold">I. Analyse</AccordionTrigger>
+              <AccordionTrigger className="font-semibold">Chapitres</AccordionTrigger>
               <AccordionContent>
                 <div className="space-y-1">
                   {analyse.map(ch => (
