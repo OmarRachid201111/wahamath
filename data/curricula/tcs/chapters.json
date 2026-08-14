@@ -1,0 +1,883 @@
+[
+  {
+    "number": 1,
+    "title": "Éléments d'arithmétique",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "1.\nLe nombre  4710  est-il divisible par  2  ?  par  3  ?  par  5 ?\n2. On pose   x=24200   et   y=1100\na- Ecrire  √x sous la forme de  a√2 et écrire  √y sous la forme de  b√11\nb- Donner deux diviseurs communs de  x  et  y\nc- Donner deux multiples communs de   x  et   y\nd- Simplifier et donner la forme irréductible de la fraction   x\ny\ne- Montrer que   y\n11  est un carré parfait et calculer sa racine carrée\nf- Calculer\n17\n24200−19\n1100 en utilisant le plus petit dénominateur"
+      },
+      {
+        "number": 2,
+        "content": "3. Montrer que  311 est un entier premier\n4. On pose  x=312  et   y=1188\na- Déterminer   Dx  l’ensemble des diviseurs de  x\nb- Décomposer  x  et  y  en produit de facteurs premiers\nc- En déduire  PGDC(x , y)  et   PPMC(x , y)"
+      },
+      {
+        "number": 3,
+        "content": "Soient   A=4719   et   B=1859\n1.\nDécomposer  A et  B  en produit de facteurs premiers\n2.\nA est-il premier ?\n3. Déterminer  PGDC(A ,B)  et   PPMC(A ,B)\n4. Vérifier que   PGDC (A ,B)×PPMC (A ,B)=AB"
+      },
+      {
+        "number": 4,
+        "content": "Soit   n un entier naturel supérieur ou égal à  1\n1.\nMontrer que   n\n2−n+1  et   n\n2+n+1  sont impairs\n2. En déduire que   n\n4+n\n2+1  est impair\n3. Montrer que   n\n4+n\n3  est pair .   En déduire la parité de   n\n4+2n\n3+n\n2\n4. Déterminer la parité de l’entier naturel   2−n+5n\n2"
+      },
+      {
+        "number": 5,
+        "content": "Soient  n et  m deux entiers naturels tels que  mn−2m−n−4=0\n1.\nVérifier que    mn−2m−n−4=(m−1)(n−2)−6\n2. En déduire les valeurs de   n  et de   m"
+      },
+      {
+        "number": 6,
+        "content": "1.\nCalculer   a  avec  n\n3+4n\n2+5n+2=(n+1)\n2(n+a)  pour tout  n∈ℕ\n2. En déduire les valeurs de   n∈ℕ  tel que  n\n3+4n\n2+5n−10=0"
+      },
+      {
+        "number": 7,
+        "content": "1.\nMontrer que   53361  est un carré parfait\n2. Soit   n∈ℕ .   Montrer que   9n\n2+30n+25  est un carré parfait\n3. Soit   n  un entier naturel\na- Déterminer trois entiers naturels   a et   b et   c qui vérifient :\n(an\n2+bn+c)2=n\n4+2n\n3+3n\n2+2n+1\nb- En déduire que   n\n4+2n\n3+3n\n2+2n+1 est un carré parfait"
+      },
+      {
+        "number": 8,
+        "content": "1.\nVérifier que  (n+1)\n2<(n+1)(n+2)<(n+2)\n2  pour toutn∈ℕ\n2. En déduire,  par l’absurde, que   n\n2+3n+2  n’est pas un carré parfait"
+      },
+      {
+        "number": 9,
+        "content": "1.\nJustifier que tout  n∈ℕ  s’ecrit   n=2k  ou   n=2k+1  avec k∈ℕ\n2. En déduire que   n(n+1)\n2\n∈ℕ\n3. Montrer de meme, par disjonction des cas que  n(n+1)(n+2)\n3\n∈ℕ"
+      },
+      {
+        "number": 10,
+        "content": "On pose    N=3n+15\nn+1    avec  n∈ℕ\n1.\nVérifier que   N=3+ 12\nn+1  et deduire les valeurs de  n telles que N∈ℕ\n2. On pose   M=21n+10\n7n+3\na- Calculer les entiers   a et  b tels que   N=a+\nb\n7n+3\nb- Montrer, par l’absurde, que\n1\n7n+3∉ℕ.   En déduire que  M∉ℕ"
+      },
+      {
+        "number": 11,
+        "content": "On considère l’équation  (E):5x+2 y=18 dans ℕ\n1-\nVérifier que   (0,9)  est une solution de   (E)\n2- Montrer que  x  est pair\n3- a- Soit   d=PGDC(x, y).  Vérifier que d divise 5 x et divise 2 y\nb- En deduire que   d∈{1,2,3,6 ,9,18}"
+      },
+      {
+        "number": 12,
+        "content": "Soit le système   (S):{\nx+ y−24=0\nPGDC (x, y)=3  avec  x∈ℕ  et y∈ℕ\n1.\nMontrer que x et y sont des multiples de 3 inferieurs a 24\n2. Donner l’ensemble des solutions de   (S)"
+      },
+      {
+        "number": 13,
+        "content": "Soit le système   (S):{\nxy−150=0\nPGDC (x, y)=5  avec   x∈ℕ   et   y∈ℕ\n1.\nFormer l’ensemble  D150\n2. Montrer que   x∈D150∩M 5   et   y ∈D150∩M5\n3. Donner l’ensemble des solutions de   (S)"
+      },
+      {
+        "number": 14,
+        "content": "Deux voitures  A  et  B  partent en même temps de la ligne de départ et font\nplusieurs tours d’un même circuit..   La voiture  A  fait le tour du circuit en  36 s\nalors que  B  le fait en  30s\n1.\nDans combien de temps les deux voitures vont se croiser pour la première\nfois sur la ligne de départ ?\n2. Quel est alors le nombre de tours qu’avait effectuée chacune d’elle ?"
+      },
+      {
+        "number": 15,
+        "content": "Soient   a∈ℕ  et   b∈ℕ   et   c∈ℕ  avec   b>c\nOn rappelle que si   a  divise   b   et divise   c  alors   a  divise   b−c\n1.\nEn utilisant la regle précèdente, Déterminer    PGDC(432,274)\n2. Soit   d=PGDC(2n+1,3n+1) .  Montrer que   d  divise   n\n3. En déduire que   2n+1  et   3n+1  sont premiers entre eux"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "title": "Les ensembles de nombres",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "1.\nCalculer et simplifier\n−1+\n1\n1+√5\n1+ √5\n1+√5\n2. Montrer que    √19−6√2−\n17\n3√2+1\n=0\n3. Montrer que     6√52\n√13 −(5−√13)(5+√13)=0"
+      },
+      {
+        "number": 2,
+        "content": "1.\nRendre le dénominateur des nombres suivants entier naturel :\na= √7−√19\n√13+√7     et    b=\n√2\n√√2+1\net    c=\n1\n√2+√3−√5\n2. Rendre le numérateur des nombres suivants entier relatif :\na= √7−√19\n√13+√7     et    b=\n√2\n√√2+1\net     c=\n2\n3\n√2+√3−√5"
+      },
+      {
+        "number": 3,
+        "content": "1.\nMontrer que   (√7−2√6−√7+2√6)\n2=4\n2. En déduire le calcul de  √7−2√6−√7+2√6"
+      },
+      {
+        "number": 4,
+        "content": "Soit   x∈ℝ\n+  tel que  √x+9+√x=18\nMontrer que   √x+9−√x=1\n2  .   En deduire la valeur de  x"
+      },
+      {
+        "number": 5,
+        "content": "Soient   a  ,  b  et  c  trois nombres réels strictement positifs tels que\n√a=√b+√c     et     a+b≠c     et       a+c≠b\nMontrer que      √a\n2a=\n√b\na+b−c=\n√c\na−b+c  ."
+      },
+      {
+        "number": 6,
+        "content": "Soient  a  ,  b  et  c  trois nombres réels tels que 0<a<b<c    et     2b=a+c\nMontrer que\n2\n√c+√a\n=\n1\n√a+√b\n+\n1\n√b+√c    ."
+      },
+      {
+        "number": 7,
+        "content": "Soient  x≥1  et  y ≥1  tels que  x≥y  et   x²−1= y²\nMontrer que    √x+1=√\nx−y\n2\n+√\nx+ y\n2     ."
+      },
+      {
+        "number": 8,
+        "content": "Soient  a>0  et  n∈N.   Montrer que  √a\n2n+1−√a\n2n=a\nn(√a−1)"
+      },
+      {
+        "number": 9,
+        "content": "Soient    x≥0  et   y≥0  tels que    x+ y\n2 =√xy  .   Montrer que     x=y"
+      },
+      {
+        "number": 10,
+        "content": "Soient   x≥3  et  y ≥−1  tels que   √x−3+√y+1=1\n2 (x+ y)\n1.\nMontrer que :    (√x−3−1)\n2+(√y+1−1)\n2=0\n2. En déduire que   x=4    et     y=0"
+      },
+      {
+        "number": 11,
+        "content": "Factoriser les expressions suivantes :\n1.\nE=9 x²+(3 x−1)(3 x+5)−25\n2.\nF=x\n3−8−4(x−2)+x\n2−2x  .\n3. G=x\n3−2√2−(√2x+2)(x−√2)\n4. H=a\n3+b\n3+a\n2−b\n2      et     I=27 x\n3−1\n8+3 x−1\n2\n5.\nJ=x\n12+2 x\n6+1    et    K=x\n3−x\n2+x−1"
+      },
+      {
+        "number": 12,
+        "content": "Soit  x  un nombre réel tel que    x≠1\n1.\nMontrer que     x\n6−1=(x−1)(x\n5+x\n4+x\n3+x\n2+x+1)\n2. En déduire la valeur de     S=1+1\n2+ 1\n4+ 1\n8 + 1\n16 + 1\n32"
+      },
+      {
+        "number": 13,
+        "content": "Soit   a∈ℝ\n+  tel que    √a+7+√a=21\n1.\nMontrer que   3(√a+23−√a)=1\n2. En déduire la valeur de  √a  puis calculer  a"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "title": "Calcul vectoriel dans le plan",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "Soit  ABC un triangle. Le point  M est définie par  2⃗\nMA−⃗\nMC+3⃗\nMB=⃗0\n1.\nExprimer  ⃗\nAM  en fonction de  ⃗\nAB  et  ⃗\nAC\n2. Construire le point  M en utilisant une règle et un compact"
+      },
+      {
+        "number": 2,
+        "content": "Soit  ABC un triangle.   M et  N sont tels que ⃗\nAM=1\n3⃗\nAB   et   ⃗\nAN=3⃗\nAC\n1.\nCalculer le nombre réel a tel que    ⃗\nBN=a⃗\nMC\n2. En deduire que les droites  (BN)  et  (MC) sont parallèles\n3. Soit le point  K tel que   ⃗\nAK=⃗\nAB+9⃗\nAC\n4. Montrer que  A et  M et  K sont alignés"
+      },
+      {
+        "number": 3,
+        "content": "ABCD est un parallélogramme.  M est tel que ⃗\nAC+⃗\nAD=⃗\nAM .  N est tel\nque  ABNC est un parallélogramme et  K est définie par  ⃗\nKM +⃗\nKN+⃗\nAK=⃗0\n1.\nMontrer que  ⃗\nAM+⃗\nAN=⃗\nAK  et faire un schema\n2. Montrer que  AMKN est un parallélogramme\n3. Montrer que  ⃗\nAK=3⃗\nAC et déduire que  A et  C et  K sont alignés"
+      },
+      {
+        "number": 4,
+        "content": "Soit ABC un triangle.  Les points I et J et K sont definies par\nles relations   ⃗\nAI=1\n3⃗\nAC   et   ⃗\nBJ+⃗\nBC=⃗0   et   ⃗\nBK=⃗\nBA+⃗\nBC\n1.\nFaire un schema\n2. Montrer que  ⃗\nAJ=2⃗\nAB−⃗\nAC  .  En déduire que  ⃗\nIJ=2⃗\nAB−4\n3⃗\nAC\n3. Ecrire  ⃗\nIK  en fonction de  ⃗\nAC  et de  ⃗\nAB\n4. En déduire que I et J et K sont alignés"
+      },
+      {
+        "number": 5,
+        "content": "Soit   [ AB]  un segment de longueur   a (a>0) .   Soient  I  et  J  les milieux\nrespectifs de   [ AB]  et   [ AI ]   et  (C)  le cercle de diamètre  [ AB]\nSoit D le point de   (C) tel que   IDB  est un triangle équilatéral\n1.\nFaire un schéma puis représenter le point  E  tel que   ⃗\nDA+⃗\nDB=⃗\nDE\n2. Montrer que   E appartient au cercle  (C)\n3. La droite   (∆)  qui passe par  I et perpendiculaire à  (AD) coupe   (C)\nau point  F.   Montrer que   AIDF  est un parallélogramme\n4. Montrer que  J  est "
+      },
+      {
+        "number": 6,
+        "content": "ABC est un triangle.  On pose  ⃗\nAB=⃗u  et  ⃗\nAC=⃗v.  Les points  P  et  M et  N\nsont tels que   4⃗\nBM +⃗\nBC=⃗0  et   4⃗\nCN−⃗\nAC=⃗0   et   5⃗\nAP−4⃗\nAB=⃗0\n1.\nMontrer que  ⃗\nAN= 5\n4 ⃗v  puis calculer ⃗\nAM  en fonction de   ⃗u  et  ⃗v\n2. Calculer   ⃗\nBN  et  ⃗\nCP  en fonction de  ⃗u  et  ⃗v\n3. Montrer que les droites  (BN) et  (CP) sont parallèles\n4. Les points  I et  K sont les centres des segments   [BN ]  et   [CP]\na- Calculer  ⃗\nAI  et  ⃗\nAK en fonction de  ⃗u  et  ⃗v\nb- En déduire que les poin"
+      },
+      {
+        "number": 7,
+        "content": "A  et   B  et   M  verifient   p⃗\nMA+(1−p)⃗\nMB=⃗0   avec   p∈[0,1]\n1.\nDéterminer le lieu de  M  lorsque   p=0  ou  p=1  ou  p=0,5\n2. Montrer que   M ∈[ AB]\n3. Soit  N ∈[ AB] .   Montrer qu’il existe  α∈[0,1]  tel que  ⃗\nAN=α⃗\nAB\n4. Montrer que   α⃗\nNA+(1−α)⃗\nNB=⃗0\n5. Calculer  α lorsque  ⃗\nAN=0,4⃗\nAB"
+      },
+      {
+        "number": 8,
+        "content": "Soit  ABC   un triangle. Les points  A’ et  B’ et  C’ sont  les milieux respectifs\ndes segments   [BC]  et   [ AC]  et   [ AB]\nSoit  G le point de rencontre des droites   (AA ’)  et   (BB’)  et   (CC ’)\n1.\nFaire un schéma\n2. Montrer que  ⃗\nAA' +⃗\nBB'+⃗\nCC '=⃗0\n3. Soit  D le symétrique de  G  pour  A’\na- Verifier que   GCDB  est un parallélogramme\nb- Montrer que  ⃗\nAG=2\n3⃗\nAA '  et  ⃗\nBG=2\n3⃗\nBB'  et   ⃗\nCG=2\n3⃗\nCC '\n4. Soit  D est le symétrique de  C  par rapport à   C’\na- Vérifier que  ⃗\nAD=⃗\nC"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "title": "La projection dans le plan",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "ABDC est un quadrilatère convexe . Les points  I et  J  sont les milieux  de\n[ AC]  et   [BC].  La parallèle à (AD) passant par  I  coupe  (CD)  en  K\n1.\nFaire un schéma\n2. En utilisant une projection  p  ,  montrer que  K est le milieu de  [CD]\n3. Montrer que   (IK)⊥(CD)   et que   ⃗\nIJ=1\n2⃗\nAB"
+      },
+      {
+        "number": 2,
+        "content": "ABCD  est un trapèze convexe avec  CD=2 AB  et   {I }=(AC)∩(BD)\n1.\na- Montrer que    ⃗\nIA=−1\n2 ⃗\nIC    et     ⃗\nIB=−1\n2 ⃗\nID\nb- En déduire que    ⃗\nIA=−1\n3 ⃗\nAC    et     ⃗\nIB=−1\n3 ⃗\nBD\n2. Soient  E  le projeté de   I  sur  (DC)  parallèlement à   (BC)  et   F  le\nprojeté de   I  sur   (BC)  parallèlement à  (AD)\nMontrer que   ⃗\nDF=⃗\nEC=1\n3⃗\nDC\n3. Montrer que les segments    [CD]   et    [EF]   ont le même milieu"
+      },
+      {
+        "number": 3,
+        "content": "Dans le schéma  ABC  est un triangle.  Les points  M et  N et  D  sont tels que\nCD=1\n3 CB  et   DA= 1\n2 DM  et   MN= 1\n4 BM\n1.\nMontrer que  ⃗\nMB= 4\n3⃗\nAB+ 2\n3⃗\nAC   et   ⃗\nNB=⃗\nAB+ 1\n2⃗\nAC\n2. Montrer que les points N et A et C sont alignés\n3. Soient E∈]AB[ et I son projeté sur (BC) parrallelement a\n(AD) et J son projeté sur (MN) parrallelement a (AN)\nMontrer que (IJ) et (DN) sont parralleles"
+      },
+      {
+        "number": 4,
+        "content": "Soit   ABC  un triangle.  Le point   G  est tel que   ⃗\nGA=2⃗\nGB−3⃗\nGC\n1.\nMontrer que   ⃗\nAG=−2⃗\nAB+ 3\n2⃗\nAC\n2. Construire le point  G\n3. Soit  I le milieu du segment   [ AC] .\na- Montrer que  ⃗\nI G=⃗\nBC\nb- En déduire la nature du quadrilatère   IBCG\n4. Soit   G'  la projection de   G  sur   (AB)  parallèlement à  (BC) .\nMontrer que  G'  est le milieu de   [AB]"
+      },
+      {
+        "number": 5,
+        "content": "Soit ABCD un quadrilatère convexe.\nSoient   M  et   Q  les points tels que  ⃗\nBM= 1\n3⃗\nBA   et   ⃗\nDQ=1\n3⃗\nDA\nSoit  N  la projection de  M sur   (BC)  parallèlement à   (AC) ,  et   P  la\nprojection de   N  sur   (BC)  parallèlement à   (BD)\n1.\nMontrer que    ⃗\nPD=1\n3⃗\nCD\n2. Montrer que   MNPQ   est un parallélogramme"
+      },
+      {
+        "number": 6,
+        "content": "ABCD  est un parallélogramme de centre  O\nLes points  M  et   N  sont tels que   3⃗\nBN−⃗\nBD=⃗0   et   N  est le milieu de\n[CM ]\n1.\nMontrer que   ⃗\nAM=2⃗\nON  .   En déduire que  3⃗\nAM=−1⃗\nBD\n2. Soit  H=p( AB)/(BC )(M)  .   Montrer que   3⃗\nAH−⃗\nAB=⃗0\n3. Montrer que   (HN )   et   (AC)  sont parallèles\n4. Montrer que   AMBN  est un parallélogramme"
+      },
+      {
+        "number": 7,
+        "content": "Soit   ABCD  un parrallelogramme\nLe point E est definie par la relation  ⃗\nAE=3\n4⃗\nAC  et le point   F est le projeté\nde E sur (BC) parrallelement a (AB)\n1.\nFaire un schema\n2. Montrer que    ⃗\nCF= 1\n4⃗\nCB  et que  ⃗\nEF=1\n4⃗\nAB\n3. Soit M le point definie par la relation  ⃗\nMB= 1\n4⃗\nAB .   Montrer que\n(ME)∥(BC)"
+      },
+      {
+        "number": 8,
+        "content": "ABC  est un triangle et E et  F tels que   ⃗\nAE=1\n3⃗\nAB  et   ⃗\nAF=−1\n2 ⃗\nAB\nE' et  F' sont les projetés de E et  F sur (AC) parrallelement a\n(BC)\n1.\nFaire un schema\n2. Ecrire  ⃗\nAE'  et  ⃗\nAF '  en fonction de  ⃗\nAC\n3. En déduire que  ⃗\nEE'=1\n3⃗\nBC  et  ⃗\nFF '=−1\n2 ⃗\nBC\n4. Montrer alors que   EE'\nFF ' =2\n3"
+      },
+      {
+        "number": 9,
+        "content": "Dans le schema ci-joint ,   (AB)  et  (CD)  sont deux droites  parallèles\net   (AD)  et  (CE)  et  (BH )  sont  trois droite parralleles.\n1.\nEn utilisant les données indiquées dans le schéma\na- Calculer la valeur de   c\nb- Calculer la proportion   a\nb"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "title": "L'ordre dans ℝ",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "1.\nComparer les nombres rationnels\n6\n35 et 2\n7\n2. Comparer les nombres reels 2√3−4 et √3−5\n3. a- Comparer les nombres reels 2√2 et √7\nb- Comparer les nombres reels −2√5 et −3√2\n4. Comparer les nombres reels √6 et √3+√2−1"
+      },
+      {
+        "number": 2,
+        "content": "Soient x∈ℝet y∈ℝavec −4≤y≤−3 et 2≤x≤3\n1.\nDonner les encadrement de x+ y et x−y et −2x+5 y\n2. Donner les encadrement de xy et de x\ny\n3. Donner l’encadrement de x\n2−y\n2"
+      },
+      {
+        "number": 3,
+        "content": "Soient x∈ℝet y∈ℝavec −4≤y≤3 et 2≤x≤3\n1.\nDonner l’encadrement de y\n2\n2. Donner l’encadrement de xy"
+      },
+      {
+        "number": 4,
+        "content": "Soit a∈ℝ\n+ tel que a≠1 .   On pose A= √a−1\na−1\n1.\nCalculer A pour a=0 et pour a=4 puis pour a=π\n2\n2. a- Montrer que : A=\n1\n√a+1\nb- En déduire que : 0< A<1"
+      },
+      {
+        "number": 5,
+        "content": "Soit a un nombre reel quelconque\n1.\nComparer les nombres reels a\n2+1 et 2a\n2. Montrer que a\n2+1≥−2a\n3. a- Montrer que si a>1 alors a\n3>a\n2>a\nb- Montrer que si a<1 alors a\n3<a\n2<a"
+      },
+      {
+        "number": 6,
+        "content": "Soient x et y deux nombres reels quelconque\n1.\na- Verifier que (x−y\n2)\n2\n+ 3 y\n2\n4 =x\n2−xy+ y\n2\nb- En déduire que x\n2−xy+ y\n2≥0\n2. Montrer que si x≥y alors x\n3≥y\n3"
+      },
+      {
+        "number": 7,
+        "content": "Soit a∈ℝ\n+*\n.   Montrer que √a+ 1\n√a\n≥2"
+      },
+      {
+        "number": 8,
+        "content": "On donne  1<a<b .  On pose :    A=√a−√b    et   B=√a−1−√b−1\n1.\nDéterminer le signe de  A  et celui de  B\n2.\nMontrer que     A\nB = √a−1+√b−1\n√a+√b\n3.\nEn deduire que   0< A\nB <1   puis comparer  A  et  B\n4.\nDéduire en utilisant ce qui precede que  √5−√7<2−√6"
+      },
+      {
+        "number": 9,
+        "content": "1.\nMontrer que  2√x<√x+1+√x<2√x+1 pour tout x∈ℝ\n+\n2.\na- Montrer que   √x+1−√x=\n1\n√x+1+√x\nb- En deduire que   :\n1\n2√x+1\n<√x+1−√x<\n1\n2√x\n3.\nMontrer en donnant a x une valeur que  41\n10<√17<33\n8      ."
+      },
+      {
+        "number": 10,
+        "content": "1.\nDevelopper (3√2−5)\n2\n2. En déduire √43−30√2 sous la forme a+b√2"
+      },
+      {
+        "number": 11,
+        "content": "1.\nResoudre dans ℝ: |2x−√3|=5√3  puis |2x−1|=|x+3|\n2. Resoudre dans ℝ : |2x−1|+|x+1|=|−2(2x−1)|"
+      },
+      {
+        "number": 12,
+        "content": "x et y tels que x≥1\n2 et y≤1 et x−y=3\n1.\nSimplifier √(2x−1)\n2+√(2 y−2)\n2\n2. Montrer que 1\n2≤x≤4 et −5\n2 ≤y≤1\n3. Calculer |x+ y−5|+|x+ y+2|"
+      },
+      {
+        "number": 13,
+        "content": "Determiner I∩J et I∪J dans les cas suivants :\n1.\nI=[−5,4] et J=[1,5]  puis I=[−5,2] et J=[3,7]\n2.\nI=]−∞,3] et J=]2,5] et\nI=]1,7] et J=]0,+∞["
+      },
+      {
+        "number": 14,
+        "content": "Resoudre dans ℝles inequations suivantes :\n1.\n2x−6<1            et    6 x−2≥0\n2.\n−2≤2x−6<1 et    0≤1\n2 x+3≤5\n3.  {\n3 x−2≤0\n12 x>4\net    {\n2 x−√2 >0\nx−1 < 0"
+      },
+      {
+        "number": 15,
+        "content": "Resoudre dans ℝles inequations suivan tes :\n1.\n|x−6|≤1           et      |2x−6|<9\n2.\n|3x−7|≤0       et      1≤|2x−6|\n3. {\n|3x−2|≤1\n|x|<1\net      1≤(2 x−6)\n2≤9"
+      },
+      {
+        "number": 16,
+        "content": "Soient x∈[1,+∞[ et y∈[1,+∞[\n1.\nMontrer que (√xy+1)\n2−(√x+√y)\n2=(x−1)( y−1)\n2. En déduire que √xy+1≥√x+√y\n3. Appliquer ce qui précède et montrer que √2x≥√x+√2−1"
+      },
+      {
+        "number": 17,
+        "content": "Soient x∈[4 √5,5√5] .  On pose y=x−3√5\n1.\nMontrer que   y<x\n2. a- Montrer que     y ∈[√5,2√5]\nb- En déduire que   |y−3\n2 √5|≤√5\n2\n3. Encadrer x+ y et  x\ny  .  Préciser les amplitude des encadrements"
+      },
+      {
+        "number": 18,
+        "content": "Soit   x∈[1,2]. On pose    A=x²−3 x+2\n3. a- Donner un encadrement de  A  et préciser son amplitude\nb- Déduire que   |A|≤r   avec r>0 à déterminer\n4. Montrer que  A=(x−3\n2)\n2\n−1\n4   .  Encadrer A et préciser l’amplitude\n5. Factoriser A puis montrer que  −1≤A≤0\n6. Lequel des trois encadrements précédents est le plus précis ?"
+      },
+      {
+        "number": 19,
+        "content": "a et b sont deux réels tels que   1≤√2a+3≤2   et   |2b−4|≤2\n1.\nMontrer que :   −1≤a≤1\n2    et     1≤b≤3\n2. Montrer que  ab∈[−3, 3\n2]  et déduire que   |2ab+3\n2|≤9\n2"
+      },
+      {
+        "number": 20,
+        "content": "Soit    x∈[1,3].   On pose    B= x−1\nx+2\n1.\nMontrer que   |\n1\nx+2|≤1\n3  et que :   B−1\n4=3\n4 × x−2\nx+2\n2. En déduire que    |B−1\n4|≤1\n4|x−2|\n3. Montrer que 1\n4  est une approximation de  4\n7  à 75×10\n−2 prés"
+      },
+      {
+        "number": 21,
+        "content": "Soit  a∈]\n1\n4 ,1[.   On pose   A=1+√a\n2\n1- Montrer que   A∈]\n3\n4 ,1[   et que    A−1=2(1+√a)\na−1\n2- En éduire que    |A−1|≤|a−1|\n2\n3- Donner une approximation de   1+√0,8\n2\nà   10\n−1  pres"
+      },
+      {
+        "number": 22,
+        "content": "Soit   x∈[0,2].   On pose   b= 8+√3+x\n10\n1.\nMontrer que   |x−1|≤1   et que    b−1=\nx−1\n10(2+√3+x)\n2. Montrer que\n1\n(2+√3+x)\n≤1\n2   et déduire que  |b−1|≤|x−1|\n20\n3. Déduire une approximation de   8+√3\n10    à   5×10\n−2  prés"
+      },
+      {
+        "number": 23,
+        "content": "Soit   x∈ℝ\n*.  On pose   Δ=√x\n2+1\nx\n1-\nVérifier que  1+√x\n2+1>2  et que  Δ−1\nx=\nx\n1+√x\n2+1\n2-\nEn déduire que  |Δ−1\nx|≤|x|\n2"
+      },
+      {
+        "number": 24,
+        "content": "Soit x∈[0,+∞[ .    On pose A(x)= √1+x\n3\n2\n1.\nMontrer que\n1\n√1+x\n3+1\n≤1\n2\n2. a- Montrer que  A(x)−1\n2=1\n2\nx\n3\n√1+x\n3+1\nb- En déduire que   |A(x)−1\n2|≤x\n3\n4\n3.  Deduire une valeur approchée de   1\n2 √1,0001   à   25×10\n−5   prés\nExercice 2\n5   :\n1.\nDonner l’ensemble des solutions de l’inequation  |x−1|≤2  sous forme\nd’un intervalle et preciser son amplitude\n2. Le nombre reel y est donnée par la relation  2 y+1=√1+x\nMontrer que   −1\n2 ≤y≤1\n2\n3. Montrer que    y−1\n2=\nx−3\n2(2+√1+x )\n4. Montrer que\n1\n"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "title": "La droite dans le plan",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "On donne les points A(2,2) et B(−1,2) le vecteur ⃗u(1,−2)\n1.\nRepresenter A et B et ⃗u dans (O,⃗i ,⃗j)\n2. Verifier que ⃗u=−⃗\nOB\n3. Construire C tel que ⃗\nOA−⃗\nOB=⃗\nOC et donner ses coordonnées\n4. On pose ⃗u=⃗\nOM .   Quel est la nature du quadrilatere OADM  ?"
+      },
+      {
+        "number": 2,
+        "content": "On considere les points A(2,−3) et B(−1,2) et C(2,4)\n1.\nFormer les coordonnées des vecteurs ⃗\nAB et ⃗\nAC\n2. Montrer que les points A et B et C ne sont pas alignés\n3. Determiner les coordonnées du point H ,  milieu de [AB]\n4. Calculer la mediane du triangle ABC ,  issue de C"
+      },
+      {
+        "number": 3,
+        "content": "On considere la droite (D) d’equation y=2 x+1\n1.\nMontrer que A(1,3)∈(D) et B(−1,1)∉(D)\n2. Donner l’equation de la droite (Δ) avec A∈(Δ) et (Δ)∥(D)\n3. Donner l’equation de la droite (L) avec B∈(Δ) et (Δ)⊥(D)\n4. Donner les coordonnees du point d’intersection de (D) et (L)"
+      },
+      {
+        "number": 4,
+        "content": "1.\na- Montrer que les vecteurs ⃗u(1,−2) et ⃗v(2,−4) sont colineaires\nb- Calculer le coeifficient de colinearité de ces deux vecteurs\n2. Les vecteurs ⃗u(2,−2) et ⃗w(2,3) sont-ils colineaires ?\n3. Calculer le nombre m pour que ⃗u(1,m) et ⃗v(m,3) soient colineaires"
+      },
+      {
+        "number": 5,
+        "content": "1.\nSoit A(0,3) et B(3,0)\na- Fromer une representation parametrique de la droite (AB)\nb- Donner une equation cartesienne de la droite (AB)\n2. a- Soit C(1,−1) .   Donner une representation parametrique de la droite\n(Δ) passant par C et parrallele a la droite (AB)\nb- Donner une equation cartesienne de la droite  (Δ)\n3. On considere la droite (L): x−y=0\na- Montrer que (L) passe par le point I minlieu de [AB]\nb- Montrer que (L) et (AB) sont perpendiculaires\n4. Determiner le point dintersection des dr"
+      },
+      {
+        "number": 6,
+        "content": "1.\nOn considere la droite (Δ):{\nx=2−3t\ny=1+7t\nt ∈ℝ\na- Montrer que\nA(5,−6)∈(Δ) et donner une equation de (Δ)\n2. On considere la droite (D):14 x+6 y+1=0\na- Montrer que le point A(5,−6) n’appartient pas a (D)\nb- Donner une representation parametrique de (D)\n3. Montrer que (D) et (Δ) sont parralleles"
+      },
+      {
+        "number": 7,
+        "content": "1.\nMontrer que A(−1,2) et B(4,4) et C(2,−1) ne sont pas alignés\n2. Montrer que le triangle (ABC) est isocele de sommet B\n3. Montrer que la droite (Δ): x+ y−8=0 passe par B et est\nparrallele a la droite (AC)\n4. Soit H le projeté orthogonal de B sur (AC) . Calculer BH\n5. Calculer la surface du triangle (ABC)\n6. a- Determiner le point D tel que ABDC est un parrallelogramme\nb- Calculer la surface de ABDC"
+      },
+      {
+        "number": 8,
+        "content": "On considere le point A(3,−2) et (Δ): −2x+ y+1=0\n1.\nDeterminer le coefficient directeur de (Δ)\n2. Donner les coordonnés de J le projeté orthogonal de A sur (Δ)\n3. Soit H le symetrique de A par rapport (Δ) .   Calculer les\ncoordonnés de H"
+      },
+      {
+        "number": 9,
+        "content": "On considère le faisceaux des droites d’équation :\n(Δm): (m−3)x−(2m−1) y−m−7=0  avec   m∈ℝ\n1.\nCalculer m pour que les droites  (Δm) passent par le point  A(1,−1)\n2. Calculer m pour que les droites  (Δm)  soient parallèles à la droite\nd’équation  (D): 3x−2 y+5=0\n3. Montrer que les droites  (Δm)  passent par un point fixe à déterminer"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "title": "Les polynômes",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "On donne P(x)=2(1−2x)(x−3)\n1.\nDevelopper et ecrire P(x) suivant l’ordre croissant des\npuissances de x\n2. a- Determiner le monome du plus haut degré de P et d\n° P\nb- Determiner le coefficient du monome en x\n3. Resoudre dans ℝl’equation P(x)=0\n4. Soit Q(x)=4(1−x)\n2−10 .  Montrer que P(x)≠Q(x)"
+      },
+      {
+        "number": 2,
+        "content": "Soient P(x)=x\n3−2x+1 et Q(x)=2(x−2)(x−3)\n1.\nDonner d\n°(P+Q) et d\n°(P−Q) et d\n°(PQ) et d\n°(P\n2)\n2. Ecrire en ordre des puissances decroissantes P−Q et PQ"
+      },
+      {
+        "number": 3,
+        "content": "1.\nDeterminer un trinome A(x) qui verifient A(0)=2 et\nA(1)=−1 et A(−1)=1\n1.\nDeterminer un trinome B(x) qui verifient B(−1)=0 et\nB(1)=0 et B(0)=−2"
+      },
+      {
+        "number": 4,
+        "content": "On donne P(x)=x\n3+3x\n2−x−3\n1.\nCalculer P(1)\n2. Calculer a et b et c tels que P(x)=(x−1)(ax\n2+bx+c)"
+      },
+      {
+        "number": 5,
+        "content": "1.\nCalculer le reste de la division euclidienne de x\n3−x+1 par x\n2. Meme question pour 6 x\n3+4 x\n2+1 par x−1\n3. Meme question pour (2x+1)\n2+x\n4−2 par x+1"
+      },
+      {
+        "number": 6,
+        "content": "Soit P(x)=2 x\n3−7 x\n2+7 x−2\n1.\nMontrer que 1 est une racine de P\n2. a- Soit a≠0 .   Montrer que P(\n1\na)=−P(a)\na\n3\nb- En déduire que si a est une racine de P ,  alors 1\na est aussi une\nune racine de P\n3. Calculer P(2) et determiner l’ensemble des racines de P"
+      },
+      {
+        "number": 7,
+        "content": "On donne P(x)=x\n3+2x\n2−x−2\n1.\nEffectuer la division euclidienne de P par le binome x+2\n2. Resoudre l’equation P(x)=0 dans ℝ\n3. a- On suppose que |x|≤1 .   Montrer que −3≤P(x)≤1\nb- En déduire que |P(x)+2|≤1"
+      },
+      {
+        "number": 8,
+        "content": "Soit n≥2 un entier naturel .   Soit k∈ℝ\n1.\nSoit x\nn=(x−1)Q(x)+k la division euclidienne de x\nn par le\nbinome x−1 .   Calculer le reste k\n2. On pose : x\nn=(x\n2−1)H (x)+ax+b .   Calculer a et b"
+      },
+      {
+        "number": 9,
+        "content": "Soient P(x)=x\n2−(a+b)x+ab avec a∈ℝet b∈ℝ\n1.\nVerifier que P(x) est divisible par x−a\n2. Determiner les deux racines de P\n3. Application\n:\nDeterminer les deux racines du polynome x\n2−(√2+√3)x+√6"
+      },
+      {
+        "number": 10,
+        "content": "1.\nEffectuer la division euclidienne de x\n5−1 par x−1\n2. Soit a∈ℝtel que |a|≠1\nMontrer que  1+a\n2+a\n4+a\n6+a\n8=\na\n10−1\n(a−1)(a+1)"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "title": "Équation-Inéquation-Système",
+    "semester": "Premier semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "Determiner l’ensemble des solutions chacune des equations dans ℝ:\n(2x−1)(1−3x)=0       et           2x−1\nx−3 =1\n(2x−1)\n2(2−x)\n2 x−4\n=0      et     (5 x−1)(x−2)\n2x−4\n=1"
+      },
+      {
+        "number": 2,
+        "content": "1.\nEcrire l’ensemble des solutions dans ℝde l’inequation 4−2x≥0\n2. Deduire  l’ensemble des solutions dans ℝdu systeme {\n2x+6≥0\n4−2 x≥0\n3. Resoudre dans ℝl’equation √2 x+6=√4−2 x"
+      },
+      {
+        "number": 3,
+        "content": "1.\nPoser les tableaux de signes des deux binomes 8−2 x et 3x+9\n2. Resoudre dans ℝl’equation |3x+9|+|8−2x|=5\n3. Resoudre dans ℝl’equation |3x+9|+|8−2x|≤3"
+      },
+      {
+        "number": 4,
+        "content": "1.\nPoser les tableaux de signes des deux binomes 1−2x et 2x+8\n2. En deduire l’ensemble des solutions du systeme {\n2 x+6≥0\n1−2x≥0\n3. Resoudre dans ℝl’inequation √2 x+8 ≥√1−2x"
+      },
+      {
+        "number": 5,
+        "content": "On considere le trinome P(x)=5 x\n2−3 x−2\n1.\nVerifier que 1 est une racine de P et factoriser P\n2. Resoudre dans ℝl’equation 5x\n2−3x−2=0\n3. Poser les tableaux de signes des deux trinomes 5x+2 et x−1\n4. En deduire l’ensemble des solutions de chacune des inequations\n5x\n2−3x−2≤0   et  5x\n2<3x+2"
+      },
+      {
+        "number": 6,
+        "content": "A- On considère l’équation dans IR :  (3 x+ 1\n3)\n2\n=(2x−1)\n2  (E)\n1.\nMontrer que :  (E)  est equivalant a   x+ 4\n3 =0  ou   5 x−2\n3=0\n2. En déduire l’ensemble des solutions de l’équation (E)\nB- On considère l’équation dans IR :   √3 x+ 1\n3=√2x−1   (F)\n3. Déterminer le domaine d’étude de  (F)\n4. Déterminer l’ensemble des solutions de  (F)\nC- On considère l’inéquation dans :  √3 x+ 1\n3−√2x−1 > 0  (G)\n5. Determiner l’ensemble des solutions de (G)"
+      },
+      {
+        "number": 7,
+        "content": "On considère l’équation    2x−y=4 (E)\n1.\nVérifier que (−1,−6)  est solution de (E)\n2. Calculer le nombre réel  a pour que le couple  (a,1) soit solution de  (E)\n3. Calculer le nombre réel  b pour que le couple  (b,b) soit solution de (E)\n4. a- Représenter la droite (D): 2x−y−4=0 dans un RON\nb- Hachurer l’ensemble des point  M (x, y) tels que  2x−y>4"
+      },
+      {
+        "number": 8,
+        "content": "Soit S l’ensemble des solutions de  −3 x+4 y+1=0  (E)\n1.\nCalculer x tel que   (x,−1)  est solution de  (E)\n2. Calculer  a pour que le couple  (a,a+2) soit solution de  (E)\n3. a- On pose  x=m  .   Calculer  y en fonction de  m\nb- En déduire que  S={(m, 3m−1\n4 ) /\nm∈IR}\nc- Donner cinq solutions de  (E)"
+      },
+      {
+        "number": 9,
+        "content": "Résoudre le système  {\n2 x−y=1\nx+ y=1     En utilisant trois methodes"
+      },
+      {
+        "number": 10,
+        "content": "En utilisant les resultats de l’exercice precedants ,  resoudre les systemes\n{\n2|x|−|y|=1\n|x|+|y|=1      et     {\n2√x−1\ny=1\n√x+ 1\ny=1\net    {\n2√x−2−√y+1=1\n√x−2+√y+1=1"
+      },
+      {
+        "number": 11,
+        "content": "On considère le système    (S)  {\n2 x−y>4\nx+2 y≤1\nOn considère les droites  (D) : 2x−y=4    et    (D’) : x+2 y=1\n1.\nVérifier que (0,−5) est solution de  (S)\n2. Etudier l’intersection de  (D)  et  (D’)  et representer  (D)  et  (D’)\n3. Hachurer l’ensemble des point M(x , y) avec (x, y) solution de (S)"
+      },
+      {
+        "number": 12,
+        "content": "Soit  (G)  l’ensemble des points  M(x , y) tels que  1<2 x−y<4\n1.\nVérifier que  A(−1,−5)∈(G)\n2. Soient les droites  (D) :   2x−y−1=0  et  (D’) :   2x−y−4=0\na- Montrer que (D)  et  (D’)  sont parallèles\nb- Représenter dans un repère orthonormé les droites  (D)  et  (D’)\nc- Indiquer sur le schéma la région (G)  par une couleur distinguée"
+      },
+      {
+        "number": 13,
+        "content": "Résoudre suivant le paramètre  m  le systeme   {\nmx+4 y=m+2\nx+my=2"
+      },
+      {
+        "number": 14,
+        "content": "Résoudre graphiquement  {\n2 x−y−1≤0\n2 x−y−4≥0   et  (3 x−2 y+1)(x−y−1)>0"
+      },
+      {
+        "number": 15,
+        "content": "1.\nRésoudre les équations dans IR  puis factoriser :\n7 x\n2−2√2x−2=0    et    −4 x\n2−4 x−1=0    et    t\n2+3t +5=0\n2. Résoudre les inéquations :   7 x\n2−2√2x−2<0    et     t\n2+3t +5≤0\n3. Résoudre dans  IR l’inéquation    (x\n2−3x+2)(7 x\n2−2√2x−2)<0"
+      },
+      {
+        "number": 16,
+        "content": "1.\nOn considère le trinôme   R (a)=a\n2−4a−12\nRésoudre l’équation  R (a)=0 et poser le tableau de signe de  R(a)\n2. Soit a∈IR.  On considère le trinôme  Q (x )=2 x\n2+(2−a)x+2\na- Montrer que le discriminant du trinôme  Q (x ) est  R (a)\nb- Déterminer les valeurs de  a pour que l’équation  Q (x )=0  ait deux\nsolutions distinctes\nc- Calculer en fonction de  a la somme et le produit de ces solutions"
+      },
+      {
+        "number": 17,
+        "content": "On considère le trinôme   Q (x )=x\n2−3x+2\n1.\na- Calculer  ∆  le discriminant   Q (x ) puis résoudre l’equation  Q (x )=0\nb- En déduire les solutions de l’inéquation  x\n2<3x−2\n2. Résoudre les équations   x\n2−3|x|+2=0   et    x−3√x+2=0\nSoit   P (x)=x\n3−2x\n2−ax+2  avec   a∈IR\n3. Calculer a sachant que P(−1)=0 .  Par la suite, on prend  a=1\n4. Montrer que  P (x)=(x+1)Q(x)  puis factoriser  P(x)\n5. Donner le tableau de signe puis résoudre dans  IR  l’inéquation  P(x)<0\n6. Resoudre dans ℝ\n+ de l’équat"
+      },
+      {
+        "number": 18,
+        "content": "On considère le système   {\nu+v=−3\nuv=2    (X)\n1.\nVérifier que   u   et   v   sont négatifs\n2. Former une équation de second degré dont u et v sont solutions\n3. Donner l’ensemble des solutions de  (X)"
+      },
+      {
+        "number": 19,
+        "content": "On considère l’équation  (E) dans  IR :   pt\n2−t +4=0  avec p<0\n1.\nMontrer que  (E) admet deux solutions distincts  u  et  v\n2. Montrer que   uv<0\n3. Calculer en fonction de  p  la somme  1\nu\n2 + 1\nv\n2"
+      },
+      {
+        "number": 20,
+        "content": "Soit  m∈IR.  On considère l’équation dans  IR :   x\n2−5 x+m+6=0  (E)\n1.\nRésoudre  (E)  dans le cas  m=0\n2. Retour au cas général :\na- Déterminer  m tel que  (E) admette deux solutions non nulles x1  et  x2\nb- Calculer   x1\nx2\n+ x2\nx1\nen fonction de  m"
+      },
+      {
+        "number": 21,
+        "content": "Soit  m∈IR.  On considère l’équation dans  IR :   x\n2−mx+m+ 9\n16 =0 (E)\n1.\nCalculer  m  pour que  −1 soit une solution de  (E)\n2. Résoudre  (E)  dans le cas  m=−1\n3. Discuter et déterminer en fonction de   m les solutions de  (E)"
+      },
+      {
+        "number": 22,
+        "content": "Soit la fonction polynomiale   P (x)=2 x\n3−7 x\n2+7 x−2\n1.\nMontrer que 2 est une racine de P\n2. Effectuer la division euclidienne de P par  x−2\n3. Déterminer toutes les racines de P puis factoriser  P(x)\n4. Résoudre l’inequation   2x\n3+7 x\n7 x\n2+2\n<1  dans   ℝ\n+"
+      },
+      {
+        "number": 23,
+        "content": "On donne :   P(x)=x\n3 –8 x²+11 x+20\n1.\nMontrer que 4 est une racine de P\n2. Calculer le quotient de la division euclidienne de P(x) par (x−4)\n3. Soit Q(x)=x²−4 x−5 . Résoudre Q(x)=0 dans ℕ\n4. Ecrire P(x) sous forme d’un produit de trois polynômes de degré 1\n5. Résoudre  dans ℝl’équation :   x√x−8 x+11√x+20=0"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "title": "Trigonométrie (Partie 1)",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "1.\nSoit ABCD un carré dont le coté mesure 1\na- Quelle est la mesure en degré de l’angle (^\nBAC )  ?\nb- En deduire cos(45\n°) et sin(45\n°) et tan(45\n°)\n2. Soit ABC un triangle equilateral et H le milieu de [AB]\na- Quelle est la mesure en degré des angles (^\nBAC ) et (^\nACH )  ?\nb- En déduire les rapports trigonometriques de 60\n° et 30\n°"
+      },
+      {
+        "number": 2,
+        "content": "1.\nTransformer en radian 30\n° et 60\n° et 90\n° et 120\n° et 180\n°\n2. Calculer les rapports trigonometriques de π\n4\net π\n6\net π\n3"
+      },
+      {
+        "number": 3,
+        "content": "Placer sur le cercle trigonométrique :\n1.\nLe point  N d’abscisse curviligne principale  π/4\n2. Le point N1=SO(N) et calculer son abscisse curviligne principal\n3. Le point N2=S(Ox)(N) et calculer son abscisse curviligne principal\n4. Le point N3=S(Oy)(N) et calculer son abscisse curviligne principal\n5. Memes questions si  N est d’abscisse curviligne principale  π\n3   ou  π\n6"
+      },
+      {
+        "number": 4,
+        "content": "1.\nDéterminer les abscisses curvilignes de  N(π\n4 )  appartenant à  ]−3π ,4 π ]\n2. Calculer l’abscisse curviligne principal et representer  M(x)  sur le cercle\ntrigonometrique tels que   x=14 π\n6    ou   x=117π\n4\nou   x=−11π\n3"
+      },
+      {
+        "number": 5,
+        "content": "1.\nCompleter 2π ≡...[2π ] et 3π ≡...[2π ] et ...≡π\n2 [2π ]\n2. a- Montrer que  81π\n2 ≡π\n2 [2π ]  et  −119π\n2\n≡π\n2 [2π ]\nb- En déduire que  −119π\n2\n≡81π\n2\n[2π ]"
+      },
+      {
+        "number": 6,
+        "content": "Soient  A(\n13 π\n5 )   et   B(\n3π\n5 )   et   C(\n−3π\n5 )   et   D(\n8 π\n5 )  et   E(\n2π\n5 )\n1.\nMontrer que A=B\n2. Montrer que C=S(OI )(B)\n3. Montrer que 8π\n5 ≡3π\n5 +π [2π] et déduire que D=SO(A)\n4. Montrer que 2π\n5 ≡−3π\n5\n+π[2π] et déduire que E=S(OJ)(B)"
+      },
+      {
+        "number": 7,
+        "content": "Soient x et x' et y et y' avec x'≡x[2π ] et y'≡y[2π ]\n1.\nMontrer que x'−x≡0[2π ]\n2. Montrer que x'+ y'≡x+ y[2π ] et x'−y'≡x−y[2π ]\n3. Montrer que 512π\n14\n≡326π\n7\n[2π ]"
+      },
+      {
+        "number": 8,
+        "content": "1.\nCalculer les rapports trigonometriques π + π\n4\net −π\n4\net π\n4 −π\net π\n4 −12π et π\n4 +27π\n2. Calculer   cos(\n−11 π\n3 )   et    sin(\n17 π\n4 )    et tan(\n−22π\n6 )\n3. Calculer   cos(\n735 π\n3 )    et    sin(\n−817 π\n4 )    et tan(\n222π\n6 )"
+      },
+      {
+        "number": 9,
+        "content": "On donne   cos(\nπ\n8)=√2+√2\n2\n1.\nCalculer   sin(\nπ\n8)     et     tan(\nπ\n8)   et    cos(\n9 π\n8 )    et      sin(\n9π\n8 )\n2. Calculer   sin(\n7π\n8 )     et      tan(\n7 π\n8 )  et    cos(\n3 π\n8 )    et     sin(\n5π\n8 )"
+      },
+      {
+        "number": 10,
+        "content": "1.\nMontrer que   sin(\nπ\n8)+sin(\n3π\n8 )+sin(\n5π\n8 )+sin(\n7π\n8 )=0\n2. Calculer   cos(\nπ\n8)+cos(\n3 π\n8 )+cos(\n5π\n8 )+cos(\n7π\n8 )\n3. Montrer que   sin\n2(\nπ\n8)+sin\n2(\n3π\n8 )+sin\n2(\n5π\n8 )+sin\n2(\n7 π\n8 )=1"
+      },
+      {
+        "number": 11,
+        "content": "1.\nMontrer que :\ncos(3π +x)+sin(\nπ\n2 −x)−tan(π +x)−tan(π −x)=0\n2. Montrer que :\nsin(π−x)−cos(\nπ\n2 −x)−cos(\nπ\n2 +x)+sin(π+x)=−2sin x"
+      },
+      {
+        "number": 12,
+        "content": "On pose   g(x)=cos\n4 x−sin\n4 x  avec x∈ℝ\n1.\nCalculer g(0) et g(\nπ\n6 ) et g(\nπ\n3 )\ng(\nπ\n4 ) et g(π )\n2. Montrer que :   g(−x)=g(x)      et      g(\nπ\n2−x)=−g (x )\n3. Montrer que  g(x)=−1+2cos\n2(x)   pour tout   x∈IR\n4. Déduire   g(x)   en fonction de   tan(x)  si x≠π\n2 +k π\n( k∈ℤ)"
+      },
+      {
+        "number": 13,
+        "content": "1.\nMontrer que   cos(x)=\n1\n√1+tan\n2 ⁡(x)\npour tout   x∈[0, π\n2[\n2. Montrer que   sin(x)=\ntan ⁡(x)\n√1+tan\n2 ⁡(x)\npour tout   x∈[0, π\n2[\n3. Montrer que ces relations restent valable si   x∈]\n−π\n2 ,0]"
+      },
+      {
+        "number": 14,
+        "content": "Soit α un nombre réel tel que  α ∈[0, π\n2]\nOn pose   A=2sin(\nπ\n2−α)+√3sin(π−α )+cos ⁡(π−α )\net      B=√3cos\n3α +√3cosα sin\n2α +sinα\n1.\nMontrer que :    A=cosα +√3sinα      et     B=√3cosα +sinα\n2. Résoudre dans   ℝ\n2   le système    {\nx+√3 y=√3\n√3 x+ y=2\n3. En déduire les solutions de    {\nA=√3\nB=2     dans l’intervalle   [0, π\n2]"
+      },
+      {
+        "number": 15,
+        "content": "Soit   x∈]0,π [   tel que   cos x+sin x=1−√3\n2\n1.\nRésoudre dans ℝl’équation   X ²−(\n1−√3\n2 )X−√3\n4 =0\n2. a- Montrer que    cosx sinx=−√3\n4\nb- En déduire les valeurs de   cos x   et de   sin x\n3. Calculer la valeur de  x"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "title": "Trigonométrie (Partie 2)",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "1.\nRésoudre dans  ℝ l’équation   2cos x+√2=0   (E1)\n2. Résoudre dans  ℝ l’équation   sin x+√3\n2 =0\n(E2)\n3. Résoudre dans  ℝ l’équation   tan x−√3=0\n(E3)\n4. Determiner les solutions de  (E1)  et  (E2)  dans   [0,2 π ]"
+      },
+      {
+        "number": 2,
+        "content": "1.\nRésoudre dans   ℝ :  2cos(2 x−π\n6)=1   et    tan(x−π\n3)−1=0\n2. Résoudre dans   ℝ :  2sin(3 x−π\n4)=−√2   et     cos² x=sin\n2 x  ."
+      },
+      {
+        "number": 3,
+        "content": "1.\nRésoudre dans ]−π ,π [  :    2cos ² x−3cosx−2=0\n2. Résoudre dans ]−π ,π [  :    4sin² x+2(1−√3)sinx−√3=0\n3. Résoudre dans ]−π ,π [  :    √3tg² x+(√3−1)tgx−1=0"
+      },
+      {
+        "number": 4,
+        "content": "soit  x∈ℝ  .   On pose :   A (x)=2cos² x+sin x−1  .\n1.\nVérifier que   A (x)=(1−sin x)(1+2sin x)  .\n2. Résoudre dans   ℝ  l’équation   A (x)=0"
+      },
+      {
+        "number": 5,
+        "content": "1.\nRésoudre dans  [0,π ] l’inéquation   2cos x+1<0    .\n2. Résoudre dans  [−π ,π ] l’inéquation   2sin x−√2≥0    .\n3. Résoudre dans  [0,2 π ] l’inéquation   tan x−√3>0\n4. Résoudre dans  [−π ,π ] l’inéquation −1\n2 <sin(x)≤√3\n2  .\n5. Résoudre dans  [−π ,π ] l’inéquation  (2cos x+1)(2sin x−√2)≥0\n6. Résoudre dans  [0,2 π ] l’inéquation\ncos x\n2sin x+1<0    ."
+      },
+      {
+        "number": 6,
+        "content": "Soit    P (x)=2√2cos\n3x+(√2−2)cos² x−(√2+1)cosx+1   .\n1.\nMontrer que   cos π\n3   est une racine de  P(x)  puis factoriser  P(x)  .\n2. Résoudre dans ℝl’équation  P (x)=0"
+      },
+      {
+        "number": 7,
+        "content": "Soit l’equation    4cos\n2x−2(√2+√3)cos x+√6=0\n(E)\n1.\nRésoudre dans  [0,2 π ]  l’équation    (E)\n2. Résoudre   2cos x−√3<0   et    2cos x+√2>0  dans  [0,2 π ]\n3. Resoudre dans  [0,2 π ]  de 4cos² x−2(√2+√3)cosx+√6>0."
+      },
+      {
+        "number": 8,
+        "content": "1.\nSoit  x∈ℝ   tel que   2sin xcos x=1 .   Montrer que  sin x=cos x   .\n2. Résoudre  dans  x∈ℝ  l’équation   2sin xcos x=1"
+      },
+      {
+        "number": 9,
+        "content": "1.\nResoudre le système   (S):{\n√3a−b=2\na+√3b=2√3\n2. En déduire les nombres reels\nx\net y solutions dans ]\n−π\n2 , π\n2 [ du\nsystème  {\n√3 tan x −tan y = 2\ntan x+√3tan y = 2√3"
+      },
+      {
+        "number": 10,
+        "content": "Soit l’equation  (E): tan\n2x−(1−√3)tan x−√3=0  dans   ]0,π [\n1.\nRésoudre dans IR  de l’équation  X\n2−(1−√3) X−√3=0\n2. En déduire les solutions de   (E)  dans  ]0,π [\n3. a- Résoudre dans  ]0,π [  :   tan\n2(x)−(1+√3)tan(x)−√3<0\nb- Placer les points correspondants sur le cercle trigonométrique"
+      },
+      {
+        "number": 11,
+        "content": "1.\nCalculer  f (π)  avec   f (x)=sin(2x−π\n3)+cos(2 x+ π\n6)\n2. Montrer que   f (x)=2sin(2x−π\n3)\n3. Résoudre   f (x)=0  puis résoudre  f (x)≥0  dans   ]−π ,π ]"
+      },
+      {
+        "number": 12,
+        "content": "Partie\n1   :\n1.\na- Résoudre dans   ℝ l’équation   2t ²−5t +2=0\nb- En déduire les solutions dans   ℝ l’inéquation   2t ²−5t +2≥0\n2. On considere le polynôme  P (t )=4t\n3−8t\n2−t +2\na- Vérifier que  −1\n2   est une racine de   P\nb- Determiner le trinôme  Q(t ) tel que   P (t )=(t+ 1\n2)Q(t)\nc- En déduire l’ensemble de solutions de l’equation  P (t )=0\n3. Determiner l’ensemble de solutions dans ℝde l’inequation  P (t )≥0\nPartie\n2   :\nOn donne   A (x)=4cos\n3 x−8cos\n2 x−cosx+2\n4. Montrer que :  A(x)=0  "
+      },
+      {
+        "number": 13,
+        "content": "Résoudre le systeme :\n{\n4cos x+sin y=2√2−1\n2\n2cos x+3sin y=√2−3\n2\navec x∈[0, π\n2 ] et y∈[\n−π\n2 ,0]"
+      },
+      {
+        "number": 14,
+        "content": "On donne P(x)=2x\n3−7 x\n2+7 x−2\n1.\nResoudre dans ℝl’equation x\n2−3 x+2=0\n2. Determiner le trinome q(x) tel que P(x)=(2 x−1)q(x)\n3. En déduire les solutions de l’equation P(x)=0 dans ℝ\n4. Resoudre dans ]−π ,π [ l’equation :\n2sin\n3x−7sin\n2 x+7sin x−2=0\n5. Poser le tableau de signe de 2sin\n3x−7sin\n2 x+7sin x−2\n6. Resoudre dans ]−π ,π [ l’inequation :\n2sin\n3x−7sin\n2 x+7sin x−2≥0\nExercice 1\n5   :\nOn donne f (x)=cos x−sin x\n1. Calculer f (0) et f (π )\n2. a- Verifier que f (x)=0 est equivalent a cos x=c"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "title": "Généralité sur les fonctions",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "Determiner les domaines de definition des fonctions\n1.\nf (x)=√2−3x et g(x)=√x−1\nx−2\net h(x)=√1−x\n2\n2.\na(x)\n2x\nx\n2−x−2\net b(x)=\n1\n1−sin x et c(x)=√1−cos x"
+      },
+      {
+        "number": 2,
+        "content": "1.\nCalculer   f (3)  et   f (−2)  avec   f (x)=\n1\n√x\n2−x−2\n2. Calculer les antecedants par la fonction f\nde\n1\n2\n3. Résoudre dans  ℝ l’inéquation  x\n2−x−2>0.   En déduire  Df"
+      },
+      {
+        "number": 3,
+        "content": "1.\nCalculer les images directes de  √3  et de  0  avec  f (x)=2 x−√3\n2. Calculer les antecedants des nombres réels  −√3  et  0\n3. Montrer que  f  est strictement croissante et poser son tableau des variations\n4. Représenter graphiquement la courbe  ζ f de f\ndans un RON  (O, ⃗i,⃗j)\n5. Montrer que la fonction   h(x)=−2 x+√3  est strictement décroissante\n6. Determiner le point d’intersection des courbe  ζ f  et  ζ g"
+      },
+      {
+        "number": 4,
+        "content": "ζ g  est la courbe de la fonction :    {\ng (x)=2 x+ 1\n3\nsi\nx≥0\ng(x)=−x+1\nsi\nx<0\n1.\nDéterminer le domaine de définition de g\n2. Calculer les images de nombre   −1  et −2 et   0  et    2\n3. Résoudre l’équation  g(x)=2  dans  IR\n4. Représenter graphiquement la courbe  ζ g  dans un repère orthonormé\n(O, ⃗i,⃗j)"
+      },
+      {
+        "number": 5,
+        "content": "On considere la fonction  w (x)=|2x−1|−|2 x+1|\n1.\nÉcrire les expressions de   w (x)  en fonction de x sans utiliser le symbole\nde la valeur absolue\n2. Poser le tableau des variations de  w\n3. Representer graphiquement la courbe ζ w dans un repère orthonormé\n(O, ⃗i,⃗j)"
+      },
+      {
+        "number": 6,
+        "content": "1.\nCompleter la courbe ζ f sachant que f est paire sur [−1,1] et est\nimpair ailleur\n2. Poser  tableau des variations de f\n3. Calculer f (0) et f (+1) et f (−1)"
+      },
+      {
+        "number": 7,
+        "content": "On considère la fonction   b (x)=x+ 1\nx\n1.\nMontrer que  b  est impaire et interpreter graphiquement ce resultat\n2. Montrer que   x+ 1\nx ≥2  pour tout x∈]0,+∞[\n3. a- Montrer que  2  est la valeur minimale de la fonction  b sur ]0,+∞[\nb- En deduire que  −2  est la valeur maximale de   b sur ]−∞,0[\n4. Montrer que le taux de variation de b est    b(x)−b( y)\nx−y\n= xy−1\nxy\n5. En déduire les variations de  b  sur chacun  ]0,1]  et  [1,+∞[\n6. Poser le tableau des variations de la fonction  b sur ℝ\n*"
+      },
+      {
+        "number": 8,
+        "content": "On considere la fonction   f (x)= 1\n4 x²+2x\n1.\nDéterminer l’intersection de  ζ f  avec les axes du RON  (O, ⃗i,⃗j)\n2. Calculer le taux des variations de f\net poser son tableau des variations\n3. Tracer la courbe  ζ f\n4. Résoudre graphiquement l’inéquation  f (x)≤0\n5. Déterminer le nombre de solutions de l’equation  f (x)=m    ( m∈ℝ)\n6. Representer graphiquement la fonction g définie par   g(x)=|f (x)|"
+      },
+      {
+        "number": 9,
+        "content": "On considère la fonction définie par  f (x)=2 x\n2−4 x+4\nOn note  ζ f sa courbe dans un repère orthonormé\n1.\nEcrire la forme reduite du trinome  2 x\n2−4 x+4\n2. En deduire les coordonnees du sommet Ω  de la parabole\nζ f\n3. Montrer que  f  admet une valeur minimale à déterminer\n4. Déterminer l’intersection de ζ f avec les deux axes de coordonnées\n5. Montrer que ζ f se trouve en dessus des  droites d’equations respectives\ny=x   et    y=−x\n6. Poser le tableau des variations de  f  et représenter grap"
+      },
+      {
+        "number": 10,
+        "content": "On considère les fonctions   f (x)=x ²+2   et   g(x)=3\nx\n1.\nDresser le tableau de variation de  f   et de g\n2. Verifier que f (1)=g(1) et déduire les points d’intersection des\ncourbes   ζ f  et  ζ g\n3. Construire dans un même RON   (O, ⃗i,⃗j)  les courbes   ζ f  et   ζ g\n4. Tracer  (∆)  , la droite d’équation cartesienne  y=3 x\n5. Résoudre algébriquement les équations  f (x)=3 x  et   g(x)=3 x\n6. Résoudre graphiquement les inéquations suivantes :\na-  x²+2≤3x\nb-  {\ng(x)≥3 x\nx>0\nc-  f (x)≥g(x)"
+      },
+      {
+        "number": 11,
+        "content": "Dans le schéma une parabole ζ f  et une droite (D)\n1.\nDonner une équation cartésienne de la droite  (D)\n2. Calculer les nombres réels  a et  b et  c tels que l’équation de ζ f est :\ny=f (x)=a x\n2+bx+c\n3. Résoudre, a partir du schéma, l’inéquation :  −1≤f (x)≤0\n4. Résoudre graphiquement l’inéquation :  0≤f (x)≤2x−3\n5. Pour quelles valeurs du m l’équation f (x)=m admet deux solutions"
+      },
+      {
+        "number": 12,
+        "content": "1.\nDeterminer les asymptotes de l’hyperbole  ζ f  avec  f (x)=\nx\n2 x−1\n2. Calculer le taux des variations de f\net poser son tableau des variations\n3. Déterminer l’intersection de  ζ f  avec les axes de coordonnées\n4. Représenter  ζ f  dans un repere orthonormé  (O, ⃗i,⃗j)\n5. a- Montrer que les fonction  g(x)=\nx\n2|x|−1 et f  sont egales sur ℝ\n+\nb- Montrer que  g  est une fonction  impaire et représenter  ζ g"
+      },
+      {
+        "number": 13,
+        "content": "1.\nDresser le tableau de variation de  f   avec  f (x)= x−2\nx+1\n2. Déterminer l’intersection de  ζ f  avec  les axes du repère  (O, ⃗i,⃗j)\n3. Determiner l’intersection de  ζ f  et la droite  (∆): 3 y=x+2\n4. Representer graphiquement  ζ f  et  (∆)\n5. Résoudre graphiquement l’équation   f (x)+1\n3 x−2\n3 >0\n6. On considère la fonction  g  tel que   g(x)=|x|−2\n|x|+1\na- Montrer que g est paire puis representer graphiquement  ζ g\nb- Dresser le tableau des variations de  g\n7. Discuter suivant  m  le nom"
+      },
+      {
+        "number": 14,
+        "content": "On considere la fonction   f (x)= x−5\nx−2  definie pour x≠2\n1.\nMontrer que   f (4−x )=2−f (x)  pour tout  x∈Df\n2. Poser son tableau des variations et représenter  sa courbe  ζ f\nOn considère la fonction  g  définie par  g(x)=|x|−5\n|x|−2   .\n3. Montrer que la courbe  ζ g  est symetrique par rapport a l’origine O\n4. Représente graphiquement la fonction  ζ g\nOn considere la fonction   h (x)= x ²−3x−10\nx ²−4\n5. Déterminer  Dh  et vérifier que  h (x)=f (x)  sur   Dh\n6. Représente graphiquement la fon"
+      },
+      {
+        "number": 15,
+        "content": "ζ g  est la courbe  de la fonction   {\ng (x)=x\n2−4 x\nsi\nx≥0\ng (x)=\nx\nx−2\nsi\nx<0\n1- Calculer les images de  −1  et  0  et   2\n2- Déterminer les variations de  g sur  ]−∞;0[  et  [0,2]  et  ]2,+∞[\n3- Déterminer les extremums de  g  s’ils existent\n4- Représenter la courbe  ζ g"
+      },
+      {
+        "number": 16,
+        "content": "La fonction f\nest representé graphiquement dans un RON\n1.\nDeterminer le domaine de definition de f\n2. Poser le tableau des variations de f\n3. Sachant que la restriction de ζ f a [1,+∞[ est un une parabole\nd’equation y=f (x)=x\n2+ax+b ,   calculer a et b\n4. Sachant que la restriction de ζ f a ]−∞,0[ est un une hyperbole\nd’equation y=f (x)=α + β\nx\n,   calculer α et β"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "title": "Transformations dans le plan",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "Soit ABCD un lozange de centre O avec ^\n(⃗\nAB,⃗\nAD) est directe\nSoient I et J les milieus respectifs de [AB] et AD\n1.\nFaire un schema\n2. Determiner SO(A) et SO(B) et SO(I)\n3. Determiner S(AC )(B) et S(AC )(I) et S(AC )(J)\n4. Determiner t⃗\nBC(A) et t⃗\nIJ(B) et t⃗\nIJ(O)"
+      },
+      {
+        "number": 2,
+        "content": "Soient A et B et C trois points tels que 2⃗\nAB−3⃗\nAC=⃗0\n1.\nVerifier que A et B et C sont alignés\n2. Montrer que C est l’image de B par une homothetie de centre A et\npreciser son rapport k 1\n3. Montrer que B est l’image de C par une homothetie de centre A et\npreciser son rapport k 2\n4. Montrer que C est l’image de A par une homothetie de centre B et\npreciser son rapport k 3\n5. Montrer que A est l’image de B par une homothetie de centre C et\npreciser son rapport k 4"
+      },
+      {
+        "number": 3,
+        "content": "Soit ABCD un parralellogramme.  Les points I et J sont definis par les\nrelations 3⃗\nCI−2⃗\nCB=⃗0 et ⃗\nIJ=⃗\nDC\n1.\nFaire un schema et placer les points I et J\n2. Montrer que t⃗\nBA(BJ)=(AI) .  Quelle est la nature de (ABJI) ?\n3. Soit h l’homothetie de centre I et telle que h(B)=C\na- Montrer que h(AB)=(CD)\nb- Montrer que le rapport de h est −2\n4. Soit K le point tel que ⃗\nKI=2⃗\nAB .   Montrer que h(J)=K"
+      },
+      {
+        "number": 4,
+        "content": "Soit  ABC  un triangle. Le point  M  est l’image de  B  par la translation de vecteur\n2⃗\nAB .  Le point  N  est le projeté de M sur  (AC)  parallèlement à  (BC)\n1.\nFaire un schéma\n2. Montrer que  N est l’image de  C  par une translation dont on précisera le\nvecteur en fonction de\n⃗\nAC\n3. Montrer que la droite (MN ) est l’image de la droite (BC) par une\nhomothétie de centre A et préciser son rapport k"
+      },
+      {
+        "number": 5,
+        "content": "ABC est un triangle isocèle de sommet C .   I est le milieu de  [AB]\nOn considère la transformation f\nqui à tout point M du plan associe\nle point M ' tel que :\n⃗\nMA+ ⃗\nMB=\n⃗\nMM '\n1.\na- Déterminer le point I ' image de I par f\nb- Déterminer A' l’image de A par f\n2. Déterminer le point D image de C par f\n.  Quel est la nature du\nquadrilatère ACBD ?\n3. Montrer que : ∀M∈(P).\n⃗\nI M '=−⃗\nI M .  En déduire la nature\net les éléments caractéristiques de f"
+      },
+      {
+        "number": 6,
+        "content": "Soient   A  et   B  deux points du plan\nSoit   f   la transformation qui associe à tout point   M  le point   M ’ tel que\n⃗\nAM+5⃗\nBM +3⃗\nM M\n'=⃗0\n1.\nSoit   G  le point invariant de  f  .   Montrer que   ⃗\nAG=5\n6⃗\nAB\n2. a- Etablir la relation entre  ⃗\nGM  et  ⃗\nGM ’\nb- En déduire la nature de f"
+      },
+      {
+        "number": 7,
+        "content": "ABC  est un triangle et   I  est l e milieu de  [BC]\nLes points  D  et  E  sont définis par  ⃗\nAD=⃗\nAB+⃗\nAI  et  ⃗\nAE=⃗\nAC+⃗\nAI\nOn considere  t⃗\nAI  la translation de vecteur  ⃗\nAI\n1.\nMontrer que  D  et  E  sont les images des points   B  et  C    t⃗\nAI\n2. Soit  J  le point d’intersection de  (AI) et  (DE).  Montrer que  T (I )=J\n3. Soit  h l’homothétie de centre  A  et de rapport  1\n2.   Soit  O=h(D)\nMontrer que  h(J )=I  et que le point  O  est le milieu de  [BI]\n4. Calculer le rapport de l’ho"
+      },
+      {
+        "number": 8,
+        "content": "Soit ABCD un parallélogramme .   Les points  I et  J deux points tels que\n⃗\nCI= 2\n3⃗\nCB    et    ⃗\nIJ=⃗\nDC\n1.\nSoit   T  la translation de vecteur   ⃗\nAB .   Déterminer l’image de la droite\n(AI)  par la translation  T\n2. Soit   h l’homothétie de centre  I  et de rapport  −2.\nReprésenter le point   E  l’image de   A  par  h  et montrer que  h(B)=C\n3. Calculer le rapport  CE\nAB"
+      },
+      {
+        "number": 9,
+        "content": "Soient   ABC un triangle et I le milieu de [BC]\nSoit   G  le point  du plan definie par la relation : ⃗\nAG−2⃗\nBG=⃗0\n1.\na- Montrer que   ⃗\nAG=2⃗\nAB  et representer le point G\nb- En déduire que   G=h(B)  avec h une homothetie de centre A\n2. Representer le point I '=h(I) et montrer que\nI '=t⃗\nAB(C)\n3. Montrer que\nD\nest le point d’intersection de\n( AC) et\n(GI ')\navec\nD=h(C)"
+      },
+      {
+        "number": 10,
+        "content": "Soient  A et  B les centres de deux cercles de rayons respectifs  1.5  et   2 et\nd’intersection vide\n1.\nh  est l’homothétie de rapport positif et qui transforme le cercle de centre A\nen celui de centre B .  Calculer le rapport de  h et représenter son centre\n2. Soit  k l’homothétie de rapport positif et transformant le cercle de centre  B\nen celui de centre A .   Déterminer le rapport et le centre de  k"
+      },
+      {
+        "number": 11,
+        "content": "Soient   ABC  un triangle et  I le milieu de  [BC ]. Les points  D  et\nE  sont définis par  ⃗\nAD=⃗\nAB+⃗\nAI  et  ⃗\nAE=⃗\nAC+⃗\nAI\n1.\nMontrer que  D=t⃗\nAI(B)  et  E=t⃗\nAI(C)\n2. Soit  J l’intersection des droites  ( AI) et  (DE) .  Montrer que  T (I )=J\n3. Montrer que  O=h\n(A , 1\n2)\n(D)   et que   h(J )=I\n4. Montrer que  le point   O  est le milieu de   [BI ]\n5. Calculer le rapport et le centre de l’homothétie  h'  telle que  E=h'(O) et\nD=h'(I)"
+      },
+      {
+        "number": 12,
+        "content": "Soit  ABCD  un parallélogramme .  Soient  I et  J les points tels  que\n⃗\nCI=2\n3⃗\nCB   et   ⃗\nIJ=⃗\nDC .   Soit  T  la translation de vecteur  ⃗\nAB\n1.\nDéterminer l’image de la droite  ( AI)  par la translation  T\n2. Soit  h  l’homothétie de centre  I  et de rapport  −2\n3. Représenter le point  E  l’image de  A  par  h\n4. Montrer que   h(B)=C\n5. Calculer le rapport   CE\nAB"
+      },
+      {
+        "number": 13,
+        "content": "Partie 1\n:\nSoit  ABC  un triangle rectangle en B avec AB=√3 et BC=1 et l’angle\n^\n(⃗\nAB ,⃗\nAC) est directe\n1.\nCalculer AC\n2. Calculer la mesure del ’angle ^\n(⃗\nAB ,⃗\nAC)\n3. Representer soigneusement le triangle  ABC\nPartie 2\n:\nLes points E et F sont tels que AEFB est un rectangle avec\n^\n(⃗\nAB,⃗\nAE)≡−π\n2\n[2π] et AE=2\nSoit h l’homothetie telle que h( A)=C et h(E)=F\n1.\nCompleter le schema\n2. Representer dans le schema le centre G de l’homothetie h\n3. Calculer le rapport k de l’homothetie h\nPartie 3 "
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "title": "Produit scalaire",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "Soit ABC un triangle isocele de sommet A avec   AB=3   et\n(⃗\nAB ,⃗\nAC)≡π\n6 [2π ].   Le point I est le milieu du segment [BC]\n1.\nCalculer  ⃗\nAB.⃗\nAC\n2. Calculer la distance AI et la surface de ABC\n3. Developper  (⃗\nAC−⃗\nAB)\n2  et deduire la distance BC"
+      },
+      {
+        "number": 2,
+        "content": "Soit  ABCD  un parallélogramme tels que :   AB=6    et    AD=4   et\n(⃗\nAB ,⃗\nAD)≡4 π\n3 [2π ]\nSoit  H  le projeté orthogonal de  D  sur la droite  (AB)\n1.\nFaire un schéma.\n2. Montrer que   ⃗\nAB∙⃗\nAD=−12\n3. Calculer la distances  AH\n4. Calculer la distance BD\n5. a- Représenter dans le schéma le point M tel que  ⃗\nAM=1\n3⃗\nAB+⃗\nAD\nb- Calculer  ⃗\nAB∙⃗\nAM  et deduire la nature du triangle (ABM)"
+      },
+      {
+        "number": 3,
+        "content": "(Questions independantes)\n1.\nCalculer  ⃗x.⃗y  sachant que  ‖⃗x‖=‖⃗y‖=3   et   (⃗x,⃗y)≡−π\n6 [2π ]\n2. Soit  −π\n2 <α< π\n2   la mesure de de l’angle   (^\n⃗c ,⃗d)\nCalculer  α  sachant que  ⃗c.⃗d=−3√3   et   ‖⃗c‖=√3   et   ‖⃗d‖=√12\n3. On donne  ⃗w .⃗s=−2  et  ‖⃗w‖=3  et  ‖⃗s‖=2  .\na- Calculer  ⃗s.(⃗w−⃗s)\nb- Calculer  (⃗s+2⃗w).(⃗w−⃗\n3s)\nc- Calculer  (⃗w−⃗\n3s)\n2  et  ‖⃗w−⃗\n3s‖"
+      },
+      {
+        "number": 4,
+        "content": "Soit  ABC  un triangle directe, rectangle et isocèle en  B  avec  AB=√2\nSoit  D  le point tel que  ABD  est équilatéral indirecte\n1.\nFaire un schéma\n2. Montrer que  ⃗\nBA.⃗\nBD=1   et    ⃗\nBC .⃗\nBD=−√3\n3. Calculer   CD"
+      },
+      {
+        "number": 5,
+        "content": "Soit  ABC  un triangle avec  AB=2  et  AC=1  et  ^\n( ⃗\nAB , ⃗\nAC)= π\n6\nLe point  D est le symétrique de B par rapport à C\n1.\nFaire un schéma puis calculer la distance BD\n2. Calculer la distance AD"
+      },
+      {
+        "number": 6,
+        "content": "1.\nMontrer que    ⃗u.⃗v=1\n2 (‖⃗u‖\n2+‖⃗v‖\n2−‖⃗u−⃗v‖\n2)\n2. a-  ABCD  est un parrallelogramme tel que  AB=2  et  AD=√2.   Le\npoint I est le milieu de  [ AB] .  Calculer  ‖⃗\nAC‖\n2  et  ‖⃗\nID‖\n2\nb- Montrer que : ⃗\nID−⃗\nAC=−3\n2 ⃗\nAB\nc- Montrer en utilisant la question (1)  que  (AC)⊥(ID)"
+      },
+      {
+        "number": 7,
+        "content": "1.\nMontrer que : ⃗u⊥⃗v  si et seulement si ‖⃗u+⃗v‖\n2=‖⃗u‖\n2+‖⃗v‖\n2\n2. Montrer que : ⃗u⊥⃗v  si et seulement si ‖⃗u+⃗v‖=‖⃗u−⃗v‖\n3. Soit ABDC un parallélogramme .  Montrer que :\nAB\n2+AD\n2=1\n2 ( AD\n2+BD\n2)"
+      },
+      {
+        "number": 8,
+        "content": "On donne‖⃗u‖=√7  et  ‖⃗v‖=√5  et  ‖2⃗u−3 ⃗v‖=√37\n1.\nMontrer que ⃗u• ⃗v=3\n2. a- Calculer (4⃗u−5⃗v)•(⃗u+⃗v)\nb- Montrer que (4⃗u−5⃗v)⊥(⃗u+⃗v)\n3. Calculer (5⃗u+4⃗v)•(⃗u−⃗v)"
+      },
+      {
+        "number": 9,
+        "content": "Soit  ABC  triangle avec  ^\nABC=2π\n3   et  BC=6  et  AB=4\nLe point  H  est le projeté orthogonal de A  sur   (BC)\n1.\nMontrer que   BH=2\n2. Calculer  ⃗\nBC ∙⃗\nBA   et   ⃗\nAC ∙⃗\nBC\n3. Soit  I  le milieu  du segment  [BC] .   Calculer   ⃗\nBC ∙⃗\nAC\n4. Soit  M  un point tel que  ⃗\nBC ∙⃗\nAM=30.   Montrer que  (MI)⊥(BC)"
+      },
+      {
+        "number": 10,
+        "content": "ABC  est un triangle avec AB=2√2 et AC=√2 et\n⃗\nAB•⃗\nAC=2√2  .   Soit  I le milieu de  [BC]\n1.\nCalculer cos(^\nBAC ) et deduire la mesure de l’angle (^\nBAC )\n2. Soit H=p(AB)(C) .   Calculer AH\n3. En utilisant le theoreme d’Al-Kachi ,  calculer BC\n4. En utilisant le theoreme de la mediane ,  calculer AI\n5. Utiliser la relation sinus ,  calculer sin(^\nABC) et sin(^\nACB)"
+      },
+      {
+        "number": 11,
+        "content": "ABC  est un triangle avec AB=x et AC=√x et BC=√7\nOn donne   ⃗\nAB•⃗\nAC=−1\n2    .   Soit α la mesure de l’angle (^\nBAC )\navec 0<α <π\n1. Montrer que x est solution de l’equation x\n2+x−6=0\n2. Resoudre l’equation x\n2+x−6=0 et deduire la valeur de x\n3. Calculer cosα .    En deduire que π\n2 <α <π"
+      },
+      {
+        "number": 12,
+        "content": "ABC  est un triangle avec AB=x et AC=√x et BC=3\nOn donne   ⃗\nAB•⃗\nAC=3\n2   .   Soit α la mesure de l’angle (^\nBAC )\navec 0<α <π\n1. Montrer que x est solution de l’equation x\n2+x−12=0\n2. Resoudre l’equation x\n2+x−12=0 et deduire la valeur de x\n3. Calculer cosα .    En deduire que 0<α < π\n2"
+      },
+      {
+        "number": 13,
+        "content": "[AB]  est un segment de milieu I avec AB=√3 .   Soit (Γ)\nl’ensemble des points M tels que   ⃗\nMA•⃗\nMB=3\n1. Montrer que  ⃗\nMA•⃗\nMB=I M\n2−1\n4 AB\n2\n2. Determiner la nature geometrique de (Γ)"
+      },
+      {
+        "number": 14,
+        "content": "[AB]  est un segment de milieu I avec AB=√3 .   Soit (Γ)\nl’ensemble des points M tels que   MA\n2+MB\n2=6\nDeterminer , en utilisant le theoreme de la mediane la nature\ngeometrique de (Γ)"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "title": "Géométrie de l'espace",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "ABCD est un rectangle avec AD=3 et AB=4 et AEFB est un\nlozange avec AE=4 et (AE)⊥(AD) et ^\nBAE=π\n6\n1.\nCalculer les distances DE et AC  et BE\n2. Montrer que (EF)∥(CD) et que (AED)∥(BFC)\n3. Montrer que (AC)⊥(BF)"
+      },
+      {
+        "number": 2,
+        "content": "Soit\nSABCD\nune pyramide dont la base ABCD est un rectangle de centre\nG avec AB=√2 et SG=√3\n1.\nFaire un schéma et calculer AG et AS\n2. Exprimer ⃗\nSA •⃗\nSG de deux methodes et déduire la mesure de ^\nASG\n3. a- Déterminer l’intersection (Δ) des plans (SAB) et (SCD) et\n(Δ') celle des plans (SAD) et (SBC)\nb- Montrer que les droites (Δ)⊥(Δ')\n4. Soit (P) definie par (Δ) et (Δ') . Montrer (P)∥(ABC)"
+      },
+      {
+        "number": 3,
+        "content": "(ABC) est un triangle equilateral de coté 1 et H son centre de gravité.\n(Δ) est la droite perpendiculaire a (ABC) au point H et S un point\nde (Δ) n’appartenant pas a (ABC)\n1.\nFaire un schéma et calculer AH\n2. Montrer que les droites (BS) et (AC) sont orthogonales\n3. On pose SA=a . Calculer en fonction de a la distance SH"
+      },
+      {
+        "number": 4,
+        "content": "On considere le tetraedre SABC tel que :\nLes triangles SAB et SAC sont rectangles et ^\nBAC=2π\n3\n.  Soient I\nle milieu de [BC] et J celui de [AS] .   On donne AB=6 et\nSA=2  et BC=2√19 et AC=x avec x∈[0,+∞[\n1.\na- En utilisant l’expression trigonometrique du produit scalaire, montrer\nque ⃗\nAB•⃗\nAC=−3 x\nb- Montrer que x\n2+6x−40=0 en utilisant l’expression metrique du\nproduit scalaire\nc- En deduire AC et ⃗\nAB•⃗\nAC\npuis calculer SC\n2. a- Representer D de (ABC) tel que ⃗\nAD=1\n3⃗\nAB+⃗\nAC\nb- Montrer que "
+      },
+      {
+        "number": 5,
+        "content": "SABC est un tétraedre tel que ^\nBAC= π\n3\net\nAB=9  et\nAC=4\nLe point G est le centre de gravité du triangle ABC .  La droite (SG) est\nperpendiculaire au plan (ABC) et H est le milieu de [SG]\nPartie 1\n:   Produit scalaire dans le plan (ABC)\n1.\na- Montrer alors que ⃗\nAB•⃗\nAC=18\nb- En déduire que BC=√61\n2. a- Representer dans le schema le point D du plan (ABC) tel\nque ⃗\nAD=−2\n9 ⃗\nAB+⃗\nAC\nb- Montrer que ⃗\nAB•⃗\nAD=0 et deduire que (AB)⊥(AD)\nPartie 2\n:   Homothetie – Geometrie de l’espace\n1.\nJustifier q"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "title": "Statistique",
+    "semester": "Deuxième semestre",
+    "exercises": [
+      {
+        "number": 1,
+        "content": "On lance deux fois de suite un des cubique equilibré a six faces\nnumerotées de 1 a 6.  Soient a et b les resultats respectifs du premier\net du deuxieme lancés.   On s’interesse a la somme S definie par\nS=a+b\n1. Quel est le nombre N de couples possibles ?  ( l’effectif total )\n2. Quel est l’effectif des cas qui donnent S=8 ?\n3. Completer le tableau suivant :\n4. Representer sous forme d’un diagramme en battons les effectifs\n5. Determiner le mode et l’ettendu de cette serie\n6. Calculer la moyenne d"
+      },
+      {
+        "number": 2,
+        "content": "On donne le tableau des effectifs d’une serie statistique\n1. Calculer l’effectif total de cette serie\n2. Calculer les effectifs cumulés de cette serie\n3.  Dresser le tableau des frequences et des frequences cumulées\n4. Calculer les pourcentages associées aux valeurs 8 et 16\n5. Representer sous forme de lignes brisées les frequences\n6. a- Determiner le mode et l’ettendu de cette serie\nb- Determiner la mediannede cette serie\n7. Calculer la moyenne de cette serie\n8. Calculer l’ecart moyen de cette "
+      },
+      {
+        "number": 3,
+        "content": "Dans un etablissement de 1000 eleves, 500 pratiquent le football , 250\npratiquent le basketbal , 125 pratiquent la natation et 125 pratiquent la\nvolleybal .  Chaque eleve de l’etablissement pratique un seul sport.\nRepresenter sous forme d’un cercle les pourcentages associées a cette serie"
+      },
+      {
+        "number": 4,
+        "content": "On donne le tableau des effectifs cumules d’une serie statistique\n1. Dresser le tableau des effectifs et des frequences de cette serie\n2. Representer les frequence en utilisant un histogramme\n3. Determiner le mode de cette serie\n4. Calculer la moyenne de cette serie\n5. Calculer l’ecart moyen de cette serie"
+      },
+      {
+        "number": 5,
+        "content": "Une serie statistique est representée en baton\n1. Calculer le mode M et l’ettendu l et L’effectif total N de cette serie\n2. Ca lculer le pourcentage p de la valeur du caractere 3\n3. Calculer la moyenne m de cette serie\n4. Calculer l’ecart moyen E de cette serie"
+      },
+      {
+        "number": 6,
+        "content": "On donne l’histogramme d’une serie statistique\n1.\nCalculer le mode M et l’ettendu l et L’effectif total N de cette serie\n2. Ca lculer le pourcentage p de la valeur du caractere 3\n3. Calculer la moyenne m de cette serie\n4. Calculer l’ecart moyen E de cette serie"
+      }
+    ]
+  }
+]

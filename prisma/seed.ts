@@ -470,6 +470,17 @@ const chaptersData: {
 ]
 
 async function main() {
+  const sm2Program = await prisma.program.upsert({
+    where: { code: 'sm2' },
+    update: { name: '2ème année Bac Sciences Mathématiques', shortName: '2BAC SM', assetType: 'page-3' },
+    create: { code: 'sm2', name: '2ème année Bac Sciences Mathématiques', shortName: '2BAC SM', assetType: 'page-3' },
+  })
+  await Promise.all([
+    prisma.program.upsert({ where: { code: 'tcs' }, update: {}, create: { code: 'tcs', name: 'Tronc Commun Scientifique', shortName: 'TCS', assetType: 'page-2' } }),
+    prisma.program.upsert({ where: { code: 'sm1' }, update: {}, create: { code: 'sm1', name: '1ère année Bac Sciences Mathématiques', shortName: '1BAC SM', assetType: 'page-3' } }),
+    prisma.program.upsert({ where: { code: 'pc2' }, update: {}, create: { code: 'pc2', name: '2ème année Bac Sciences Physiques', shortName: '2BAC PC', assetType: 'exercise' } }),
+  ])
+
   // Seed teacher
   await prisma.teacher.upsert({
     where: { email: 'wahamath@hotmail.com' },
@@ -483,9 +494,9 @@ async function main() {
     },
   })
 
-  // Delete existing exercises and chapters to allow re-seed
-  await prisma.exercise.deleteMany({})
-  await prisma.chapter.deleteMany({})
+  // Re-seed SM2 only. Other programs remain untouched.
+  await prisma.exercise.deleteMany({ where: { chapter: { programId: sm2Program.id } } })
+  await prisma.chapter.deleteMany({ where: { programId: sm2Program.id } })
 
   let totalExercises = 0
 
@@ -495,6 +506,7 @@ async function main() {
         number: ch.number,
         title: ch.title,
         semester: ch.semester,
+        programId: sm2Program.id,
       },
     })
 

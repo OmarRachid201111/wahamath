@@ -26,6 +26,7 @@ model Student {
   email           String                   @unique
   phone           String?
   className       String
+  programId       String
   schoolName      String?
   password        String
   role            String                   @default("student")
@@ -35,15 +36,30 @@ model Student {
   progress        StudentExerciseProgress[]
   sentComments    StudentComment[]
   receivedRemarks TeacherRemark[]
+  program         Program                  @relation(fields: [programId], references: [id])
+}
+
+model Program {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  name        String
+  shortName   String
+  assetType   String    @default("page-3")
+  createdAt   DateTime  @default(now())
+  students    Student[]
+  chapters    Chapter[]
 }
 
 model Chapter {
   id        String    @id @default(cuid())
-  number    Int       @unique
+  number    Int
   title     String
   semester  String
+  programId String
   createdAt DateTime  @default(now())
+  program   Program   @relation(fields: [programId], references: [id], onDelete: Cascade)
   exercises Exercise[]
+  @@unique([programId, number])
 }
 
 model Exercise {

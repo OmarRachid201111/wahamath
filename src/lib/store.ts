@@ -7,6 +7,7 @@ export interface StudentUser {
   email: string
   phone?: string | null
   className: string
+  program: { id: string; code: string; name: string; shortName: string; assetType: string }
   schoolName?: string | null
   role: string
   status: string

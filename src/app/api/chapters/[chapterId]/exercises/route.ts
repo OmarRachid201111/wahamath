@@ -10,7 +10,12 @@ export async function GET(
     const { searchParams } = new URL(request.url)
     const studentId = searchParams.get('studentId')
 
-    const chapter = await db.chapter.findUnique({ where: { id: chapterId } })
+    const student = studentId
+      ? await db.student.findUnique({ where: { id: studentId } })
+      : null
+    const chapter = await db.chapter.findFirst({
+      where: { id: chapterId, ...(student ? { programId: student.programId } : {}) },
+    })
     if (!chapter) {
       return NextResponse.json({ error: 'Chapitre non trouvé.' }, { status: 404 })
     }

@@ -1,14 +1,14 @@
 import { db } from '@/lib/db'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const programCode = new URL(request.url).searchParams.get('program')
     const allStudents = await db.student.findMany({
+      where: programCode ? { program: { code: programCode } } : undefined,
       orderBy: { createdAt: 'desc' },
-      include: { progress: true },
+      include: { progress: true, program: true },
     })
-
-    const totalExercises = await db.exercise.count()
 
     const students = allStudents.filter((s) => s.status === 'approved').map((s) => ({
       id: s.id,
@@ -17,11 +17,12 @@ export async function GET() {
       email: s.email,
       phone: s.phone,
       className: s.className,
+      program: s.program,
       schoolName: s.schoolName,
       status: s.status,
       createdAt: s.createdAt,
       progressCount: s.progress.length,
-      totalExercises,
+      totalExercises: 0,
     }))
 
     const pendingStudents = allStudents.filter((s) => s.status === 'pending').map((s) => ({
@@ -31,11 +32,12 @@ export async function GET() {
       email: s.email,
       phone: s.phone,
       className: s.className,
+      program: s.program,
       schoolName: s.schoolName,
       status: s.status,
       createdAt: s.createdAt,
       progressCount: s.progress.length,
-      totalExercises,
+      totalExercises: 0,
     }))
 
     return NextResponse.json({ students, pendingStudents })

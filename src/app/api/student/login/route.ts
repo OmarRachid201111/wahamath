@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email et mot de passe requis.' }, { status: 400 })
     }
 
-    const student = await db.student.findUnique({ where: { email } })
+    const student = await db.student.findUnique({ where: { email }, include: { program: true } })
     if (!student || student.password !== password) {
       return NextResponse.json({ error: 'Identifiants incorrects.' }, { status: 401 })
     }

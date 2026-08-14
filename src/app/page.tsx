@@ -26,10 +26,20 @@ import {
   Eye, XCircle, User, Mail, Phone, School, Calendar, Sun, Moon
 } from 'lucide-react'
 import { useAppStore, StudentUser, TeacherUser, ChapterData, ExerciseData, CommentData } from '@/lib/store'
+import { PROGRAMS, ProgramCode } from '@/lib/programs'
 
 // ===== Helper =====
-function pageImageUrl(pageNum: number): string {
-  return `/exercises-pages/page-${String(pageNum).padStart(3, '0')}.png`
+const PROGRAM_ASSET_BASE_URL = 'https://qb2iij98kkeg6uie.public.blob.vercel-storage.com'
+
+function pageImageUrl(pageNum: number, programCode = 'sm2', chapterNumber?: number, exerciseNumber?: number): string {
+  if (programCode === 'pc2' && chapterNumber && exerciseNumber) {
+    return `${PROGRAM_ASSET_BASE_URL}/programs/pc2/exercise-images/exercise-${chapterNumber}-${exerciseNumber}.png`
+  }
+  const basePath = programCode === 'sm2'
+    ? '/exercises-pages'
+    : `${PROGRAM_ASSET_BASE_URL}/programs/${programCode}/exercises-pages`
+  const digits = programCode === 'tcs' ? 2 : 3
+  return `${basePath}/page-${String(pageNum).padStart(digits, '0')}.png`
 }
 
 // ===== Status Badge =====
@@ -327,9 +337,9 @@ function ExerciseDetailDialog({
   const pageImages: { url: string; pageNum: number }[] = []
   if (exercise.pageStart) {
     const start = exercise.pageStart
-    const end = exercise.pageEnd || start
+    const end = student.program.code === 'pc2' ? start : (exercise.pageEnd || start)
     for (let p = start; p <= end; p++) {
-      pageImages.push({ url: pageImageUrl(p), pageNum: p })
+      pageImages.push({ url: pageImageUrl(p, student.program.code, chapter.number, exercise.number), pageNum: p })
     }
   }
 
@@ -508,6 +518,7 @@ function AuthView() {
   const [regSchoolName, setRegSchoolName] = useState('')
   const [regPhone, setRegPhone] = useState('')
   const [regPassword, setRegPassword] = useState('')
+  const [regProgramCode, setRegProgramCode] = useState<ProgramCode>('sm2')
 
   // Teacher login
   const [teacherPassword, setTeacherPassword] = useState('')
@@ -544,7 +555,7 @@ function AuthView() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName: regFirstName, lastName: regLastName, email: regEmail,
-          className: regClassName, schoolName: regSchoolName, phone: regPhone, password: regPassword,
+          className: regClassName, schoolName: regSchoolName, phone: regPhone, password: regPassword, programCode: regProgramCode,
         }),
       })
       if (res.ok) {
@@ -644,6 +655,17 @@ function AuthView() {
                 <Label htmlFor="reg-email">Email *</Label>
                 <Input id="reg-email" type="email" value={regEmail} onChange={(e) => setRegEmail(e.target.value)} />
               </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="reg-program">Niveau scolaire *</Label>
+                <select
+                  id="reg-program"
+                  value={regProgramCode}
+                  onChange={(e) => setRegProgramCode(e.target.value as ProgramCode)}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                >
+                  {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.name}</option>)}
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="reg-className">Classe *</Label>
@@ -715,7 +737,10 @@ function StudentDashboard() {
   return (
     <div className="flex flex-col flex-1">
       <div className="flex items-center justify-between px-4 py-3 border-b bg-background">
-        <span className="font-medium">{student.firstName} {student.lastName}</span>
+        <div>
+          <span className="font-medium">{student.firstName} {student.lastName}</span>
+          <p className="text-xs text-muted-foreground">{student.program.shortName}</p>
+        </div>
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={logout}>
@@ -818,7 +843,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)
+                          openLightbox(pageImageUrl(ex.pageStart!, student.program.code, ch.number, ex.number), `Ex.${ex.number}`)
                         }
                       }}
                     />
@@ -844,7 +869,7 @@ function StudentChaptersView() {
                       onExerciseClick={(ex) => setSelectedExercise(ex)}
                       onImageClick={(ex) => {
                         if (ex.pageStart) {
-                          openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)
+                          openLightbox(pageImageUrl(ex.pageStart!, student.program.code, ch.number, ex.number), `Ex.${ex.number}`)
                         }
                       }}
                     />
@@ -1113,10 +1138,12 @@ function TeacherPendingView() {
   const [students, setStudents] = useState<StudentUser[]>([])
   const [loading, setLoading] = useState(true)
   const [actioning, setActioning] = useState<string | null>(null)
+  const [programFilter, setProgramFilter] = useState('')
 
   const fetchPending = async () => {
     try {
-      const res = await fetch('/api/teacher/students')
+      const query = programFilter ? `?program=${programFilter}` : ''
+      const res = await fetch(`/api/teacher/students${query}`)
       if (res.ok) {
         const data = await res.json()
         setStudents(data.pendingStudents || [])
@@ -1131,7 +1158,7 @@ function TeacherPendingView() {
       if (!cancelled) setLoading(false)
     }
     load()
-  }, [])
+  }, [programFilter])
 
   const handleAction = async (studentId: string, action: 'approved' | 'rejected') => {
     setActioning(studentId)
@@ -1171,7 +1198,12 @@ function TeacherPendingView() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="space-y-4">
+      <select value={programFilter} onChange={(e) => setProgramFilter(e.target.value)} className="h-9 rounded-md border bg-background px-3 text-sm">
+        <option value="">Tous les niveaux</option>
+        {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.shortName}</option>)}
+      </select>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {students.map(s => (
         <Card key={s.id} className="p-4">
           <div className="flex items-center gap-3 mb-3">
@@ -1183,6 +1215,7 @@ function TeacherPendingView() {
             <div>
               <p className="font-medium text-sm">{s.firstName} {s.lastName}</p>
               <p className="text-xs text-muted-foreground">{s.className}</p>
+              <p className="text-xs font-medium text-emerald-700">{s.program.shortName}</p>
             </div>
           </div>
           <div className="space-y-1 text-xs text-muted-foreground mb-3">
@@ -1214,6 +1247,7 @@ function TeacherPendingView() {
           </div>
         </Card>
       ))}
+      </div>
     </div>
   )
 }
@@ -1226,10 +1260,12 @@ function TeacherStudentsView() {
   const [loading, setLoading] = useState(true)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
+  const [programFilter, setProgramFilter] = useState('')
 
   const fetchStudents = async () => {
     try {
-      const res = await fetch('/api/teacher/students')
+      const query = programFilter ? `?program=${programFilter}` : ''
+      const res = await fetch(`/api/teacher/students${query}`)
       if (res.ok) {
         const data = await res.json()
         setStudents(data.students || [])
@@ -1244,7 +1280,7 @@ function TeacherStudentsView() {
       if (!cancelled) setLoading(false)
     }
     load()
-  }, [])
+  }, [programFilter])
 
   const handleDelete = async (studentId: string) => {
     if (confirmDeleteId !== studentId) {
@@ -1269,6 +1305,10 @@ function TeacherStudentsView() {
 
   return (
     <>
+      <select value={programFilter} onChange={(e) => setProgramFilter(e.target.value)} className="mb-4 h-9 rounded-md border bg-background px-3 text-sm">
+        <option value="">Tous les niveaux</option>
+        {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.shortName}</option>)}
+      </select>
       {students.length === 0 ? (
         <div className="text-center text-muted-foreground py-8">
           <MessageSquare className="size-10 mx-auto mb-2 opacity-40" />
@@ -1281,6 +1321,7 @@ function TeacherStudentsView() {
               <TableHead>Nom</TableHead>
               <TableHead className="hidden sm:table-cell">Email</TableHead>
               <TableHead>Classe</TableHead>
+              <TableHead>Niveau</TableHead>
               <TableHead className="hidden md:table-cell">Établissement</TableHead>
               <TableHead>Progression</TableHead>
               <TableHead>Actions</TableHead>
@@ -1296,6 +1337,7 @@ function TeacherStudentsView() {
                 <TableCell className="font-medium">{s.firstName} {s.lastName}</TableCell>
                 <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
                 <TableCell>{s.className}</TableCell>
+                <TableCell>{s.program.shortName}</TableCell>
                 <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
                 <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
                 <TableCell>
@@ -1418,7 +1460,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
                               {ex.pageStart && (
                                 <ImageIcon
                                   className="size-4 text-muted-foreground cursor-pointer"
-                                  onClick={() => openLightbox(pageImageUrl(ex.pageStart!), `Ex.${ex.number}`)}
+                                  onClick={() => openLightbox(pageImageUrl(ex.pageStart!, student.program.code, chapter.number, ex.number), `Ex.${ex.number}`)}
                                 />
                               )}
                             </div>

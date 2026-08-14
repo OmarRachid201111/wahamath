@@ -8,12 +8,18 @@ export async function GET(
   try {
     const { studentId } = await params
 
-    const totalExercises = await db.exercise.count()
+    const student = await db.student.findUnique({ where: { id: studentId } })
+    if (!student) {
+      return NextResponse.json({ error: 'Student not found.' }, { status: 404 })
+    }
+
+    const totalExercises = await db.exercise.count({ where: { chapter: { programId: student.programId } } })
     const completed = await db.studentExerciseProgress.count({ where: { studentId, status: 'completed' } })
     const inProgress = await db.studentExerciseProgress.count({ where: { studentId, status: 'in_progress' } })
     const difficulty = await db.studentExerciseProgress.count({ where: { studentId, status: 'difficulty' } })
 
     const chapters = await db.chapter.findMany({
+      where: { programId: student.programId },
       orderBy: { number: 'asc' },
       include: {
         exercises: {
