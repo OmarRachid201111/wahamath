@@ -664,9 +664,9 @@ function AuthView() {
                   id="reg-program"
                   value={regProgramCode}
                   onChange={(e) => setRegProgramCode(e.target.value as ProgramCode)}
-                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm text-foreground shadow-sm"
                 >
-                  {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.name}</option>)}
+                  {PROGRAMS.map((program) => <option key={program.code} value={program.code} className="bg-background text-foreground">{program.name}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
