@@ -666,9 +666,8 @@ function AuthView() {
                 </select>
               </div>
               <div className="space-y-1.5">
-                  <Label htmlFor="reg-schoolName">Établissement</Label>
-                  <Input id="reg-schoolName" value={regSchoolName} onChange={(e) => setRegSchoolName(e.target.value)} />
-                </div>
+                <Label htmlFor="reg-schoolName">Établissement</Label>
+                <Input id="reg-schoolName" value={regSchoolName} onChange={(e) => setRegSchoolName(e.target.value)} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="reg-phone">Téléphone</Label>
