@@ -514,7 +514,6 @@ function AuthView() {
   const [regFirstName, setRegFirstName] = useState('')
   const [regLastName, setRegLastName] = useState('')
   const [regEmail, setRegEmail] = useState('')
-  const [regClassName, setRegClassName] = useState('')
   const [regSchoolName, setRegSchoolName] = useState('')
   const [regPhone, setRegPhone] = useState('')
   const [regPassword, setRegPassword] = useState('')
@@ -555,7 +554,7 @@ function AuthView() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName: regFirstName, lastName: regLastName, email: regEmail,
-          className: regClassName, schoolName: regSchoolName, phone: regPhone, password: regPassword, programCode: regProgramCode,
+          schoolName: regSchoolName, phone: regPhone, password: regPassword, programCode: regProgramCode,
         }),
       })
       if (res.ok) {
@@ -666,12 +665,7 @@ function AuthView() {
                   {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.name}</option>)}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="reg-className">Classe *</Label>
-                  <Input id="reg-className" value={regClassName} onChange={(e) => setRegClassName(e.target.value)} />
-                </div>
-                <div className="space-y-1.5">
+              <div className="space-y-1.5">
                   <Label htmlFor="reg-schoolName">Établissement</Label>
                   <Input id="reg-schoolName" value={regSchoolName} onChange={(e) => setRegSchoolName(e.target.value)} />
                 </div>
