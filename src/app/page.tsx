@@ -665,13 +665,15 @@ function AuthView() {
                   {PROGRAMS.map((program) => <option key={program.code} value={program.code}>{program.name}</option>)}
                 </select>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="reg-schoolName">Établissement</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="reg-schoolName">Établissement</Label>
                 <Input id="reg-schoolName" value={regSchoolName} onChange={(e) => setRegSchoolName(e.target.value)} />
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="reg-phone">Téléphone</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="reg-phone">Téléphone</Label>
                 <Input id="reg-phone" type="tel" value={regPhone} onChange={(e) => setRegPhone(e.target.value)} />
+                </div>
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="reg-password">Mot de passe *</Label>
