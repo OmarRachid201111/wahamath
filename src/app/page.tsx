@@ -635,6 +635,10 @@ function AuthView() {
                 {loading && <Loader2 className="size-4 mr-2 animate-spin" />}
                 Se connecter
               </Button>
+              <Button variant="outline" onClick={() => setShowTeacherLogin(true)} className="w-full">
+                <GraduationCap className="size-4 mr-2" />
+                Connexion enseignant
+              </Button>
             </div>
           )}
 
