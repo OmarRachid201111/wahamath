@@ -40,7 +40,9 @@ export async function GET(request: NextRequest) {
         id: ch.id,
         number: ch.number,
         title: ch.title,
-        semester: ch.semester,
+        // The unified dashboard currently has one chapter list. Keep every
+        // imported curriculum visible, regardless of its original category.
+        semester: 'Analyse',
         exerciseCount: ch.exercises.length,
         completedCount,
         exerciseProgress,
