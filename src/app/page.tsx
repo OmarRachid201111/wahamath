@@ -1054,28 +1054,6 @@ function StudentProfileView() {
             </div>
           )}
 
-          {mode === 'login' && (
-            <>
-              <Separator />
-              {!showTeacherLogin ? (
-                <button
-                  onClick={() => setShowTeacherLogin(true)}
-                  className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-emerald-600 transition-colors"
-                >
-                  <GraduationCap className="size-4" />
-                  Accès enseignant
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowTeacherLogin(false)}
-                  className="w-full flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-red-600 transition-colors"
-                >
-                  <X className="size-4" />
-                  Annuler
-                </button>
-              )}
-            </>
-          )}
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <Button
