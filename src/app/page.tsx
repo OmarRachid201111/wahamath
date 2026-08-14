@@ -600,7 +600,7 @@ function AuthView() {
             <BookOpen className="size-7 text-emerald-600 dark:text-emerald-400" />
           </div>
           <CardTitle className="text-xl">Cahier d&apos;exercices et de suivi</CardTitle>
-          <CardDescription>2SM — Cahier interactif</CardDescription>
+          <CardDescription>Cahier interactif</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex rounded-lg border p-1 bg-muted">
