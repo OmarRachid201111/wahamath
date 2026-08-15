@@ -720,7 +720,7 @@ function StudentDashboard() {
   const [unreadComments, setUnreadComments] = useState(0)
   useEffect(() => {
     const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
-    load(); const interval = window.setInterval(load, 10000)
+    load(); const interval = window.setInterval(load, 3000)
     return () => window.clearInterval(interval)
   }, [])
   const markCommentsRead = () => {
@@ -1098,7 +1098,7 @@ function TeacherDashboard() {
   const [unreadComments, setUnreadComments] = useState(0)
   useEffect(() => {
     const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
-    load(); const interval = window.setInterval(load, 10000)
+    load(); const interval = window.setInterval(load, 3000)
     return () => window.clearInterval(interval)
   }, [])
   const markCommentsRead = () => {
