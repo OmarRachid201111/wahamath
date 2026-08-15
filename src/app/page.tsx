@@ -718,7 +718,11 @@ function StudentDashboard() {
   const { user, logout, studentTab } = useAppStore()
   const student = user as StudentUser
   const [unreadComments, setUnreadComments] = useState(0)
-  useEffect(() => { fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {}) }, [])
+  useEffect(() => {
+    const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
+    load(); const interval = window.setInterval(load, 10000)
+    return () => window.clearInterval(interval)
+  }, [])
   const markCommentsRead = () => {
     if (!unreadComments) return
     fetch('/api/notifications', { method: 'PATCH' }).then(() => setUnreadComments(0))
@@ -742,7 +746,7 @@ function StudentDashboard() {
         <Tabs defaultValue="chapters" className="w-full" onValueChange={(value) => { if (value === 'comments') markCommentsRead() }}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="chapters">Chapitres</TabsTrigger>
-            <TabsTrigger value="comments" className={unreadComments ? 'bg-emerald-100 dark:bg-emerald-900/40' : ''}>Mes commentaires{unreadComments ? ` (${unreadComments})` : ''}</TabsTrigger>
+            <TabsTrigger value="comments" className="relative">Mes commentaires{unreadComments > 0 && <span className="ml-2 size-2 rounded-full bg-red-500" aria-label="Commentaires non lus" />}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="chapters"><StudentChaptersView /></TabsContent>
@@ -1092,7 +1096,11 @@ function TeacherDashboard() {
   const { user, logout } = useAppStore()
   const teacher = user as TeacherUser
   const [unreadComments, setUnreadComments] = useState(0)
-  useEffect(() => { fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {}) }, [])
+  useEffect(() => {
+    const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
+    load(); const interval = window.setInterval(load, 10000)
+    return () => window.clearInterval(interval)
+  }, [])
   const markCommentsRead = () => {
     if (!unreadComments) return
     fetch('/api/notifications', { method: 'PATCH' }).then(() => setUnreadComments(0))
@@ -1117,7 +1125,7 @@ function TeacherDashboard() {
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="pending">En attente</TabsTrigger>
             <TabsTrigger value="students">Élèves</TabsTrigger>
-            <TabsTrigger value="comments" className={unreadComments ? 'bg-emerald-100 dark:bg-emerald-900/40' : ''}>Commentaires{unreadComments ? ` (${unreadComments})` : ''}</TabsTrigger>
+            <TabsTrigger value="comments" className="relative">Commentaires{unreadComments > 0 && <span className="ml-2 size-2 rounded-full bg-red-500" aria-label="Commentaires non lus" />}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="pending"><TeacherPendingView /></TabsContent>
