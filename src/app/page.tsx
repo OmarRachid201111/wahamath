@@ -989,6 +989,7 @@ function StudentCommentsView() {
   const student = user as StudentUser
   const [comments, setComments] = useState<CommentData[]>([])
   const [loading, setLoading] = useState(true)
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -1004,6 +1005,20 @@ function StudentCommentsView() {
     }
     load()
   }, [student.id])
+
+  const handleDeleteComment = async (commentId: string) => {
+    setDeletingCommentId(commentId)
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
+      setComments((current) => current.filter((comment) => comment.id !== commentId))
+      toast.success('Commentaire supprimé.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Impossible de supprimer le commentaire.')
+    }
+    setDeletingCommentId(null)
+  }
 
   if (loading) {
     return <div className="space-y-3"><Skeleton className="h-20 w-full" /><Skeleton className="h-20 w-full" /></div>
@@ -1024,8 +1039,8 @@ function StudentCommentsView() {
         <Card key={comment.id} className="p-4">
           <div className="flex items-start justify-between gap-3">
             <p className="text-sm mb-2">{comment.content}</p>
-            <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteComment(comment.id) }}>
-              <Trash2 className="size-4" />
+            <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" disabled={deletingCommentId === comment.id} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteComment(comment.id) }}>
+              {deletingCommentId === comment.id ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
               Supprimer
             </Button>
           </div>
