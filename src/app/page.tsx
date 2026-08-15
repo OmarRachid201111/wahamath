@@ -314,11 +314,12 @@ function ExerciseDetailDialog({
     if (!newComment.trim()) return
     setSendingComment(true)
     try {
-      await fetch('/api/comments', {
+      const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ studentId: student.id, exerciseId: exercise.id, content: newComment }),
       })
+      if (!res.ok) throw new Error('Comment non envoyé')
       setNewComment('')
       refetchComments()
     } catch {

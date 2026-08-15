@@ -93,17 +93,14 @@ export const useAppStore = create<AppState>((set) => ({
   teacherTab: 'pending',
   lightbox: { isOpen: false, imageUrl: '', label: '' },
   login: (user, view) => set({ user, currentView: view }),
-  logout: () => set({
-    currentView: 'auth',
-    user: null,
-    selectedChapter: null,
-    selectedExercise: null,
-    selectedStudent: null,
-    chapterExercises: [],
-    studentTab: 'chapters',
-    teacherTab: 'pending',
-    lightbox: { isOpen: false, imageUrl: '', label: '' },
-  }),
+  logout: () => {
+    void fetch('/api/auth/logout', { method: 'POST' })
+    set({
+      currentView: 'auth', user: null, selectedChapter: null, selectedExercise: null,
+      selectedStudent: null, chapterExercises: [], studentTab: 'chapters', teacherTab: 'pending',
+      lightbox: { isOpen: false, imageUrl: '', label: '' },
+    })
+  },
   setSelectedChapter: (chapter) => set({ selectedChapter: chapter }),
   setSelectedExercise: (exercise) => set({ selectedExercise: exercise }),
   setSelectedStudent: (student) => set({ selectedStudent: student }),
