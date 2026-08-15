@@ -469,8 +469,9 @@ function ExerciseDetailDialog({
                     </div>
                     <div className="flex items-start justify-between gap-3">
                       <p className="text-sm mt-1">{comment.content}</p>
-                      <Button variant="ghost" size="icon" className="size-7 shrink-0 text-destructive hover:text-destructive" onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+                      <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteComment(comment.id) }}>
                         <Trash2 className="size-4" />
+                        Supprimer
                       </Button>
                     </div>
                   </div>
@@ -1023,8 +1024,9 @@ function StudentCommentsView() {
         <Card key={comment.id} className="p-4">
           <div className="flex items-start justify-between gap-3">
             <p className="text-sm mb-2">{comment.content}</p>
-            <Button variant="ghost" size="icon" className="size-8 shrink-0 text-destructive hover:text-destructive" onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+            <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteComment(comment.id) }}>
               <Trash2 className="size-4" />
+              Supprimer
             </Button>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -1622,8 +1624,9 @@ function TeacherCommentsView() {
         <Card key={comment.id} className="p-4">
           <div className="flex items-start justify-between gap-3">
             <p className="text-sm mb-2">{comment.content}</p>
-            <Button variant="ghost" size="icon" className="size-8 shrink-0 text-destructive hover:text-destructive" disabled={deletingId === comment.id} onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+            <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" disabled={deletingId === comment.id} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteComment(comment.id) }}>
               {deletingId === comment.id ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+              Supprimer
             </Button>
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -1641,8 +1644,9 @@ function TeacherCommentsView() {
                 <div key={remark.id} className="bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3 border border-emerald-100 dark:border-emerald-800/50">
                   <div className="flex items-start justify-between gap-3">
                     <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
-                    <Button variant="ghost" size="icon" className="size-7 shrink-0 text-destructive hover:text-destructive" disabled={deletingId === remark.id} onClick={() => handleDeleteRemark(remark.id, comment.id)} aria-label="Supprimer la réponse">
+                    <Button type="button" variant="ghost" size="sm" className="shrink-0 text-destructive hover:text-destructive" disabled={deletingId === remark.id} onClick={(event) => { event.preventDefault(); event.stopPropagation(); void handleDeleteRemark(remark.id, comment.id) }}>
                       {deletingId === remark.id ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+                      Supprimer
                     </Button>
                   </div>
                   <span className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 block">
