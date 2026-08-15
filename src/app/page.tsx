@@ -320,8 +320,9 @@ function ExerciseDetailDialog({
         body: JSON.stringify({ studentId: student.id, exerciseId: exercise.id, content: newComment }),
       })
       if (!res.ok) throw new Error('Comment non envoyé')
+      const data = await res.json()
       setNewComment('')
-      await refetchComments()
+      setComments((current) => [{ ...data.comment, remarks: [] }, ...current])
       toast.success('Comment envoyé.')
     } catch {
       toast.error("Erreur lors de l'envoi.")
