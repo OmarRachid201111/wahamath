@@ -1763,7 +1763,8 @@ function AppFooter() {
 
 // ===== Main Home Component =====
 export default function Home() {
-  const { currentView, lightbox, closeLightbox } = useAppStore()
+  const { currentView, lightbox, closeLightbox, login } = useAppStore()
+  useEffect(() => { fetch('/api/auth/me').then(async (res) => { if (res.ok) { const data = await res.json(); login(data.user, data.view) } }).catch(() => {}) }, [login])
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
