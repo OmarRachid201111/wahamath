@@ -1,6 +1,5 @@
 import { db } from '@/lib/db'
 import { createSession } from '@/lib/auth'
-import { createSession } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
