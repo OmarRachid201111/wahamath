@@ -321,7 +321,8 @@ function ExerciseDetailDialog({
       })
       if (!res.ok) throw new Error('Comment non envoyé')
       setNewComment('')
-      refetchComments()
+      await refetchComments()
+      toast.success('Comment envoyé.')
     } catch {
       toast.error("Erreur lors de l'envoi.")
     }
