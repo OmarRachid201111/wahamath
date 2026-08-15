@@ -1,10 +1,10 @@
 import { db } from '@/lib/db'
+import { requireStudent } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const studentId = searchParams.get('studentId')
+    const studentId = await requireStudent()
 
     if (!studentId) {
       return NextResponse.json({ error: 'Student id is required.' }, { status: 400 })

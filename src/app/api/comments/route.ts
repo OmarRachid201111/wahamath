@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { getSession, requireStudent } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -6,7 +7,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const exerciseId = searchParams.get('exerciseId')
 
-    const where: Record<string, unknown> = {}
+    const session = await getSession()
+    if (!session) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
+    const where: Record<string, unknown> = session.role === 'student' ? { studentId: session.studentId! } : {}
     if (exerciseId) where.exerciseId = exerciseId
 
     const comments = await db.studentComment.findMany({
@@ -28,7 +31,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { studentId, exerciseId, content } = body
+    const { exerciseId, content } = body
+    const studentId = await requireStudent()
 
     if (!studentId || !content) {
       return NextResponse.json({ error: 'studentId et content requis.' }, { status: 400 })

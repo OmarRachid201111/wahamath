@@ -1,8 +1,10 @@
 import { db } from '@/lib/db'
+import { requireTeacher } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const programCode = new URL(request.url).searchParams.get('program')
     const allStudents = await db.student.findMany({
       where: programCode ? { program: { code: programCode } } : undefined,

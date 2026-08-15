@@ -1,9 +1,12 @@
 import { db } from '@/lib/db'
+import { requireTeacher } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const teacher = await db.teacher.findFirst()
+    const teacherId = await requireTeacher()
+    if (!teacherId) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
+    const teacher = await db.teacher.findUnique({ where: { id: teacherId } })
     if (!teacher) {
       return NextResponse.json({ error: 'Enseignant non trouvé.' }, { status: 404 })
     }
@@ -16,10 +19,12 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
+    const teacherId = await requireTeacher()
+    if (!teacherId) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const body = await request.json()
     const { currentPassword, newPassword } = body
 
-    const teacher = await db.teacher.findFirst()
+    const teacher = await db.teacher.findUnique({ where: { id: teacherId } })
     if (!teacher) {
       return NextResponse.json({ error: 'Enseignant non trouvé.' }, { status: 404 })
     }

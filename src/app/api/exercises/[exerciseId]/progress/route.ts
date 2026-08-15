@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { requireStudent } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function PUT(
@@ -8,7 +9,8 @@ export async function PUT(
   try {
     const { exerciseId } = await params
     const body = await request.json()
-    const { studentId, status, studentNote } = body
+    const { status, studentNote } = body
+    const studentId = await requireStudent()
 
     if (!studentId || !status) {
       return NextResponse.json({ error: 'studentId et status requis.' }, { status: 400 })

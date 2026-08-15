@@ -1,8 +1,10 @@
 import { db } from '@/lib/db'
+import { requireTeacher } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
   try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const comments = await db.studentComment.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
@@ -20,6 +22,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const body = await request.json()
     const { studentId, commentId, content } = body
 

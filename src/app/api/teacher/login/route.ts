@@ -1,4 +1,6 @@
 import { db } from '@/lib/db'
+import { createSession } from '@/lib/auth'
+import { createSession } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -18,6 +20,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Identifiants incorrects.' }, { status: 401 })
     }
 
+    await createSession('teacher', teacher.id)
+
+    await createSession('teacher', teacher.id)
     const { password: _, ...teacherWithoutPassword } = teacher
     return NextResponse.json(teacherWithoutPassword)
   } catch (error) {

@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { requireTeacher } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
@@ -6,6 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ studentId: string }> }
 ) {
   try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const { studentId } = await params
 
     const student = await db.student.findUnique({ where: { id: studentId } })

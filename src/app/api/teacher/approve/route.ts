@@ -1,8 +1,10 @@
 import { db } from '@/lib/db'
+import { requireTeacher } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const body = await request.json()
     const { studentId, action } = body
 

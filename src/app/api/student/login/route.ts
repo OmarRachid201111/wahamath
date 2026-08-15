@@ -1,4 +1,6 @@
 import { db } from '@/lib/db'
+import { createSession } from '@/lib/auth'
+import { createSession } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -22,6 +24,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Votre inscription a été refusée.' }, { status: 403 })
     }
 
+    await createSession('student', student.id)
+
+    await createSession('student', student.id)
     const { password: _, ...studentWithoutPassword } = student
     return NextResponse.json(studentWithoutPassword)
   } catch (error) {

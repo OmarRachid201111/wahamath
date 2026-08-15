@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import { requireStudent } from '@/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
@@ -7,14 +8,12 @@ export async function GET(
 ) {
   try {
     const { chapterId } = await params
-    const { searchParams } = new URL(request.url)
-    const studentId = searchParams.get('studentId')
+    const studentId = await requireStudent()
 
-    const student = studentId
-      ? await db.student.findUnique({ where: { id: studentId } })
-      : null
+    const student = studentId ? await db.student.findUnique({ where: { id: studentId } }) : null
+    if (!student) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     const chapter = await db.chapter.findFirst({
-      where: { id: chapterId, ...(student ? { programId: student.programId } : {}) },
+      where: { id: chapterId, programId: student.programId },
     })
     if (!chapter) {
       return NextResponse.json({ error: 'Chapitre non trouvé.' }, { status: 404 })
@@ -24,20 +23,6 @@ export async function GET(
       where: { chapterId },
       orderBy: { number: 'asc' },
     })
-
-    if (!studentId) {
-      return NextResponse.json({
-        exercises: exercises.map((ex) => ({
-          id: ex.id,
-          number: ex.number,
-          content: ex.content,
-          chapterId: ex.chapterId,
-          pageStart: ex.pageStart,
-          pageEnd: ex.pageEnd,
-          progress: null,
-        })),
-      })
-    }
 
     const progressRecords = await db.studentExerciseProgress.findMany({
       where: { studentId, exerciseId: { in: exercises.map((e) => e.id) } },
