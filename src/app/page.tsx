@@ -334,11 +334,12 @@ function ExerciseDetailDialog({
     if (!window.confirm('Supprimer ce commentaire et ses réponses ?')) return
     try {
       const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
       setComments((current) => current.filter((comment) => comment.id !== commentId))
       toast.success('Commentaire supprimé.')
-    } catch {
-      toast.error('Impossible de supprimer le commentaire.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Impossible de supprimer le commentaire.')
     }
   }
 
@@ -737,7 +738,7 @@ function StudentDashboard() {
   const [unreadComments, setUnreadComments] = useState(0)
   useEffect(() => {
     const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
-    load(); const interval = window.setInterval(load, 3000)
+    load(); const interval = window.setInterval(load, 1000)
     return () => window.clearInterval(interval)
   }, [])
   const markCommentsRead = () => {
@@ -804,11 +805,12 @@ function StudentChaptersView() {
     if (!window.confirm('Supprimer ce commentaire et ses réponses ?')) return
     try {
       const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
       setComments((current) => current.filter((comment) => comment.id !== commentId))
       toast.success('Commentaire supprimé.')
-    } catch {
-      toast.error('Impossible de supprimer le commentaire.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Impossible de supprimer le commentaire.')
     }
   }
 
@@ -1132,7 +1134,7 @@ function TeacherDashboard() {
   const [unreadComments, setUnreadComments] = useState(0)
   useEffect(() => {
     const load = () => fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {})
-    load(); const interval = window.setInterval(load, 3000)
+    load(); const interval = window.setInterval(load, 1000)
     return () => window.clearInterval(interval)
   }, [])
   const markCommentsRead = () => {
@@ -1575,11 +1577,12 @@ function TeacherCommentsView() {
     setDeletingId(commentId)
     try {
       const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error()
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
       setComments((current) => current.filter((comment) => comment.id !== commentId))
       toast.success('Commentaire supprimé.')
-    } catch {
-      toast.error('Impossible de supprimer le commentaire.')
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Impossible de supprimer le commentaire.')
     }
     setDeletingId(null)
   }

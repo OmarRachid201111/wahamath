@@ -58,13 +58,13 @@ export async function DELETE(request: NextRequest) {
     if (!session) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
     if (!id) return NextResponse.json({ error: 'Commentaire requis.' }, { status: 400 })
 
-    const comment = await db.studentComment.findUnique({ where: { id }, select: { studentId: true } })
-    if (!comment) return NextResponse.json({ error: 'Commentaire introuvable.' }, { status: 404 })
-    if (session.role !== 'teacher' && comment.studentId !== session.studentId) {
-      return NextResponse.json({ error: 'Non autorisé.' }, { status: 403 })
+    const where = session.role === 'teacher'
+      ? { id }
+      : { id, studentId: session.studentId! }
+    const result = await db.studentComment.deleteMany({ where })
+    if (!result.count) {
+      return NextResponse.json({ error: 'Ce commentaire est introuvable ou ne vous appartient pas.' }, { status: 404 })
     }
-
-    await db.studentComment.delete({ where: { id } })
     return NextResponse.json({ ok: true })
   } catch {
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
