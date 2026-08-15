@@ -330,6 +330,18 @@ function ExerciseDetailDialog({
     setSendingComment(false)
   }
 
+  const handleDeleteComment = async (commentId: string) => {
+    if (!window.confirm('Supprimer ce commentaire et ses réponses ?')) return
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      setComments((current) => current.filter((comment) => comment.id !== commentId))
+      toast.success('Commentaire supprimé.')
+    } catch {
+      toast.error('Impossible de supprimer le commentaire.')
+    }
+  }
+
   const goToExercise = (direction: 'prev' | 'next') => {
     const newIndex = direction === 'prev' ? currentIndex - 1 : currentIndex + 1
     if (newIndex < 0 || newIndex >= totalExercises) return
@@ -454,7 +466,12 @@ function ExerciseDetailDialog({
                         {new Date(comment.createdAt).toLocaleDateString('fr-FR')}
                       </span>
                     </div>
-                    <p className="text-sm mt-1">{comment.content}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm mt-1">{comment.content}</p>
+                      <Button variant="ghost" size="icon" className="size-7 shrink-0 text-destructive hover:text-destructive" onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+                        <Trash2 className="size-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 {comment.remarks.length > 0 && comment.remarks.map((remark) => (
@@ -783,6 +800,18 @@ function StudentChaptersView() {
     load()
   }, [student.id])
 
+  const handleDeleteComment = async (commentId: string) => {
+    if (!window.confirm('Supprimer ce commentaire et ses réponses ?')) return
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      setComments((current) => current.filter((comment) => comment.id !== commentId))
+      toast.success('Commentaire supprimé.')
+    } catch {
+      toast.error('Impossible de supprimer le commentaire.')
+    }
+  }
+
   const toggleChapter = async (chapter: ChapterData) => {
     if (expandedChapterId === chapter.id) {
       setExpandedChapterId(null)
@@ -990,7 +1019,12 @@ function StudentCommentsView() {
     <div className="space-y-4 max-w-xl">
       {comments.map((comment) => (
         <Card key={comment.id} className="p-4">
-          <p className="text-sm mb-2">{comment.content}</p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm mb-2">{comment.content}</p>
+            <Button variant="ghost" size="icon" className="size-8 shrink-0 text-destructive hover:text-destructive" onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+              <Trash2 className="size-4" />
+            </Button>
+          </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
             <span>{new Date(comment.createdAt).toLocaleDateString('fr-FR')}</span>
             {comment.exercise && (
@@ -1490,6 +1524,7 @@ function TeacherCommentsView() {
   const [replyingTo, setReplyingTo] = useState<string | null>(null)
   const [replyContent, setReplyContent] = useState('')
   const [sending, setSending] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -1535,6 +1570,36 @@ function TeacherCommentsView() {
     setSending(false)
   }
 
+  const handleDeleteComment = async (commentId: string) => {
+    if (!window.confirm('Supprimer ce commentaire et toutes ses réponses ?')) return
+    setDeletingId(commentId)
+    try {
+      const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      setComments((current) => current.filter((comment) => comment.id !== commentId))
+      toast.success('Commentaire supprimé.')
+    } catch {
+      toast.error('Impossible de supprimer le commentaire.')
+    }
+    setDeletingId(null)
+  }
+
+  const handleDeleteRemark = async (remarkId: string, commentId: string) => {
+    if (!window.confirm('Supprimer cette réponse ?')) return
+    setDeletingId(remarkId)
+    try {
+      const res = await fetch(`/api/remarks?id=${remarkId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      setComments((current) => current.map((comment) => comment.id === commentId
+        ? { ...comment, remarks: comment.remarks.filter((remark) => remark.id !== remarkId) }
+        : comment))
+      toast.success('Réponse supprimée.')
+    } catch {
+      toast.error('Impossible de supprimer la réponse.')
+    }
+    setDeletingId(null)
+  }
+
   if (loading) {
     return <div className="space-y-3"><Skeleton className="h-24 w-full" /><Skeleton className="h-24 w-full" /></div>
   }
@@ -1552,7 +1617,12 @@ function TeacherCommentsView() {
     <div className="space-y-4 max-w-2xl">
       {comments.map((comment) => (
         <Card key={comment.id} className="p-4">
-          <p className="text-sm mb-2">{comment.content}</p>
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-sm mb-2">{comment.content}</p>
+            <Button variant="ghost" size="icon" className="size-8 shrink-0 text-destructive hover:text-destructive" disabled={deletingId === comment.id} onClick={() => handleDeleteComment(comment.id)} aria-label="Supprimer le commentaire">
+              {deletingId === comment.id ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+            </Button>
+          </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-2">
             <span className="font-medium text-foreground">{comment.student.firstName} {comment.student.lastName}</span>
             <span>• {comment.student.className}</span>
@@ -1566,7 +1636,12 @@ function TeacherCommentsView() {
             <div className="space-y-2 mb-3">
               {comment.remarks.map((remark) => (
                 <div key={remark.id} className="bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-3 border border-emerald-100 dark:border-emerald-800/50">
-                  <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-sm text-emerald-800 dark:text-emerald-300">{remark.content}</p>
+                    <Button variant="ghost" size="icon" className="size-7 shrink-0 text-destructive hover:text-destructive" disabled={deletingId === remark.id} onClick={() => handleDeleteRemark(remark.id, comment.id)} aria-label="Supprimer la réponse">
+                      {deletingId === remark.id ? <Loader2 className="size-3 animate-spin" /> : <Trash2 className="size-3" />}
+                    </Button>
+                  </div>
                   <span className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 block">
                     {new Date(remark.createdAt).toLocaleDateString('fr-FR')}
                   </span>

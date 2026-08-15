@@ -50,3 +50,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getSession()
+    const id = new URL(request.url).searchParams.get('id')
+    if (!session) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
+    if (!id) return NextResponse.json({ error: 'Commentaire requis.' }, { status: 400 })
+
+    const comment = await db.studentComment.findUnique({ where: { id }, select: { studentId: true } })
+    if (!comment) return NextResponse.json({ error: 'Commentaire introuvable.' }, { status: 404 })
+    if (session.role !== 'teacher' && comment.studentId !== session.studentId) {
+      return NextResponse.json({ error: 'Non autorisé.' }, { status: 403 })
+    }
+
+    await db.studentComment.delete({ where: { id } })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
+  }
+}

@@ -39,3 +39,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    if (!await requireTeacher()) return NextResponse.json({ error: 'Non autorisé.' }, { status: 401 })
+    const id = new URL(request.url).searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'Réponse requise.' }, { status: 400 })
+
+    const result = await db.teacherRemark.deleteMany({ where: { id } })
+    if (!result.count) return NextResponse.json({ error: 'Réponse introuvable.' }, { status: 404 })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 })
+  }
+}
