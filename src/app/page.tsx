@@ -713,6 +713,12 @@ function AuthView() {
 function StudentDashboard() {
   const { user, logout, studentTab } = useAppStore()
   const student = user as StudentUser
+  const [unreadComments, setUnreadComments] = useState(0)
+  useEffect(() => { fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {}) }, [])
+  const markCommentsRead = () => {
+    if (!unreadComments) return
+    fetch('/api/notifications', { method: 'PATCH' }).then(() => setUnreadComments(0))
+  }
 
   return (
     <div className="flex flex-col flex-1">
@@ -729,10 +735,10 @@ function StudentDashboard() {
         </div>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
-        <Tabs defaultValue="chapters" className="w-full">
+        <Tabs defaultValue="chapters" className="w-full" onValueChange={(value) => { if (value === 'comments') markCommentsRead() }}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="chapters">Chapitres</TabsTrigger>
-            <TabsTrigger value="comments">Mes commentaires</TabsTrigger>
+            <TabsTrigger value="comments" className={unreadComments ? 'bg-emerald-100 dark:bg-emerald-900/40' : ''}>Mes commentaires{unreadComments ? ` (${unreadComments})` : ''}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="chapters"><StudentChaptersView /></TabsContent>
@@ -1081,6 +1087,12 @@ function StudentProfileView() {
 function TeacherDashboard() {
   const { user, logout } = useAppStore()
   const teacher = user as TeacherUser
+  const [unreadComments, setUnreadComments] = useState(0)
+  useEffect(() => { fetch('/api/notifications').then((r) => r.json()).then((d) => setUnreadComments(d.unread || 0)).catch(() => {}) }, [])
+  const markCommentsRead = () => {
+    if (!unreadComments) return
+    fetch('/api/notifications', { method: 'PATCH' }).then(() => setUnreadComments(0))
+  }
 
   return (
     <div className="flex flex-col flex-1">
@@ -1097,11 +1109,11 @@ function TeacherDashboard() {
         </div>
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
-        <Tabs defaultValue="pending" className="w-full">
+        <Tabs defaultValue="pending" className="w-full" onValueChange={(value) => { if (value === 'comments') markCommentsRead() }}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="pending">En attente</TabsTrigger>
             <TabsTrigger value="students">Élèves</TabsTrigger>
-            <TabsTrigger value="comments">Commentaires</TabsTrigger>
+            <TabsTrigger value="comments" className={unreadComments ? 'bg-emerald-100 dark:bg-emerald-900/40' : ''}>Commentaires{unreadComments ? ` (${unreadComments})` : ''}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="pending"><TeacherPendingView /></TabsContent>
