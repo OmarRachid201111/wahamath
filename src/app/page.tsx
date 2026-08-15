@@ -475,7 +475,8 @@ function ExerciseDetailDialog({
                 rows={2}
               />
               <Button onClick={handleSendComment} disabled={sendingComment || !newComment.trim()} className="bg-emerald-600 hover:bg-emerald-700 self-end">
-                {sendingComment ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                {sendingComment ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Send className="size-4 mr-2" />}
+                Envoyer le commentaire
               </Button>
             </div>
           </div>
