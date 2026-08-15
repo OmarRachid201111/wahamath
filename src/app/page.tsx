@@ -258,7 +258,6 @@ function ExerciseDetailDialog({
   const { user, setSelectedExercise, openLightbox, lightbox } = useAppStore()
   const student = user as StudentUser
   const [status, setStatus] = useState(exercise.progress?.status || 'not_started')
-  const [note, setNote] = useState(exercise.progress?.studentNote || '')
   const [saving, setSaving] = useState(false)
   const [comments, setComments] = useState<CommentData[]>([])
   const [newComment, setNewComment] = useState('')
@@ -301,7 +300,7 @@ function ExerciseDetailDialog({
       await fetch(`/api/exercises/${exercise.id}/progress`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId: student.id, status, studentNote: note }),
+        body: JSON.stringify({ studentId: student.id, status }),
       })
       toast.success('Progression sauvegardée !')
     } catch {
@@ -426,17 +425,6 @@ function ExerciseDetailDialog({
                 <span className="text-sm text-red-700 dark:text-red-400">Difficulté</span>
               </label>
             </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="notes" className="text-sm font-medium">Notes personnelles</Label>
-            <Textarea
-              id="notes"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Ajoutez vos notes ici..."
-              rows={3}
-            />
           </div>
 
           <div className="flex justify-end">
