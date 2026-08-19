@@ -37,7 +37,6 @@ model Student {
   progress        StudentExerciseProgress[]
   sentComments    StudentComment[]
   receivedRemarks TeacherRemark[]
-  instructions    StudentInstruction[]
   sessions        Session[]
   program         Program                  @relation(fields: [programId], references: [id])
 }
@@ -125,12 +124,4 @@ model TeacherRemark {
   studentUnread Boolean     @default(true)
   student    Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
   comment    StudentComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-}
-
-model StudentInstruction {
-  id        String   @id @default(cuid())
-  content   String
-  studentId String
-  createdAt DateTime @default(now())
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }

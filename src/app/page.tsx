@@ -759,68 +759,15 @@ function StudentDashboard() {
         <Tabs defaultValue="chapters" className="w-full" onValueChange={(value) => { if (value === 'comments') markCommentsRead() }}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="chapters">Chapitres</TabsTrigger>
-            <TabsTrigger value="instructions">Instructions</TabsTrigger>
             <TabsTrigger value="comments" className="relative">Mes commentaires{unreadComments > 0 && <span className="ml-2 size-2 rounded-full bg-red-500" aria-label="Commentaires non lus" />}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="chapters"><StudentChaptersView /></TabsContent>
-          <TabsContent value="instructions"><StudentInstructionsView /></TabsContent>
           <TabsContent value="comments"><StudentCommentsView /></TabsContent>
           <TabsContent value="profile"><StudentProfileView /></TabsContent>
         </Tabs>
       </div>
     </div>
-  )
-}
-
-// ===== Student Instructions View =====
-function StudentInstructionsView() {
-  const [instructions, setInstructions] = useState<{ id: string; content: string; createdAt: string }[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let cancelled = false
-    const load = async () => {
-      try {
-        const res = await fetch('/api/instructions')
-        if (res.ok && !cancelled) {
-          const data = await res.json()
-          setInstructions(data.instructions || [])
-        }
-      } catch { /* ignore */ }
-      if (!cancelled) setLoading(false)
-    }
-    load()
-  }, [])
-
-  return (
-    <Card className="max-w-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <BookOpen className="size-5 text-emerald-600" />
-          Instructions
-        </CardTitle>
-        <CardDescription>
-          Les consignes de votre enseignant apparaîtront ici.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {loading ? <Skeleton className="h-16 w-full" /> : instructions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Aucune instruction pour le moment.</p>
-        ) : (
-          <div className="space-y-3">
-            {instructions.map((instruction) => (
-              <div key={instruction.id} className="rounded-lg border p-3">
-                <p className="text-sm whitespace-pre-wrap">{instruction.content}</p>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {new Date(instruction.createdAt).toLocaleDateString('fr-FR')}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
   )
 }
 
@@ -848,19 +795,6 @@ function StudentChaptersView() {
     }
     load()
   }, [student.id])
-
-  const handleDeleteComment = async (commentId: string) => {
-    if (!window.confirm('Supprimer ce commentaire et ses réponses ?')) return
-    try {
-      const res = await fetch(`/api/comments?id=${commentId}`, { method: 'DELETE' })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
-      setComments((current) => current.filter((comment) => comment.id !== commentId))
-      toast.success('Commentaire supprimé.')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Impossible de supprimer le commentaire.')
-    }
-  }
 
   const toggleChapter = async (chapter: ChapterData) => {
     if (expandedChapterId === chapter.id) {
@@ -1365,9 +1299,6 @@ function TeacherStudentsView() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
   const [programFilter, setProgramFilter] = useState('')
-  const [instructionStudent, setInstructionStudent] = useState<StudentUser | null>(null)
-  const [instructionContent, setInstructionContent] = useState('')
-  const [sendingInstruction, setSendingInstruction] = useState(false)
 
   const fetchStudents = async () => {
     try {
@@ -1469,15 +1400,6 @@ function TeacherStudentsView() {
                 <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
                 <TableCell>
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8"
-                    title="Envoyer une instruction"
-                    onClick={(e) => { e.stopPropagation(); setInstructionContent(''); setInstructionStudent(s) }}
-                  >
-                    <Send className="size-4" />
-                  </Button>
-                  <Button
                     variant={confirmDeleteId === s.id ? 'destructive' : 'ghost'}
                     size="icon"
                     className="size-8"
@@ -1500,29 +1422,6 @@ function TeacherStudentsView() {
         <ProgressDialog student={progressDialog} onClose={() => { setProgressDialog(null); setSelectedStudent(null) }} />
       )}
 
-      <Dialog open={!!instructionStudent} onOpenChange={(open) => { if (!open) { setInstructionStudent(null); setInstructionContent('') } }}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Envoyer une instruction</DialogTitle>
-            <DialogDescription>
-              {instructionStudent ? `Cette instruction sera visible par ${instructionStudent.firstName} ${instructionStudent.lastName}.` : ''}
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            value={instructionContent}
-            onChange={(event) => setInstructionContent(event.target.value)}
-            placeholder="Écrivez votre instruction..."
-            rows={5}
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => { setInstructionStudent(null); setInstructionContent('') }}>Annuler</Button>
-            <Button onClick={handleSendInstruction} disabled={sendingInstruction || !instructionContent.trim()} className="bg-emerald-600 hover:bg-emerald-700">
-              {sendingInstruction ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Send className="size-4 mr-2" />}
-              Envoyer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }
@@ -1689,26 +1588,6 @@ function TeacherCommentsView() {
       toast.error("Erreur lors de l'envoi.")
     }
     setSending(false)
-  }
-
-  const handleSendInstruction = async () => {
-    if (!instructionStudent || !instructionContent.trim()) return
-    setSendingInstruction(true)
-    try {
-      const res = await fetch('/api/instructions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId: instructionStudent.id, content: instructionContent }),
-      })
-      const data = await res.json().catch(() => ({}))
-      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
-      toast.success('Instruction envoyée.')
-      setInstructionContent('')
-      setInstructionStudent(null)
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Impossible d'envoyer l'instruction.")
-    }
-    setSendingInstruction(false)
   }
 
   const handleDeleteComment = async (commentId: string) => {
