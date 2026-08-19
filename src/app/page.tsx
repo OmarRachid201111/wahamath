@@ -759,15 +759,37 @@ function StudentDashboard() {
         <Tabs defaultValue="chapters" className="w-full" onValueChange={(value) => { if (value === 'comments') markCommentsRead() }}>
           <TabsList className="w-full sm:w-auto">
             <TabsTrigger value="chapters">Chapitres</TabsTrigger>
+            <TabsTrigger value="instructions">Instructions</TabsTrigger>
             <TabsTrigger value="comments" className="relative">Mes commentaires{unreadComments > 0 && <span className="ml-2 size-2 rounded-full bg-red-500" aria-label="Commentaires non lus" />}</TabsTrigger>
             <TabsTrigger value="profile">Mon profil</TabsTrigger>
           </TabsList>
           <TabsContent value="chapters"><StudentChaptersView /></TabsContent>
+          <TabsContent value="instructions"><StudentInstructionsView /></TabsContent>
           <TabsContent value="comments"><StudentCommentsView /></TabsContent>
           <TabsContent value="profile"><StudentProfileView /></TabsContent>
         </Tabs>
       </div>
     </div>
+  )
+}
+
+// ===== Student Instructions View =====
+function StudentInstructionsView() {
+  return (
+    <Card className="max-w-2xl">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <BookOpen className="size-5 text-emerald-600" />
+          Instructions
+        </CardTitle>
+        <CardDescription>
+          Les consignes de votre enseignant apparaîtront ici.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">Aucune instruction pour le moment.</p>
+      </CardContent>
+    </Card>
   )
 }
 

@@ -56,7 +56,7 @@ export interface CommentData {
 }
 
 export type CurrentView = 'auth' | 'student' | 'teacher'
-export type StudentTab = 'chapters' | 'comments' | 'profile'
+export type StudentTab = 'chapters' | 'instructions' | 'comments' | 'profile'
 export type TeacherTab = 'pending' | 'students' | 'comments' | 'profile'
 
 interface AppState {
