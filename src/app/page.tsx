@@ -42,6 +42,12 @@ function pageImageUrl(pageNum: number, programCode = 'sm2', chapterNumber?: numb
   return `${basePath}/page-${String(pageNum).padStart(digits, '0')}.png`
 }
 
+function whatsappUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, '')
+  const internationalNumber = digits.startsWith('0') ? `212${digits.slice(1)}` : digits
+  return `https://wa.me/${internationalNumber}`
+}
+
 // ===== Status Badge =====
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { label: string; className: string }> = {
@@ -1389,7 +1395,19 @@ function TeacherStudentsView() {
                     {s.email}
                   </a>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{s.phone || '—'}</TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {s.phone ? (
+                    <a
+                      href={whatsappUrl(s.phone)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-600 dark:text-emerald-400 hover:underline"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      {s.phone}
+                    </a>
+                  ) : '—'}
+                </TableCell>
                 <TableCell>{s.program.shortName}</TableCell>
                 <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
                 <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
