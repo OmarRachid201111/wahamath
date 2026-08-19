@@ -775,6 +775,24 @@ function StudentDashboard() {
 
 // ===== Student Instructions View =====
 function StudentInstructionsView() {
+  const [instructions, setInstructions] = useState<{ id: string; content: string; createdAt: string }[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      try {
+        const res = await fetch('/api/instructions')
+        if (res.ok && !cancelled) {
+          const data = await res.json()
+          setInstructions(data.instructions || [])
+        }
+      } catch { /* ignore */ }
+      if (!cancelled) setLoading(false)
+    }
+    load()
+  }, [])
+
   return (
     <Card className="max-w-2xl">
       <CardHeader>
@@ -787,7 +805,20 @@ function StudentInstructionsView() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">Aucune instruction pour le moment.</p>
+        {loading ? <Skeleton className="h-16 w-full" /> : instructions.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Aucune instruction pour le moment.</p>
+        ) : (
+          <div className="space-y-3">
+            {instructions.map((instruction) => (
+              <div key={instruction.id} className="rounded-lg border p-3">
+                <p className="text-sm whitespace-pre-wrap">{instruction.content}</p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {new Date(instruction.createdAt).toLocaleDateString('fr-FR')}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   )
@@ -1334,6 +1365,9 @@ function TeacherStudentsView() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
   const [progressDialog, setProgressDialog] = useState<StudentUser | null>(null)
   const [programFilter, setProgramFilter] = useState('')
+  const [instructionStudent, setInstructionStudent] = useState<StudentUser | null>(null)
+  const [instructionContent, setInstructionContent] = useState('')
+  const [sendingInstruction, setSendingInstruction] = useState(false)
 
   const fetchStudents = async () => {
     try {
@@ -1435,6 +1469,15 @@ function TeacherStudentsView() {
                 <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
                 <TableCell>
                   <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
+                    title="Envoyer une instruction"
+                    onClick={(e) => { e.stopPropagation(); setInstructionContent(''); setInstructionStudent(s) }}
+                  >
+                    <Send className="size-4" />
+                  </Button>
+                  <Button
                     variant={confirmDeleteId === s.id ? 'destructive' : 'ghost'}
                     size="icon"
                     className="size-8"
@@ -1456,6 +1499,30 @@ function TeacherStudentsView() {
       {progressDialog && (
         <ProgressDialog student={progressDialog} onClose={() => { setProgressDialog(null); setSelectedStudent(null) }} />
       )}
+
+      <Dialog open={!!instructionStudent} onOpenChange={(open) => { if (!open) { setInstructionStudent(null); setInstructionContent('') } }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Envoyer une instruction</DialogTitle>
+            <DialogDescription>
+              {instructionStudent ? `Cette instruction sera visible par ${instructionStudent.firstName} ${instructionStudent.lastName}.` : ''}
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={instructionContent}
+            onChange={(event) => setInstructionContent(event.target.value)}
+            placeholder="Écrivez votre instruction..."
+            rows={5}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setInstructionStudent(null); setInstructionContent('') }}>Annuler</Button>
+            <Button onClick={handleSendInstruction} disabled={sendingInstruction || !instructionContent.trim()} className="bg-emerald-600 hover:bg-emerald-700">
+              {sendingInstruction ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Send className="size-4 mr-2" />}
+              Envoyer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
@@ -1622,6 +1689,26 @@ function TeacherCommentsView() {
       toast.error("Erreur lors de l'envoi.")
     }
     setSending(false)
+  }
+
+  const handleSendInstruction = async () => {
+    if (!instructionStudent || !instructionContent.trim()) return
+    setSendingInstruction(true)
+    try {
+      const res = await fetch('/api/instructions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId: instructionStudent.id, content: instructionContent }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Erreur serveur.')
+      toast.success('Instruction envoyée.')
+      setInstructionContent('')
+      setInstructionStudent(null)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Impossible d'envoyer l'instruction.")
+    }
+    setSendingInstruction(false)
   }
 
   const handleDeleteComment = async (commentId: string) => {
