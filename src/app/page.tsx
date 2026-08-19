@@ -1260,7 +1260,6 @@ function TeacherPendingView() {
             </Avatar>
             <div>
               <p className="font-medium text-sm">{s.firstName} {s.lastName}</p>
-              <p className="text-xs text-muted-foreground">{s.className}</p>
               <p className="text-xs font-medium text-emerald-700">{s.program.shortName}</p>
             </div>
           </div>
@@ -1366,7 +1365,7 @@ function TeacherStudentsView() {
             <TableRow>
               <TableHead>Nom</TableHead>
               <TableHead className="hidden sm:table-cell">Email</TableHead>
-              <TableHead>Classe</TableHead>
+              <TableHead className="hidden md:table-cell">Téléphone</TableHead>
               <TableHead>Niveau</TableHead>
               <TableHead className="hidden md:table-cell">Établissement</TableHead>
               <TableHead>Progression</TableHead>
@@ -1382,7 +1381,7 @@ function TeacherStudentsView() {
               >
                 <TableCell className="font-medium">{s.firstName} {s.lastName}</TableCell>
                 <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
-                <TableCell>{s.className}</TableCell>
+                <TableCell className="hidden md:table-cell">{s.phone || '—'}</TableCell>
                 <TableCell>{s.program.shortName}</TableCell>
                 <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
                 <TableCell>{s.progressCount}/{s.totalExercises}</TableCell>
@@ -1452,7 +1451,7 @@ function ProgressDialog({ student, onClose }: { student: StudentUser; onClose: (
         >
           <DialogHeader>
             <DialogTitle>Progression de {student.firstName} {student.lastName}</DialogTitle>
-            <DialogDescription>Classe : {student.className}</DialogDescription>
+            <DialogDescription>Niveau : {student.program.name}</DialogDescription>
           </DialogHeader>
 
           {loading ? (
