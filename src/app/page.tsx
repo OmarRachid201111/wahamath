@@ -1380,7 +1380,15 @@ function TeacherStudentsView() {
                 onClick={() => { setSelectedStudent(s); setProgressDialog(s) }}
               >
                 <TableCell className="font-medium">{s.firstName} {s.lastName}</TableCell>
-                <TableCell className="hidden sm:table-cell">{s.email}</TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <a
+                    href={`mailto:${s.email}`}
+                    className="text-emerald-600 dark:text-emerald-400 hover:underline"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    {s.email}
+                  </a>
+                </TableCell>
                 <TableCell className="hidden md:table-cell">{s.phone || '—'}</TableCell>
                 <TableCell>{s.program.shortName}</TableCell>
                 <TableCell className="hidden md:table-cell">{s.schoolName || '—'}</TableCell>
